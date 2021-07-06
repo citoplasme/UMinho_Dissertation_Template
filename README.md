@@ -19,6 +19,6 @@ To fully compile the pdf, i.e., to generate the bibliography, references and tex
 * Compile using XeLatex
 * Compile using BibTex
 * Compile using XeLatex
-* Compile using XeLatex (To update labels on the pdf)
+* Compile using XeLatex (To update the labels on the pdf)
 
 After that, just hit the **View** button, with **View PDF** selected and your document will be ready.

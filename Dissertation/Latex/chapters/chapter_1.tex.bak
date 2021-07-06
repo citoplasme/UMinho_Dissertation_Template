@@ -1,0 +1,150 @@
+\chapter{Ischemic Stroke -- A Medical Perspective}
+\label{chap:chap1}
+
+The current chapter begins by describing the clinical foundations of ischemic stroke to understand how and why it occurs, and how it evolves through time. Additionally, the classifications of stroke according to the cause, to the temporal evolution and to the angiographic outcome after reperfusion therapy are presented. Then, we address the importance of intervening at an early phase of the disease, as well as the possible reperfusion therapies that may be applied to patients with ischemic stroke. Afterwards, the most used and appropriate imaging techniques in stroke diagnosis and lesion prediction are presented. There, we delve in the motivations behind the usage of \acrshort{mri} as the preferred imaging technique over \acrshort{ct}, and finish by describing the best modalities to visualize the state of the brain in terms of diffusion and perfusion after stroke.
+
+\section{Clinical Foundations and Treatment}
+Ischemic stroke, the most common type of stroke, is a heterogeneous disease that occurs when there is a critical decrease of regional blood flow caused by the blockage of a vessel. The reason why this disease occurs is due to different pathologic mechanisms \cite{textbook, gonzalez}. About 75\% of ischemic strokes cases are caused by either large artery atherosclerosis in extracranial regions and large intracranial arteries, heart embolisms, or intracranial small vessel disease. The remaining cases are subdivided in cryptogenic strokes, which represent 20\%, and the last 5\% comprise strokes that result from more uncommon causes \cite{textbook}. In order to identify the cause, there is a classification criterion named Trial of Org 10172 in Acute Stroke Treatment (\acrshort{toast}). This trial was developed based on a placebo-controlled randomized study of the low molecular weight heparinoid given to patients within 24 hours after stroke. The TOAST scale classifies the ischemic stroke as large artery atherosclerosis, cardioembolism, small vessel occlusion, other determined etiology, or undetermined cause. To diagnose the patients with this scale, the clinicians analyze clinical and imaging data, and information acquired through the assessment for abnormalities in blood coagulation that increase the risk of thrombosis. Examples of these are clinical features such as cortical/cerebral dysfunction, brain and cardiac imaging techniques, duplex imaging of extracranial arteries and arteriography \cite{adams1993classification}.
+
+Temporal progression of the ischemic injury may be categorized in four phases: hyperacute (first 6h), acute (6--24h), subacute (1 day to approximately 2 weeks), and chronic (more than to 2 weeks). During the hyperacute stage of infarct, either occurs occlusion of the vessels that supply the infarcted region of the brain, or its flow begins to slow down. On the second phase, due to vasogenic edema resulting from a disruption of the blood-brain barrier, there is an increase of overall tissue water content. By one day, the brain swelling manifests itself through gyral thickening, effacement of sulci and cisterns, effacement of adjacent ventricles, midline shift, and brain herniation. During chronic stroke, there is a reduction of the edema and mass efect within infarcts, and the parenchyma suffers gliosis and tissue loss. Chronic infarct is also characterized by cystic cavitation and laminar necrosis. Figure \ref{fig:phases} depicts this temporal evolution. Although the infarcted tissue is not likely to recover at this final stage, resorption of necrotic tissue and edema may occur, alongside the reestablishment of perfusion. Simultaneously, the blood-brain barrier may remain intact \cite{gonzalez}.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{/chpt_1/stroke_phases.png}
+ 	\caption[Temporal evolution of the ischemic stroke. These brain sequences are just for explanatory purposes, having no correlation between them. The hyperacute phase shows the left middle cerebral artery enhancement from infarct. In the acute phase, an increase of water content is observed on the left posterior cerebral artery area. By the end of one day, brain edema can be seen in the left side of the brain. The last phase displays hyperintensity due to the increase of water content resultant from cystic cavitation. Sequences adapted with permission from \cite{goodfellow} and \cite{nanjundaswamy2011neuroimaging}.]
+ 	{Temporal evolution of the ischemic stroke. These brain sequences are just for explanatory purposes, having no correlation between them. The hyperacute phase shows the left middle cerebral artery enhancement from infarct. In the acute phase, an increase of water content is observed on the left posterior cerebral artery area. By the end of one day, brain edema can be seen in the left side of the brain. The last phase displays hyperintensity due to the increase of water content resultant from cystic cavitation. Sequences adapted with permission from \cite{gonzalez} and \cite{nanjundaswamy2011neuroimaging}.}
+ 	\label{fig:phases}
+\end{figure}
+
+
+The main focus of acute stroke imaging research consists of the early identification and delineation of the ischemic core and penumbra, in order to intervene quickly to restore the brain hemodynamics and avoid cell death \cite{gonzalez}. The location of the ischemic substrate, as well as its shape and extension, are directly related to the size of the occluded vessel, the mechanism behind its occlusion and the capacity of the vessel bed to compensate the reduction of the blood flow \cite{textbook}. Once the size and location of these regions are known, it is possible to estimate the potential risks/benefits if the patient undergoes reperfusion therapies. Some of the most common treatments comprise intravenous or intra-arterial thrombolysis, and mechanical clot disruption. Nevertheless, if the core is too large, the patient might not benefit from the therapy and may be at a greater risk of catastrophic hemorrhage \cite{gonzalez}. Therefore, to assess the state of the brain tissue after stroke, several brain image acquisitions are generated, which are then analyzed by the clinician to help in diagnosing and treating the patient.
+
+In order to classify the angiographic outcomes of stroke lesions after treatment, clinicians resort to a scale named Thrombolysis in Cerebral Infarction, or \acrshort{tici}, whose grades span from 0 to 3 \cite{tici}. Table \ref{table:tici} contains all the possible outcome classifications.
+\begin{table}[!htb]
+\small
+\captionsetup{skip=0pt}
+	\caption[\acrshort{tici} perfusion classifications \cite{tici}]{\acrshort{tici} perfusion classifications \cite{tici}}
+     \begin{center}
+     \begin{tabular}{p{2cm} p{13cm}  }
+     \toprule
+    %\cmidrule(r){1-1}\cmidrule(lr){2-2}\
+     \begin{description}[leftmargin = 0pt, topsep=0pt]
+	  \item[] Grade 0 \setlength\itemsep{0.3em}
+      \item[] Grade 1 \setlength\itemsep{1.5em}
+      \item[] Grade 2 \setlength\itemsep{1.4em}
+      \item[] Grade 2a \setlength\itemsep{0.2em}
+      \item[] Grade 2b \setlength\itemsep{0.1em}
+      \item[] Grade 3
+       \end{description}
+      & 
+      \begin{description}[leftmargin = 0pt, topsep=0pt]
+      \setlength\itemsep{0.2em}
+      \item[] \textbf{\textit{No perfusion.}} No antegrade flow beyond the point of occlusion.
+      \item[] \textbf{\textit{Penetration with minimal perfusion.}} The contrast agent flows beyond the area of obstruction, but fails to opacify the entire cerebral bed distal to the obstruction.
+      \item[] \textbf{\textit{Partial perfusion.}} The contrast agent goes beyond the obstruction and opacifies the arterial bed distal to the obstruction.
+      \item[] Only partial filling of the entire vascular territory is visualized.
+      \item[] Total filling of all of the expected vascular territory is visualized, but it is slower than normal.
+      \item[] \textbf{\textit{Complete Perfusion.}} Antegrade flow occurs into the bed distal to the obstruction and into the obstruction at the same pace. The contrast agent fades out from the involved bed as fast as in a healthy bed of the same vessel, or the opposite cerebral artery.
+      \end{description}
+      \\ \bottomrule
+      \end{tabular}
+      \end{center}
+      
+	\label{table:tici}      
+\end{table}
+
+
+To complement the information exhibited in the table above, Figure \ref{fig:tici} presents the \acrshort{tici} scores in case of proximal middle cerebral artery occlusion and the respective state of the perfusion of the brain beyond the area of obstruction.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_1/tici.png}
+ 	\caption[\acrshort{tici} scores in a case of proximal middle cerebral artery occlusion. \acrshort{tici} 0 exhibits no perfusion on the primary occluded vessel (represented by the arrow). \acrshort{tici} 1 shows the initial reperfusion beyond the obstruction. \acrshort{tici} 2a and \acrshort{tici} 2b display the further reestablishment of the perfusion beyond the occluded vessel. \acrshort{tici} 3 demonstrates the full reestablishment of the blood hemodynamics. Reprinted with permission from \cite{mokin2014endovascular}.]
+ 	{\acrshort{tici} scores in a case of proximal middle cerebral artery occlusion. \acrshort{tici} 0 exhibits no perfusion on the primary occluded vessel (represented by the arrow). \acrshort{tici} 1 shows the initial reperfusion beyond the obstruction. \acrshort{tici} 2a and \acrshort{tici} 2b display the further reestablishment of the perfusion beyond the occluded vessel. \acrshort{tici} 3 demonstrates the full reestablishment of the blood hemodynamics. Reprinted with permission from \cite{mokin2014endovascular}.}
+ 	\label{fig:tici}
+\end{figure}
+% If the decrease of the flow underpasses a certain threshold of energy metabolism, cell elements begin dying through necrosis, resulting in ischaemic brain infarct \cite{textbook}.
+
+\section{Imaging in Stroke}
+The most common and appropriate imaging techniques capable of visualizing the stroke lesion consist of Computed Tomography and Magnetic Resonance Imaging. In this section, each of these modalities is discussed, explaining why \acrshort{mri} is preferred over the \acrshort{ct} imaging technique, and describing the most commonly used \acrshort{mri} modalities to assess the state of the brain.
+
+%\subsection{PET}
+%Visualization of the penumbra through \acrshort{pet} imaging requires some study parameters such as the increase in oxygen extraction or the mismatch between reduced blood flow and the preservation of vitality markers \cite{textbook}.
+
+%Currently, \acrshort{pet} is the only approach capable of determining quantitatively different physiological variables in the brain and, for that reason, it was extensively used in studies of patients with either acute, subacute or chronic stroke. This imaging method is capable of defining brain regions that suffered from irreversible damage through the identification of decreased blood flow and oxygen utilization below thresholds; the penumbra through decreased flow as well and preserved oxygen consumption above a critical threshold; luxury perfusion through increased blood flow above the metabolic demand; and anaerobic glycolysis by identifying a change of the ratio between glucose metabolism and oxygen consumption. Nevertheless, this imaging method has considerable disadvantages such as the fact that it requires a multitracer application, it consists of a complex approach and it needs samples of arterial blood in order to do a quantitative analysis \cite{textbook}.
+
+\subsection{Computed Tomography Perfusion}
+%\subsection{\acrshort{ct} Perfusion}
+\acrshort{ct} scanning is usually used to exclude the presence of intracranial hemorrhage and a large established infarction. Furthermore, the identification of the ischemic tissue through \acrshort{ct} may help in defining the region that is likely to infarct and also predict the response to reperfusion therapy \cite{gonzalez}. The most commonly used \acrshort{ct} modality to assess the brain perfusion dynamics consists of \acrshort{ct} Perfusion (\acrshort{ctp}). To do so, \acrshort{ctp} tracks a bolus of intravenous contrast along the microvasculature of the brain through the attenuation on the signal intensity of the X-ray imaging. Through the linear relationship between the iodinated contrast density and concentration, \acrshort{ctp} is capable of providing quantitative flow measures \cite{butcher2010acute}. As a result, it offers additional insight into the pathophysiology of acute stroke, providing arterial-level cerebral vasculature related information, as well as capillary-level hemodynamics data, and details about the brain parenchyma. \acrshort{ctp} may be used as a surrogate marker of stroke severity since it is can help differentiating the penumbra from the ischemic core, relying only on direct visualization of the contrast agent \cite{gonzalez}.
+
+This method is advantageous as it is considered to be fast, safe and affordable. Besides, when using \acrshort{ctp}, the capillary-level hemodynamics may be easily quantified by analyzing the linear relationship between the attenuation of signal intensity and the contrast concentration. However, \acrshort{ct} has some critical drawbacks, namely the fact that it still has not been optimized to correctly subtype stroke, assess hemorrhagic risk, or localize the embolic clot. In addition, it has low sensitivity to detect cerebral microbleeds, limited brain coverage, and requires ionizing radiation and iodinated contrast, as well as a complex postprocessing of its scans. \acrshort{mri}, in contrast, is capable of suppressing the majority of the problems presented by \acrshort{ct}, and, for that reason, is preferred for acute stroke assessment \cite{gonzalez}.
+
+
+
+\subsection{Magnetic Resonance Imaging}
+%\subsection{\acrshort{mri}}
+\acrshort{mri} may be used as the emergency imaging method for patients with suspected acute stroke due to its sensitivity to early ischemic changes, comprehensive pathophysiological assessment and whole brain coverage \cite{textbook, butcher2010acute_2}. Some of the most common modalities used to visualize the brain at an early stage are Magnetic Resonance Angiography (\acrshort{mra}), a combination of Diffusion- (\acrshort{dwi}) and Perfusion-Weighted (\acrshort{pwi}) \acrshort{mri}, and Fluid-Attenuated Inversion Recovery (\acrshort{flair}) \cite{textbook}. 
+
+The combined use of \acrshort{dwi} and \acrshort{pwi} allows a better characterization of the extension of both the lesion and the stroke mechanism, as the information contained in each modality complements each other \cite{textbook}. Besides not being capable of providing information that allows a reliable identification of the infarct core, \acrshort{pwi} maps present the lesions far less conspicuous than the \acrshort{dwi} maps. Due to this, \acrshort{dwi} is usually used to identify the putative ischemic core, whereas \acrshort{pwi} provides useful details in the identification of any other hypoperfused brain tissue lying outside the \acrshort{dwi} lesion. This hypoperfused tissue is often called the diffusion-perfusion mismatch and, in most cases, it is considered to reflect the ischemic penumbra, or, more precisely, the tissue at risk of infarction \cite{gonzalez}. For this reason, the best \acrshort{mri} approach for penumbra imaging consists of mismatch maps calculation between the signal intensities of \acrshort{pwi} and \acrshort{dwi}. Provided these pathophysiological informations, it is easier for clinicians to decide if the patient would benefit, or not, from reperfusion therapy \cite{textbook}. 
+
+ %The mismatch is useful since it is believed that the extension of the lesion in an acute phase as delimited in \acrshort{pwi} beyond the corresponding lesion boundary in \acrshort{dwi} is indicative of penumbra( \textbf{ver melhor, p44}). However this method is not completely reliable. So, an alternative approach is based on the quantitative mapping of the \acrshort{adc} of water, which is able to correlate with the biochemically characterized penumbra for \acrshort{adc} values between 90\% and 77\% of control \cite{textbook}.
+
+
+\subsubsection{Diffusion-Weighted Imaging}
+%\subsubsection{\acrshort{dwi}}
+Diffusion-Weighted Imaging is capable of providing details about the state of the living tissue that neither \acrshort{pwi} or \acrshort{mra} can. The acquisition of this imaging modality is directly dependent of the molecular motion of water, which provides image contrast \cite{gonzalez}. The slow moving spins between two diffusion-sensitizing magnetic field gradients result in a increase of additional signal intensity. \acrshort{dwi} maps are derived from this phenomenon \cite{textbook}.
+
+Nowadays, this is the most reliable imaging modality for detecting acute ischemia. For this reason, its usage is crucial in the detection of acute ischemic brain infarction and in differentiating acute infarction from other disease processes. Besides, based on the \acrshort{dwi} maps, it is possible derive the Apparent Diffusion Coefficient (\acrshort{adc}) map, which has a crucial role in detecting regions of the brain that suffered an extreme and are destined to infarct in a nearby future time-point, which appear as a hypointense signal \cite{gonzalez}.
+
+
+When compared to \acrshort{ct} or conventional \acrshort{mri}, \acrshort{dwi} is considered to be more reliable due to its high sensitivity to the reduction of water diffusion resultant from early ischemia and because it has a higher contrast-to-noise ratio. Furthermore, it has been shown that the lesion volume present in initial diffusion-weighted images correlates well with final infarct volume, in case the clinical intervention succeeds in removing the clot. In addition, the lesion volumes in \acrshort{adc}, as well as those in initial diffusion-weighted images, also correlate well with clinical outcome \cite{gonzalez}.
+
+
+\subsubsection{Perfusion-Weighted Imaging}
+%\subsubsection{\acrshort{pwi}}
+In contrast to \acrshort{dwi}, Perfusion-Weighted Imaging is directly related to the flow of the contrast agent through the capillary bed as this produces a signal intensity variation \cite{textbook}. In other words, it depicts \acrshort{mri} techniques that are capable of describing the hemodynamic state of the brain at a microvascular level. This is achieved through the use of injected exogenous contrast agents, or endogenous contrast agents inherent to the constitution of the blood. \acrshort{pwi} is an useful imaging modality as it can guide therapy for patients with acute stroke through the identification of the areas that are threatened by reduced perfusion, but are still salvageable \cite{gonzalez}. 
+
+When it comes to acute stroke cases, most clinical centers resort to Dynamic Susceptibility Contrast (\acrshort{dsc}) imaging to obtain the perfusion-weighted images of the brain. This is a technique that requires the injection of a bolus of exogenous contrast material. \acrshort{dsc} works by dynamically acquiring images before, during and after the injection of a bolus of a gadolinium based contrast agent. Thanks to these three phases of acquisition, it is possible to track the bolus passage and, consequently, the blood in which it dissolved. As the bolus arrives to the healthy tissue, there is a drop of the signal intensity, which is then followed by a gradual increase as the contrast agent fades out. In contrast, the signal intensity on the lesion area is characterized by a minimal drop, which makes it stand out when using this technique. Based on the magnetic susceptibility effect of the gadolonium, when using \acrshort{dsc} it is also possible to measure changes in the concentration of gadolinium as it flows through the microvasculature of the brain \cite{gonzalez}.
+
+% This concentration is given by Equation \ref{eq:14},
+%\begin{eqnarray}
+%\label{eq:14}
+%C_{Gd}(t)=-k' \ln \frac{S_{t}}{S_{0}}
+%\end{eqnarray}
+%where $ C_{Gd}(t) $ represents the gadolinium's concentration at the instant $ t $ after the arrival of the bolus, $ S_{t} $ depicts the signal intensity at that moment, $ S_{0} $ consists of the signal intensity when $ t=0 $ or before the bolus arrived, and $ k' $ is a constant directly related to factors not measured clinically \cite{gonzalez}. 
+
+
+These images are capable of revealing many details about cerebral perfusion by generating maps that depict regional variations, such as relative Cerebral Blood Flow (\acrshort{rcbf}), relative Cerebral Blood Volume (\acrshort{rcbv}) and Mean Transit Time (\acrshort{mtt}) \cite{textbook, gonzalez}. 
+
+The area under the curve that represents the gadolinium concentration vs. time, in a certain pixel measured at every time step after the arrival of the bolus, may be used to calculate the regional \acrshort{rcbv} in the corresponding voxel. Mathematically, the concentration vs. time function in any voxel of the brain, consists of the convolution of an arterial input function (\acrshort{aif}) and a residue function. While, the \acrshort{aif} represents the delivery of the contrast agent to the voxel through the respective feeding artery, the residue function symbolizes the remainder amount of gadolinium in the voxel at each time step after the arrival of the bolus. %, through Equation \ref{eq:15},
+%\begin{eqnarray}
+%\label{eq:15}
+%rCBV \approx {\sum^{n}}_{t=0}C_{Gd}(t)
+%\end{eqnarray}
+Being one of the simplest perfusion parameters, \acrshort{rcbv} is relatively fast to postprocess \cite{gonzalez}.
+
+
+By retrieving the slope of the gadolinium concentration vs. time curve, it is possible to determine the \acrshort{rcbf}. Nevertheless, the calculation of this perfusion parameter depends not only on the curve, but also on how rapidly the gadolinium arrives to the pixel by the feeding artery. Therefore, when we obtain a steeper slope, which means that the contrast agent arrived to the voxel rapidly, we will attain a greater \acrshort{rcbf}, and vice-versa.  However, to compute the \acrshort{rcbf} within any voxel it is necessary to measure the curve within the voxel itself, and within the artery that supplies blood to that same voxel. Then, these two functions serve as inputs to a deconvolution algorithm, which produces the residue function. Knowing the maximum height of this residue function, it is possible to obtain an estimate of \acrshort{rcbf} \cite{gonzalez}.
+
+
+Once we obtain both the \acrshort{rcbv} and \acrshort{rcbf} parameters, then we may calculate the \acrshort{mtt} of blood through the tissue voxel \cite{gonzalez},
+\begin{eqnarray}
+\label{eq:16}
+\mtt = \frac{\rcbv}{\rcbf}. 
+\end{eqnarray}
+
+Two other perfusion parameters can be obtained from the raw \acrshort{pwi} data. On one hand, we have Time to Maximum (\acrshort{tmax}), which consists of a measurement of the time that the bolus takes to arrive to the brain tissue in each voxel, and may be obtained by determining the time at which the deconvoluted residue function reaches its maximum. This perfusion parameter serves as an indirect indicator of tissue viability. On the other hand, we have Time to Peak (\acrshort{ttp}), which represents the time it took for the signal intensity to reach its minimum value in each pixel. While \acrshort{tmax} is mostly independent of \acrshort{rcbf}, \acrshort{rcbv} and \acrshort{mtt}, the \acrshort{ttp} parameter is influenced by the latter perfusion parameters, including the bolus arrival delay \cite{gonzalez}.
+
+%\subsubsection{\acrshort{mra}}
+%Magnetic resonance angiography consists of a series of vascular imaging techniques in which it is possible to visualize extra- and intracranial circulation. This set of imaging approaches is useful in the setting of stroke as it allows the determination of stroke etiology and the assessment of vascular flow dynamics. With these techniques, the clinician is capable of evaluating the severity of the occlusion or stenosis, and the collateral flow.
+
+%\acrshort{mra} is very important as it is capable of revealing the location of the vessel occlusion, information that could not be retrieved from \acrshort{dwi} or \acrshort{pwi} alone. Knowing the size of the thrombus, it is possible to determine vessel recanalization rates \cite{textbook}.
+\newpage
+
+\section{Summary}
+Ischemic strokes may occur due to various pathologic reasons that result in extreme reductions of regional blood flow. As there are many underlying possibilities to justify the occurrence of this disease, the \acrshort{toast} classification criterion was created to categorize the type of ischemic stroke according to its triggering factor. Additionally, ischemic strokes may be classified in terms of temporal progression as hyperacute, acute, subacute, or chronic. One other important classification is the \acrshort{tici} scale, which relates the amount of cerebral perfusion to the possible angiographic stroke lesion outcomes.
+
+In order to identify and delineate accurately the ischemic core and penumbra, clinicians resort to various imaging techniques, namely \acrshort{ct} Perfusion or multi-modal \acrshort{mri}. However, between the two, \acrshort{mri} has been the preferred method as it is capable of addressing most of the underlying problems of \acrshort{ct} imaging. Out of the many \acrshort{mri} modalities, lately, the most preferred ones are the \acrshort{dwi} and \acrshort{pwi}, which complement each other when combined. This combination enables a better delineation of the lesion extension, as well as a better characterization of the triggering mechanism. From \acrshort{dwi} it is possible to retrieve the \acrshort{adc} map whose data provides insight on the extremely underdiffused areas. From the \acrshort{pwi} data, which encodes the contrast bolus passage, other perfusion parameters may be derived, namely \acrshort{rcbf}, \acrshort{rcbv}, \acrshort{mtt}, \acrshort{tmax} and \acrshort{ttp}.
+
+
+
+
+

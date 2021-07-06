@@ -1,0 +1,442 @@
+\begin{thebibliography}{61}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Organization et~al.(2017)]{world2017global}
+World~Health Organization et~al.
+\newblock Global status report on noncommunicable diseases 2014. 2014, 2017.
+
+\bibitem[Mackay(2004)]{atlas}
+Judith Mackay.
+\newblock \emph{The atlas of heart disease and stroke}, volume~5.
+\newblock World Health Organization, 2004.
+
+\bibitem[Fiez et~al.(2000)Fiez, Damasio, and Grabowski]{fiez}
+Julie~A Fiez, Hanna Damasio, and Thomas~J Grabowski.
+\newblock Lesion segmentation and manual warping to a reference brain:
+  Intra-and interobserver reliability.
+\newblock \emph{Human brain mapping}, 9\penalty0 (4):\penalty0 192--211, 2000.
+
+\bibitem[Gonz{\'a}lez et~al.(2011)Gonz{\'a}lez, Hirsch, Koroshetz, Lev, and
+  Schaefer]{gonzalez}
+R~Gilberto Gonz{\'a}lez, Joshua~A Hirsch, WJ~Koroshetz, Michael~H Lev, and
+  Pamela~W Schaefer.
+\newblock \emph{Acute ischemic stroke}.
+\newblock Springer, 2011.
+
+\bibitem[Pinto et~al.(2018{\natexlab{a}})Pinto, Pereira, Meier, Alves, Wiest,
+  Silva, and Reyes]{pinto}
+Adriano Pinto, S{\'e}rgio Pereira, Raphael Meier, Victor Alves, Roland Wiest,
+  Carlos~A Silva, and Mauricio Reyes.
+\newblock Enhancing clinical mri perfusion maps with data-driven maps of
+  complementary nature for lesion outcome prediction.
+\newblock In \emph{International Conference on Medical Image Computing and
+  Computer-Assisted Intervention}, pages 107--115. Springer,
+  2018{\natexlab{a}}.
+
+\bibitem[Pereira et~al.(2018)Pereira, Alves, and Silva]{pereira}
+S{\'e}rgio Pereira, Victor Alves, and Carlos~A. Silva.
+\newblock Adaptive feature recombination and recalibration for semantic
+  segmentation: Application to brain tumor segmentation in mri.
+\newblock In Alejandro~F. Frangi, Julia~A. Schnabel, Christos Davatzikos,
+  Carlos Alberola-L{\'o}pez, and Gabor Fichtinger, editors, \emph{Medical Image
+  Computing and Computer Assisted Intervention -- MICCAI 2018}, pages 706--714,
+  Cham, 2018. Springer International Publishing.
+\newblock ISBN 978-3-030-00931-1.
+
+\bibitem[Amorim et~al.(2019)Amorim, Pinto, Pereira, and Silva]{amorim}
+Joana Amorim, Adriano Pinto, S{\'e}rgio Pereira, and Carlos~A Silva.
+\newblock Segmentation squeeze-and-excitation blocks in stroke lesion outcome
+  prediction.
+\newblock In \emph{2019 IEEE 6th Portuguese Meeting on Bioengineering
+  (ENBENG)}, pages 1--4. IEEE, 2019.
+
+\bibitem[Pereira et~al.(2019)Pereira, Pinto, Amorim, Ribeiro, Alves, and
+  Silva]{pereira2019adaptive}
+S{\'e}rgio Pereira, Adriano Pinto, Joana Amorim, Alexandrine Ribeiro, Victor
+  Alves, and Carlos~A Silva.
+\newblock Adaptive feature recombination and recalibration for semantic
+  segmentation with fully convolutional networks.
+\newblock \emph{IEEE transactions on medical imaging}, 2019.
+
+\bibitem[Brainin and Heiss(2019)]{textbook}
+Michael Brainin and Wolf-Dieter Heiss.
+\newblock \emph{Textbook of stroke medicine}.
+\newblock Cambridge University Press, 2019.
+
+\bibitem[Adams~Jr et~al.(1993)Adams~Jr, Bendixen, Kappelle, Biller, Love,
+  Gordon, and Marsh~3rd]{adams1993classification}
+Harold~P Adams~Jr, Birgitte~H Bendixen, L~Jaap Kappelle, Jose Biller, Betsy~B
+  Love, David~Lee Gordon, and EE~Marsh~3rd.
+\newblock Classification of subtype of acute ischemic stroke. definitions for
+  use in a multicenter clinical trial. toast. trial of org 10172 in acute
+  stroke treatment.
+\newblock \emph{Stroke}, 24\penalty0 (1):\penalty0 35--41, 1993.
+
+\bibitem[Nanjundaswamy et~al.(2011)Nanjundaswamy, Cohen, and
+  Fisher]{nanjundaswamy2011neuroimaging}
+Shashidhara Nanjundaswamy, Ronald~A Cohen, and Marc Fisher.
+\newblock Neuroimaging in acute ischemic stroke.
+\newblock In \emph{Brain Imaging in Behavioral Medicine and Clinical
+  Neuroscience}, pages 293--308. Springer, 2011.
+
+\bibitem[Higashida and Furlan(2003)]{tici}
+Randall~T Higashida and Anthony~J Furlan.
+\newblock Trial design and reporting standards for intra-arterial cerebral
+  thrombolysis for acute ischemic stroke.
+\newblock \emph{Stroke}, 34\penalty0 (8):\penalty0 e109--e137, 2003.
+
+\bibitem[Mokin et~al.(2014)Mokin, Khalessi, Mocco, Lanzino, Dumont, Hanel,
+  Lopes, Fessler, Ringer, Bendok, et~al.]{mokin2014endovascular}
+Maxim Mokin, Alexander~A Khalessi, J~Mocco, Giuseppe Lanzino, Travis~M Dumont,
+  Ricardo~A Hanel, Demetrius~K Lopes, Richard~D Fessler, Andrew~J Ringer,
+  Bernard~R Bendok, et~al.
+\newblock Endovascular treatment of acute ischemic stroke: the end or just the
+  beginning?
+\newblock \emph{Neurosurgical focus}, 36\penalty0 (1):\penalty0 E5, 2014.
+
+\bibitem[Butcher and Emery(2010{\natexlab{a}})]{butcher2010acute}
+K~Butcher and D~Emery.
+\newblock Acute stroke imaging part i: Fundamentals.
+\newblock \emph{Canadian Journal of Neurological Sciences}, 37\penalty0
+  (1):\penalty0 4--16, 2010{\natexlab{a}}.
+
+\bibitem[Butcher and Emery(2010{\natexlab{b}})]{butcher2010acute_2}
+K~Butcher and D~Emery.
+\newblock Acute stroke imaging part ii: the ischemic penumbra.
+\newblock \emph{Canadian Journal of Neurological Sciences}, 37\penalty0
+  (1):\penalty0 17--27, 2010{\natexlab{b}}.
+
+\bibitem[Chyzhyk et~al.(2015)Chyzhyk, Dacosta-Aguayo, Matar{\'o}, and
+  Gra{\~n}a]{chyzhyk2015active}
+Darya Chyzhyk, Rosal{\'\i}a Dacosta-Aguayo, Maria Matar{\'o}, and Manuel
+  Gra{\~n}a.
+\newblock An active learning approach for stroke lesion segmentation on
+  multimodal mri data.
+\newblock \emph{Neurocomputing}, 150:\penalty0 26--36, 2015.
+
+\bibitem[Maier et~al.(2015)Maier, Wilms, von~der Gablentz, Kr{\"a}mer,
+  M{\"u}nte, and Handels]{maier2015extra}
+Oskar Maier, Matthias Wilms, Janina von~der Gablentz, Ulrike~M Kr{\"a}mer,
+  Thomas~F M{\"u}nte, and Heinz Handels.
+\newblock Extra tree forests for sub-acute ischemic stroke lesion segmentation
+  in mr sequences.
+\newblock \emph{Journal of neuroscience methods}, 240:\penalty0 89--100, 2015.
+
+\bibitem[Robben et~al.(2015)Robben, Christiaens, Rangarajan, Gelderblom, Joris,
+  Maes, and Suetens]{robben2015voxel}
+David Robben, Daan Christiaens, Janaki~Raman Rangarajan, Jaap Gelderblom,
+  Philip Joris, Frederik Maes, and Paul Suetens.
+\newblock A voxel-wise, cascaded classification approach to ischemic stroke
+  lesion segmentation.
+\newblock In \emph{BrainLes 2015}, pages 254--265. Springer, 2015.
+
+\bibitem[McKinley et~al.(2015)McKinley, H{\"a}ni, Wiest, and
+  Reyes]{mckinley2015segmenting}
+Richard McKinley, Levin H{\"a}ni, Roland Wiest, and Mauricio Reyes.
+\newblock Segmenting the ischemic penumbra: a decision forest approach with
+  automatic threshold finding.
+\newblock In \emph{BrainLes 2015}, pages 275--283. Springer, 2015.
+
+\bibitem[Griffis et~al.(2016)Griffis, Allendorfer, and
+  Szaflarski]{griffis2016voxel}
+Joseph~C Griffis, Jane~B Allendorfer, and Jerzy~P Szaflarski.
+\newblock Voxel-based gaussian na{\"\i}ve bayes classification of ischemic
+  stroke lesions in individual t1-weighted mri scans.
+\newblock \emph{Journal of neuroscience methods}, 257:\penalty0 97--108, 2016.
+
+\bibitem[Rose et~al.(2001)Rose, Chalk, Griffin, Janke, Chen, McLachan, Peel,
+  Zelaya, Markus, Jones, et~al.]{rose2001mri}
+Stephen~E Rose, Jonathan~B Chalk, Mark~P Griffin, Andrew~L Janke, Fang Chen,
+  Geoffrey~J McLachan, David Peel, Fernando~O Zelaya, Hugh~S Markus, Derek~K
+  Jones, et~al.
+\newblock Mri based diffusion and perfusion predictive model to estimate stroke
+  evolution.
+\newblock \emph{Magnetic resonance imaging}, 19\penalty0 (8):\penalty0
+  1043--1053, 2001.
+
+\bibitem[Nielsen et~al.(2018)Nielsen, Hansen, Tietze, and
+  Mouridsen]{nielsen2018prediction}
+Anne Nielsen, Mikkel~Bo Hansen, Anna Tietze, and Kim Mouridsen.
+\newblock Prediction of tissue outcome and assessment of treatment effect in
+  acute ischemic stroke using deep learning.
+\newblock \emph{Stroke}, 49\penalty0 (6):\penalty0 1394--1401, 2018.
+
+\bibitem[Pinto et~al.(2018{\natexlab{b}})Pinto, Mckinley, Alves, Wiest, Silva,
+  Reyes, et~al.]{pinto2018stroke}
+Jos{\'e} Adriano Azevedo Da~Silva Pinto, Richard Mckinley, Victor Alves, Roland
+  Wiest, Carlos~Alberto Silva, Mauricio Reyes, et~al.
+\newblock Stroke lesion outcome prediction based on mri imaging combined with
+  clinical information.
+\newblock \emph{Frontiers in neurology}, 9:\penalty0 1060, 2018{\natexlab{b}}.
+
+\bibitem[Choi et~al.(2016)Choi, Kwon, Lee, Kim, Paik, and
+  Won]{choi2016ensemble}
+Youngwon Choi, Yongchan Kwon, Hanbyul Lee, Beom~Joon Kim, Myunghee~Cho Paik,
+  and Joong-Ho Won.
+\newblock Ensemble of deep convolutional neural networks for prognosis of
+  ischemic stroke.
+\newblock In \emph{International Workshop on Brainlesion: Glioma, Multiple
+  Sclerosis, Stroke and Traumatic Brain Injuries}, pages 231--243. Springer,
+  2016.
+
+\bibitem[Winzeck et~al.(2018)Winzeck, Hakim, McKinley, Pinto, Alves, Silva,
+  Pisov, Krivov, Belyaev, Monteiro, et~al.]{winzeck2018isles}
+Stefan Winzeck, Arsany Hakim, Richard McKinley, Jos{\'e}~AADSR Pinto, Victor
+  Alves, Carlos Silva, Maxim Pisov, Egor Krivov, Mikhail Belyaev, Miguel
+  Monteiro, et~al.
+\newblock Isles 2016 and 2017-benchmarking ischemic stroke lesion outcome
+  prediction based on multispectral mri.
+\newblock \emph{Frontiers in neurology}, 9, 2018.
+
+\bibitem[McKinley et~al.(2017)McKinley, H{\"a}ni, Gralla, El-Koussy, Bauer,
+  Arnold, Fischer, Jung, Mattmann, Reyes, et~al.]{mckinley2017fully}
+Richard McKinley, Levin H{\"a}ni, Jan Gralla, Marwan El-Koussy, S~Bauer, Marcel
+  Arnold, Urs Fischer, Simon Jung, Kaspar Mattmann, Mauricio Reyes, et~al.
+\newblock Fully automated stroke tissue estimation using random forest
+  classifiers (faster).
+\newblock \emph{Journal of Cerebral Blood Flow \& Metabolism}, 37\penalty0
+  (8):\penalty0 2728--2741, 2017.
+
+\bibitem[Ronneberger et~al.(2015)Ronneberger, Fischer, and Brox]{unet}
+Olaf Ronneberger, Philipp Fischer, and Thomas Brox.
+\newblock U-net: Convolutional networks for biomedical image segmentation.
+\newblock In \emph{International Conference on Medical image computing and
+  computer-assisted intervention}, pages 234--241. Springer, 2015.
+
+\bibitem[Badrinarayanan et~al.(2017)Badrinarayanan, Kendall, and
+  Cipolla]{segnet}
+Vijay Badrinarayanan, Alex Kendall, and Roberto Cipolla.
+\newblock Segnet: A deep convolutional encoder-decoder architecture for image
+  segmentation.
+\newblock \emph{IEEE transactions on pattern analysis and machine
+  intelligence}, 39\penalty0 (12):\penalty0 2481--2495, 2017.
+
+\bibitem[Kamnitsas et~al.(2017)Kamnitsas, Ledig, Newcombe, Simpson, Kane,
+  Menon, Rueckert, and Glocker]{kamnitsas}
+Konstantinos Kamnitsas, Christian Ledig, Virginia~FJ Newcombe, Joanna~P
+  Simpson, Andrew~D Kane, David~K Menon, Daniel Rueckert, and Ben Glocker.
+\newblock Efficient multi-scale 3d cnn with fully connected crf for accurate
+  brain lesion segmentation.
+\newblock \emph{Medical image analysis}, 36:\penalty0 61--78, 2017.
+
+\bibitem[Milletari et~al.(2016)Milletari, Navab, and Ahmadi]{loss}
+Fausto Milletari, Nassir Navab, and Seyed-Ahmad Ahmadi.
+\newblock V-net: Fully convolutional neural networks for volumetric medical
+  image segmentation.
+\newblock In \emph{2016 Fourth International Conference on 3D Vision (3DV)},
+  pages 565--571. IEEE, 2016.
+
+\bibitem[He et~al.(2016)He, Zhang, Ren, and Sun]{he2016deep}
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+\newblock Deep residual learning for image recognition.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 770--778, 2016.
+
+\bibitem[Murphy(2012)]{murphy}
+Kevin~P. Murphy.
+\newblock \emph{Machine Learning: A Probabilistic Perspective}.
+\newblock MIT press, 2012.
+
+\bibitem[Goodfellow et~al.(2016)Goodfellow, Bengio, and Courville]{goodfellow}
+Ian Goodfellow, Yoshua Bengio, and Aaron Courville.
+\newblock \emph{Deep learning}.
+\newblock MIT press, 2016.
+
+\bibitem[Quionero-Candela et~al.(2009)Quionero-Candela, Sugiyama, Schwaighofer,
+  and Lawrence]{datashift}
+Joaquin Quionero-Candela, Masashi Sugiyama, Anton Schwaighofer, and Neil~D
+  Lawrence.
+\newblock \emph{Dataset shift in machine learning}.
+\newblock The MIT Press, 2009.
+
+\bibitem[Rifai et~al.(2011)Rifai, Vincent, Muller, Glorot, and
+  Bengio]{rifai2011contractive}
+Salah Rifai, Pascal Vincent, Xavier Muller, Xavier Glorot, and Yoshua Bengio.
+\newblock Contractive auto-encoders: Explicit invariance during feature
+  extraction.
+\newblock In \emph{Proceedings of the 28th International Conference on
+  International Conference on Machine Learning}, pages 833--840. Omnipress,
+  2011.
+
+\bibitem[Ranzato et~al.(2007)Ranzato, Poultney, Chopra, and
+  Cun]{ranzato2007efficient}
+Marc'Aurelio Ranzato, Christopher Poultney, Sumit Chopra, and Yann~L Cun.
+\newblock Efficient learning of sparse representations with an energy-based
+  model.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  1137--1144, 2007.
+
+\bibitem[Bengio et~al.(2013)Bengio, Yao, Alain, and
+  Vincent]{bengio2013generalized}
+Yoshua Bengio, Li~Yao, Guillaume Alain, and Pascal Vincent.
+\newblock Generalized denoising auto-encoders as generative models.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  899--907, 2013.
+
+\bibitem[Hu et~al.(2017)Hu, Shen, and Sun]{hu}
+Jie Hu, Li~Shen, and Gang Sun.
+\newblock Squeeze-and-excitation networks.
+\newblock \emph{arXiv preprint arXiv:1709.01507}, 7, 2017.
+
+\bibitem[Long et~al.(2015)Long, Shelhamer, and Darrell]{long2015fully}
+Jonathan Long, Evan Shelhamer, and Trevor Darrell.
+\newblock Fully convolutional networks for semantic segmentation.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 3431--3440, 2015.
+
+\bibitem[Howard et~al.(2017)Howard, Zhu, Chen, Kalenichenko, Wang, Weyand,
+  Andreetto, and Adam]{mobilenets}
+Andrew~G Howard, Menglong Zhu, Bo~Chen, Dmitry Kalenichenko, Weijun Wang,
+  Tobias Weyand, Marco Andreetto, and Hartwig Adam.
+\newblock Mobilenets: Efficient convolutional neural networks for mobile vision
+  applications.
+\newblock \emph{arXiv preprint arXiv:1704.04861}, 2017.
+
+\bibitem[Yu and Koltun(2015)]{dilated}
+Fisher Yu and Vladlen Koltun.
+\newblock Multi-scale context aggregation by dilated convolutions.
+\newblock \emph{arXiv preprint arXiv:1511.07122}, 2015.
+
+\bibitem[Yu et~al.(2017)Yu, Koltun, and Funkhouser]{yu2017dilated}
+Fisher Yu, Vladlen Koltun, and Thomas Funkhouser.
+\newblock Dilated residual networks.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 472--480, 2017.
+
+\bibitem[Wang et~al.(2017)Wang, Li, Ourselin, and
+  Vercauteren]{wang2017automatic}
+Guotai Wang, Wenqi Li, S{\'e}bastien Ourselin, and Tom Vercauteren.
+\newblock Automatic brain tumor segmentation using cascaded anisotropic
+  convolutional neural networks.
+\newblock In \emph{International MICCAI Brainlesion Workshop}, pages 178--190.
+  Springer, 2017.
+
+\bibitem[Springenberg et~al.(2014)Springenberg, Dosovitskiy, Brox, and
+  Riedmiller]{springenberg2014striving}
+Jost~Tobias Springenberg, Alexey Dosovitskiy, Thomas Brox, and Martin
+  Riedmiller.
+\newblock Striving for simplicity: The all convolutional net.
+\newblock \emph{arXiv preprint arXiv:1412.6806}, 2014.
+
+\bibitem[Srivastava et~al.(2014)Srivastava, Hinton, Krizhevsky, Sutskever, and
+  Salakhutdinov]{dropout}
+Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan
+  Salakhutdinov.
+\newblock Dropout: a simple way to prevent neural networks from overfitting.
+\newblock \emph{The journal of machine learning research}, 15\penalty0
+  (1):\penalty0 1929--1958, 2014.
+
+\bibitem[Ioffe and Szegedy(2015)]{batch}
+Sergey Ioffe and Christian Szegedy.
+\newblock Batch normalization: Accelerating deep network training by reducing
+  internal covariate shift.
+\newblock \emph{arXiv preprint arXiv:1502.03167}, 2015.
+
+\bibitem[Ioffe(2017)]{batch2}
+Sergey Ioffe.
+\newblock Batch renormalization: Towards reducing minibatch dependence in
+  batch-normalized models.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  1945--1953, 2017.
+
+\bibitem[Kingma and Ba(2014)]{adam}
+Diederik~P Kingma and Jimmy Ba.
+\newblock Adam: A method for stochastic optimization.
+\newblock \emph{arXiv preprint arXiv:1412.6980}, 2014.
+
+\bibitem[Loshchilov and Hutter(2017)]{adamw}
+Ilya Loshchilov and Frank Hutter.
+\newblock Fixing weight decay regularization in adam.
+\newblock \emph{arXiv preprint arXiv:1711.05101}, 2017.
+
+\bibitem[Pedamonti(2018)]{pedamonti2018comparison}
+Dabal Pedamonti.
+\newblock Comparison of non-linear activation functions for deep neural
+  networks on mnist classification task.
+\newblock \emph{arXiv preprint arXiv:1804.02763}, 2018.
+
+\bibitem[Kingma and Welling(2019)]{vae}
+Diederik~P. Kingma and Max Welling.
+\newblock An introduction to variational autoencoders.
+\newblock \emph{CoRR}, abs/1906.02691, 2019.
+\newblock URL \url{http://arxiv.org/abs/1906.02691}.
+
+\bibitem[An and Cho(2015)]{vaecomp}
+Jinwon An and Sungzoon Cho.
+\newblock Variational autoencoder based anomaly detection using reconstruction
+  probability.
+\newblock \emph{Special Lecture on IE}, 2\penalty0 (1), 2015.
+
+\bibitem[Wetzel(2017)]{vaeadd}
+Sebastian~J Wetzel.
+\newblock Unsupervised learning of phase transitions: From principal component
+  analysis to variational autoencoders.
+\newblock \emph{Physical Review E}, 96\penalty0 (2):\penalty0 022140, 2017.
+
+\bibitem[Roy et~al.(2018)Roy, Navab, and Wachinger]{roy}
+Abhijit~Guha Roy, Nassir Navab, and Christian Wachinger.
+\newblock Concurrent spatial and channel `squeeze {\&} excitation' in fully
+  convolutional networks.
+\newblock In Alejandro~F. Frangi, Julia~A. Schnabel, Christos Davatzikos,
+  Carlos Alberola-L{\'o}pez, and Gabor Fichtinger, editors, \emph{Medical Image
+  Computing and Computer Assisted Intervention -- MICCAI 2018}, pages 421--429,
+  Cham, 2018. Springer International Publishing.
+\newblock ISBN 978-3-030-00928-1.
+
+\bibitem[plt()]{plt}
+Isles challenge 2017.
+\newblock \url{https://www.smir.ch/ISLES/Start2017}.
+\newblock Acessed: 2019-09-23.
+
+\bibitem[Maier et~al.(2017)Maier, Menze, von~der Gablentz, H{\"a}ni, Heinrich,
+  Liebrand, Winzeck, Basit, Bentley, Chen, et~al.]{isles}
+Oskar Maier, Bjoern~H Menze, Janina von~der Gablentz, Levin H{\"a}ni, Mattias~P
+  Heinrich, Matthias Liebrand, Stefan Winzeck, Abdul Basit, Paul Bentley, Liang
+  Chen, et~al.
+\newblock Isles 2015-a public evaluation benchmark for ischemic stroke lesion
+  segmentation from multispectral mri.
+\newblock \emph{Medical image analysis}, 35:\penalty0 250--269, 2017.
+
+\bibitem[Popovic et~al.(2007)Popovic, De~la Fuente, Engelhardt, and
+  Radermacher]{precrec}
+Aleksandra Popovic, Mat{\'\i}as De~la Fuente, Martin Engelhardt, and Klaus
+  Radermacher.
+\newblock Statistical validation metric for accuracy assessment in medical
+  image segmentation.
+\newblock \emph{International Journal of Computer Assisted Radiology and
+  Surgery}, 2\penalty0 (3-4):\penalty0 169--181, 2007.
+
+\bibitem[Schaap et~al.(2009)Schaap, Neefjes, Metz, van~der Giessen, Weustink,
+  Mollet, Wentzel, van Walsum, and Niessen]{assddice}
+Michiel Schaap, Lisan Neefjes, Coert Metz, Alina van~der Giessen, Annick
+  Weustink, Nico Mollet, Jolanda Wentzel, Theo van Walsum, and Wiro Niessen.
+\newblock Coronary lumen segmentation using graph cuts and robust kernel
+  regression.
+\newblock In \emph{International Conference on Information Processing in
+  Medical Imaging}, pages 528--539. Springer, 2009.
+
+\bibitem[Hung and Yang(2004)]{hd}
+Wen-Liang Hung and Miin-Shen Yang.
+\newblock Similarity measures of intuitionistic fuzzy sets based on hausdorff
+  distance.
+\newblock \emph{Pattern Recognition Letters}, 25\penalty0 (14):\penalty0
+  1603--1611, 2004.
+
+\bibitem[He et~al.(2015)He, Zhang, Ren, and Sun]{he2015delving}
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+\newblock Delving deep into rectifiers: Surpassing human-level performance on
+  imagenet classification.
+\newblock In \emph{Proceedings of the IEEE international conference on computer
+  vision}, pages 1026--1034, 2015.
+
+\bibitem[Myronenko(2018)]{vaeblock}
+Andriy Myronenko.
+\newblock 3d mri brain tumor segmentation using autoencoder regularization.
+\newblock In \emph{International MICCAI Brainlesion Workshop}, pages 311--320.
+  Springer, 2018.
+
+\end{thebibliography}

@@ -1,0 +1,1440 @@
+\ifglsentryexists{2d}{}%
+{%
+\gls@defglossaryentry{2d}%
+{%
+name={2D},%
+sort={2D},%
+type={acronym},%
+first={Two Dimensional\glsspace (2D)},%
+firstplural={Two Dimensional\acrpluralsuffix \glsspace (2D\acrpluralsuffix )},%
+text={2D},%
+plural={2D\acrpluralsuffix },%
+description={Two Dimensional},%
+descriptionplural={Two Dimensional\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Two Dimensional},%
+longplural={Two Dimensionals},%
+short={2D},%
+shortplural={2Ds},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{3d}{}%
+{%
+\gls@defglossaryentry{3d}%
+{%
+name={3D},%
+sort={3D},%
+type={acronym},%
+first={Three Dimensional\glsspace (3D)},%
+firstplural={Three Dimensional\acrpluralsuffix \glsspace (3D\acrpluralsuffix )},%
+text={3D},%
+plural={3D\acrpluralsuffix },%
+description={Three Dimensional},%
+descriptionplural={Three Dimensional\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Three Dimensional},%
+longplural={Three Dimensionals},%
+short={3D},%
+shortplural={3Ds},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{4d}{}%
+{%
+\gls@defglossaryentry{4d}%
+{%
+name={4D},%
+sort={4D},%
+type={acronym},%
+first={Four Dimensional\glsspace (4D)},%
+firstplural={Four Dimensional\acrpluralsuffix \glsspace (4D\acrpluralsuffix )},%
+text={4D},%
+plural={4D\acrpluralsuffix },%
+description={Four Dimensional},%
+descriptionplural={Four Dimensional\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Four Dimensional},%
+longplural={Four Dimensionals},%
+short={4D},%
+shortplural={4Ds},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{adc}{}%
+{%
+\gls@defglossaryentry{adc}%
+{%
+name={ADC},%
+sort={ADC},%
+type={acronym},%
+first={Apparent Diffusion Coefficient\glsspace (ADC)},%
+firstplural={Apparent Diffusion Coefficient\acrpluralsuffix \glsspace (ADC\acrpluralsuffix )},%
+text={ADC},%
+plural={ADC\acrpluralsuffix },%
+description={Apparent Diffusion Coefficient},%
+descriptionplural={Apparent Diffusion Coefficient\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Apparent Diffusion Coefficient},%
+longplural={Apparent Diffusion Coefficients},%
+short={ADC},%
+shortplural={ADCs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ann}{}%
+{%
+\gls@defglossaryentry{ann}%
+{%
+name={ANN},%
+sort={ANN},%
+type={acronym},%
+first={Artificial Neural Network\glsspace (ANN)},%
+firstplural={Artificial Neural Network\acrpluralsuffix \glsspace (ANN\acrpluralsuffix )},%
+text={ANN},%
+plural={ANN\acrpluralsuffix },%
+description={Artificial Neural Network},%
+descriptionplural={Artificial Neural Network\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Artificial Neural Network},%
+longplural={Artificial Neural Networks},%
+short={ANN},%
+shortplural={ANNs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ct}{}%
+{%
+\gls@defglossaryentry{ct}%
+{%
+name={CT},%
+sort={CT},%
+type={acronym},%
+first={Computed Tomography\glsspace (CT)},%
+firstplural={Computed Tomographys\glsspace (CTs)},%
+text={CT},%
+plural={CTs},%
+description={Computed Tomography},%
+descriptionplural={Computed Tomography\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Computed Tomography},%
+longplural={Computed Tomographys},%
+short={CT},%
+shortplural={CTs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{cnn}{}%
+{%
+\gls@defglossaryentry{cnn}%
+{%
+name={CNN},%
+sort={CNN},%
+type={acronym},%
+first={Convolutional Neural Network\glsspace (CNN)},%
+firstplural={Convolutional Neural Network\acrpluralsuffix \glsspace (CNN\acrpluralsuffix )},%
+text={CNN},%
+plural={CNN\acrpluralsuffix },%
+description={Convolutional Neural Network},%
+descriptionplural={Convolutional Neural Network\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Convolutional Neural Network},%
+longplural={Convolutional Neural Networks},%
+short={CNN},%
+shortplural={CNNs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{dwi}{}%
+{%
+\gls@defglossaryentry{dwi}%
+{%
+name={DWI},%
+sort={DWI},%
+type={acronym},%
+first={Difusion Weighted Imaging\glsspace (DWI)},%
+firstplural={Difusion Weighted Imaging\acrpluralsuffix \glsspace (DWI\acrpluralsuffix )},%
+text={DWI},%
+plural={DWI\acrpluralsuffix },%
+description={Difusion Weighted Imaging},%
+descriptionplural={Difusion Weighted Imaging\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Difusion Weighted Imaging},%
+longplural={Difusion Weighted Imagings},%
+short={DWI},%
+shortplural={DWIs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{miccai}{}%
+{%
+\gls@defglossaryentry{miccai}%
+{%
+name={MICCAI},%
+sort={MICCAI},%
+type={acronym},%
+first={Medical Image Computing and Computer Assisted Intervention\glsspace (MICCAI)},%
+firstplural={Medical Image Computing and Computer Assisted Intervention\acrpluralsuffix \glsspace (MICCAI\acrpluralsuffix )},%
+text={MICCAI},%
+plural={MICCAI\acrpluralsuffix },%
+description={Medical Image Computing and Computer Assisted Intervention},%
+descriptionplural={Medical Image Computing and Computer Assisted Intervention\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Medical Image Computing and Computer Assisted Intervention},%
+longplural={Medical Image Computing and Computer Assisted Interventions},%
+short={MICCAI},%
+shortplural={MICCAIs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{mri}{}%
+{%
+\gls@defglossaryentry{mri}%
+{%
+name={MRI},%
+sort={MRI},%
+type={acronym},%
+first={Magnetic Resonance Imaging\glsspace (MRI)},%
+firstplural={Magnetic Resonance Imagings\glsspace (MRIs)},%
+text={MRI},%
+plural={MRIs},%
+description={Magnetic Resonance Imaging},%
+descriptionplural={Magnetic Resonance Imaging\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Magnetic Resonance Imaging},%
+longplural={Magnetic Resonance Imagings},%
+short={MRI},%
+shortplural={MRIs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{mtt}{}%
+{%
+\gls@defglossaryentry{mtt}%
+{%
+name={MTT},%
+sort={MTT},%
+type={acronym},%
+first={Mean Transit Time\glsspace (MTT)},%
+firstplural={Mean Transit Time\acrpluralsuffix \glsspace (MTT\acrpluralsuffix )},%
+text={MTT},%
+plural={MTT\acrpluralsuffix },%
+description={Mean Transit Time},%
+descriptionplural={Mean Transit Time\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Mean Transit Time},%
+longplural={Mean Transit Times},%
+short={MTT},%
+shortplural={MTTs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{pwi}{}%
+{%
+\gls@defglossaryentry{pwi}%
+{%
+name={PWI},%
+sort={PWI},%
+type={acronym},%
+first={Perfusion Weighted Imaging\glsspace (PWI)},%
+firstplural={Perfusion Weighted Imaging\acrpluralsuffix \glsspace (PWI\acrpluralsuffix )},%
+text={PWI},%
+plural={PWI\acrpluralsuffix },%
+description={Perfusion Weighted Imaging},%
+descriptionplural={Perfusion Weighted Imaging\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Perfusion Weighted Imaging},%
+longplural={Perfusion Weighted Imagings},%
+short={PWI},%
+shortplural={PWIs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{rcbf}{}%
+{%
+\gls@defglossaryentry{rcbf}%
+{%
+name={rCBF},%
+sort={rCBF},%
+type={acronym},%
+first={Relative Cerebral Blood Flow\glsspace (rCBF)},%
+firstplural={Relative Cerebral Blood Flow\acrpluralsuffix \glsspace (rCBF\acrpluralsuffix )},%
+text={rCBF},%
+plural={rCBF\acrpluralsuffix },%
+description={Relative Cerebral Blood Flow},%
+descriptionplural={Relative Cerebral Blood Flow\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Relative Cerebral Blood Flow},%
+longplural={Relative Cerebral Blood Flows},%
+short={rCBF},%
+shortplural={rCBFs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{rcbv}{}%
+{%
+\gls@defglossaryentry{rcbv}%
+{%
+name={rCBV},%
+sort={rCBV},%
+type={acronym},%
+first={Relative Cerebral Blood Volume\glsspace (rCBV)},%
+firstplural={Relative Cerebral Blood Volume\acrpluralsuffix \glsspace (rCBV\acrpluralsuffix )},%
+text={rCBV},%
+plural={rCBV\acrpluralsuffix },%
+description={Relative Cerebral Blood Volume},%
+descriptionplural={Relative Cerebral Blood Volume\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Relative Cerebral Blood Volume},%
+longplural={Relative Cerebral Blood Volumes},%
+short={rCBV},%
+shortplural={rCBVs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{sgd}{}%
+{%
+\gls@defglossaryentry{sgd}%
+{%
+name={SGD},%
+sort={SGD},%
+type={acronym},%
+first={Stochastic Gradient Descent\glsspace (SGD)},%
+firstplural={Stochastic Gradient Descent\acrpluralsuffix \glsspace (SGD\acrpluralsuffix )},%
+text={SGD},%
+plural={SGD\acrpluralsuffix },%
+description={Stochastic Gradient Descent},%
+descriptionplural={Stochastic Gradient Descent\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Stochastic Gradient Descent},%
+longplural={Stochastic Gradient Descents},%
+short={SGD},%
+shortplural={SGDs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{tmax}{}%
+{%
+\gls@defglossaryentry{tmax}%
+{%
+name={Tmax},%
+sort={Tmax},%
+type={acronym},%
+first={Time to Maximum\glsspace (Tmax)},%
+firstplural={Time to Maximum\acrpluralsuffix \glsspace (Tmax\acrpluralsuffix )},%
+text={Tmax},%
+plural={Tmax\acrpluralsuffix },%
+description={Time to Maximum},%
+descriptionplural={Time to Maximum\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Time to Maximum},%
+longplural={Time to Maximums},%
+short={Tmax},%
+shortplural={Tmaxs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ttp}{}%
+{%
+\gls@defglossaryentry{ttp}%
+{%
+name={TTP},%
+sort={TTP},%
+type={acronym},%
+first={Time to Peak\glsspace (TTP)},%
+firstplural={Time to Peak\acrpluralsuffix \glsspace (TTP\acrpluralsuffix )},%
+text={TTP},%
+plural={TTP\acrpluralsuffix },%
+description={Time to Peak},%
+descriptionplural={Time to Peak\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Time to Peak},%
+longplural={Time to Peaks},%
+short={TTP},%
+shortplural={TTPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{relu}{}%
+{%
+\gls@defglossaryentry{relu}%
+{%
+name={ReLU},%
+sort={ReLU},%
+type={acronym},%
+first={Rectified Linear Unit\glsspace (ReLU)},%
+firstplural={Rectified Linear Unit\acrpluralsuffix \glsspace (ReLU\acrpluralsuffix )},%
+text={ReLU},%
+plural={ReLU\acrpluralsuffix },%
+description={Rectified Linear Unit},%
+descriptionplural={Rectified Linear Unit\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Rectified Linear Unit},%
+longplural={Rectified Linear Units},%
+short={ReLU},%
+shortplural={ReLUs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{toast}{}%
+{%
+\gls@defglossaryentry{toast}%
+{%
+name={TOAST},%
+sort={TOAST},%
+type={acronym},%
+first={Trial of Organon in Acute Stroke\glsspace (TOAST)},%
+firstplural={Trial of Organon in Acute Stroke\acrpluralsuffix \glsspace (TOAST\acrpluralsuffix )},%
+text={TOAST},%
+plural={TOAST\acrpluralsuffix },%
+description={Trial of Organon in Acute Stroke},%
+descriptionplural={Trial of Organon in Acute Stroke\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Trial of Organon in Acute Stroke},%
+longplural={Trial of Organon in Acute Strokes},%
+short={TOAST},%
+shortplural={TOASTs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{pet}{}%
+{%
+\gls@defglossaryentry{pet}%
+{%
+name={PET},%
+sort={PET},%
+type={acronym},%
+first={Positron Emission Tomography\glsspace (PET)},%
+firstplural={Positron Emission Tomography\acrpluralsuffix \glsspace (PET\acrpluralsuffix )},%
+text={PET},%
+plural={PET\acrpluralsuffix },%
+description={Positron Emission Tomography},%
+descriptionplural={Positron Emission Tomography\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Positron Emission Tomography},%
+longplural={Positron Emission Tomographys},%
+short={PET},%
+shortplural={PETs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{flair}{}%
+{%
+\gls@defglossaryentry{flair}%
+{%
+name={FLAIR},%
+sort={FLAIR},%
+type={acronym},%
+first={Fluid-Attenuated Inversion Recovery\glsspace (FLAIR)},%
+firstplural={Fluid-Attenuated Inversion Recovery\acrpluralsuffix \glsspace (FLAIR\acrpluralsuffix )},%
+text={FLAIR},%
+plural={FLAIR\acrpluralsuffix },%
+description={Fluid-Attenuated Inversion Recovery},%
+descriptionplural={Fluid-Attenuated Inversion Recovery\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Fluid-Attenuated Inversion Recovery},%
+longplural={Fluid-Attenuated Inversion Recoverys},%
+short={FLAIR},%
+shortplural={FLAIRs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{mra}{}%
+{%
+\gls@defglossaryentry{mra}%
+{%
+name={MRA},%
+sort={MRA},%
+type={acronym},%
+first={Magnetic Resonance Angiography\glsspace (MRA)},%
+firstplural={Magnetic Resonance Angiography\acrpluralsuffix \glsspace (MRA\acrpluralsuffix )},%
+text={MRA},%
+plural={MRA\acrpluralsuffix },%
+description={Magnetic Resonance Angiography},%
+descriptionplural={Magnetic Resonance Angiography\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Magnetic Resonance Angiography},%
+longplural={Magnetic Resonance Angiographys},%
+short={MRA},%
+shortplural={MRAs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{dsc}{}%
+{%
+\gls@defglossaryentry{dsc}%
+{%
+name={DSC},%
+sort={DSC},%
+type={acronym},%
+first={Dynamic Susceptibility Contrast\glsspace (DSC)},%
+firstplural={Dynamic Susceptibility Contrast\acrpluralsuffix \glsspace (DSC\acrpluralsuffix )},%
+text={DSC},%
+plural={DSC\acrpluralsuffix },%
+description={Dynamic Susceptibility Contrast},%
+descriptionplural={Dynamic Susceptibility Contrast\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Dynamic Susceptibility Contrast},%
+longplural={Dynamic Susceptibility Contrasts},%
+short={DSC},%
+shortplural={DSCs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{aif}{}%
+{%
+\gls@defglossaryentry{aif}%
+{%
+name={AIF},%
+sort={AIF},%
+type={acronym},%
+first={Arterial Input Function\glsspace (AIF)},%
+firstplural={Arterial Input Function\acrpluralsuffix \glsspace (AIF\acrpluralsuffix )},%
+text={AIF},%
+plural={AIF\acrpluralsuffix },%
+description={Arterial Input Function},%
+descriptionplural={Arterial Input Function\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Arterial Input Function},%
+longplural={Arterial Input Functions},%
+short={AIF},%
+shortplural={AIFs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ctp}{}%
+{%
+\gls@defglossaryentry{ctp}%
+{%
+name={CTP},%
+sort={CTP},%
+type={acronym},%
+first={Computed Tomography Perfusion\glsspace (CTP)},%
+firstplural={Computed Tomography Perfusion\acrpluralsuffix \glsspace (CTP\acrpluralsuffix )},%
+text={CTP},%
+plural={CTP\acrpluralsuffix },%
+description={Computed Tomography Perfusion},%
+descriptionplural={Computed Tomography Perfusion\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Computed Tomography Perfusion},%
+longplural={Computed Tomography Perfusions},%
+short={CTP},%
+shortplural={CTPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{tici}{}%
+{%
+\gls@defglossaryentry{tici}%
+{%
+name={TICI},%
+sort={TICI},%
+type={acronym},%
+first={Thrombolysis in Cerebral Infarction\glsspace (TICI)},%
+firstplural={Thrombolysis in Cerebral Infarction\acrpluralsuffix \glsspace (TICI\acrpluralsuffix )},%
+text={TICI},%
+plural={TICI\acrpluralsuffix },%
+description={Thrombolysis in Cerebral Infarction},%
+descriptionplural={Thrombolysis in Cerebral Infarction\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Thrombolysis in Cerebral Infarction},%
+longplural={Thrombolysis in Cerebral Infarctions},%
+short={TICI},%
+shortplural={TICIs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{se}{}%
+{%
+\gls@defglossaryentry{se}%
+{%
+name={SE},%
+sort={SE},%
+type={acronym},%
+first={Squeeze-and-Excitation\glsspace (SE)},%
+firstplural={Squeeze-and-Excitation\acrpluralsuffix \glsspace (SE\acrpluralsuffix )},%
+text={SE},%
+plural={SE\acrpluralsuffix },%
+description={Squeeze-and-Excitation},%
+descriptionplural={Squeeze-and-Excitation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Squeeze-and-Excitation},%
+longplural={Squeeze-and-Excitations},%
+short={SE},%
+shortplural={SEs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{segse}{}%
+{%
+\gls@defglossaryentry{segse}%
+{%
+name={SegSE},%
+sort={SegSE},%
+type={acronym},%
+first={Segmentation Squeeze-and-Excitation\glsspace (SegSE)},%
+firstplural={Segmentation Squeeze-and-Excitation\acrpluralsuffix \glsspace (SegSE\acrpluralsuffix )},%
+text={SegSE},%
+plural={SegSE\acrpluralsuffix },%
+description={Segmentation Squeeze-and-Excitation},%
+descriptionplural={Segmentation Squeeze-and-Excitation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Segmentation Squeeze-and-Excitation},%
+longplural={Segmentation Squeeze-and-Excitations},%
+short={SegSE},%
+shortplural={SegSEs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{scse}{}%
+{%
+\gls@defglossaryentry{scse}%
+{%
+name={scSE},%
+sort={scSE},%
+type={acronym},%
+first={Spatial and Channel Squeeze-and-Excitation\glsspace (scSE)},%
+firstplural={Spatial and Channel Squeeze-and-Excitation\acrpluralsuffix \glsspace (scSE\acrpluralsuffix )},%
+text={scSE},%
+plural={scSE\acrpluralsuffix },%
+description={Spatial and Channel Squeeze-and-Excitation},%
+descriptionplural={Spatial and Channel Squeeze-and-Excitation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Spatial and Channel Squeeze-and-Excitation},%
+longplural={Spatial and Channel Squeeze-and-Excitations},%
+short={scSE},%
+shortplural={scSEs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{sepsegse}{}%
+{%
+\gls@defglossaryentry{sepsegse}%
+{%
+name={SepSegSE},%
+sort={SepSegSE},%
+type={acronym},%
+first={Separable Segmentation Squeeze-and-Excitation\glsspace (SepSegSE)},%
+firstplural={Separable Segmentation Squeeze-and-Excitation\acrpluralsuffix \glsspace (SepSegSE\acrpluralsuffix )},%
+text={SepSegSE},%
+plural={SepSegSE\acrpluralsuffix },%
+description={Separable Segmentation Squeeze-and-Excitation},%
+descriptionplural={Separable Segmentation Squeeze-and-Excitation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Separable Segmentation Squeeze-and-Excitation},%
+longplural={Separable Segmentation Squeeze-and-Excitations},%
+short={SepSegSE},%
+shortplural={SepSegSEs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ae}{}%
+{%
+\gls@defglossaryentry{ae}%
+{%
+name={AE},%
+sort={AE},%
+type={acronym},%
+first={Autoencoder\glsspace (AE)},%
+firstplural={Autoencoder\acrpluralsuffix \glsspace (AE\acrpluralsuffix )},%
+text={AE},%
+plural={AE\acrpluralsuffix },%
+description={Autoencoder},%
+descriptionplural={Autoencoder\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Autoencoder},%
+longplural={Autoencoders},%
+short={AE},%
+shortplural={AEs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{vae}{}%
+{%
+\gls@defglossaryentry{vae}%
+{%
+name={VAE},%
+sort={VAE},%
+type={acronym},%
+first={Variational Autoencoder\glsspace (VAE)},%
+firstplural={Variational Autoencoder\acrpluralsuffix \glsspace (VAE\acrpluralsuffix )},%
+text={VAE},%
+plural={VAE\acrpluralsuffix },%
+description={Variational Autoencoder},%
+descriptionplural={Variational Autoencoder\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Variational Autoencoder},%
+longplural={Variational Autoencoders},%
+short={VAE},%
+shortplural={VAEs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{bn}{}%
+{%
+\gls@defglossaryentry{bn}%
+{%
+name={BN},%
+sort={BN},%
+type={acronym},%
+first={Batch Normalization\glsspace (BN)},%
+firstplural={Batch Normalization\acrpluralsuffix \glsspace (BN\acrpluralsuffix )},%
+text={BN},%
+plural={BN\acrpluralsuffix },%
+description={Batch Normalization},%
+descriptionplural={Batch Normalization\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Batch Normalization},%
+longplural={Batch Normalizations},%
+short={BN},%
+shortplural={BNs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{isles}{}%
+{%
+\gls@defglossaryentry{isles}%
+{%
+name={ISLES},%
+sort={ISLES},%
+type={acronym},%
+first={Ischaemic Stroke Lesion Segmentation\glsspace (ISLES)},%
+firstplural={Ischaemic Stroke Lesion Segmentation\acrpluralsuffix \glsspace (ISLES\acrpluralsuffix )},%
+text={ISLES},%
+plural={ISLES\acrpluralsuffix },%
+description={Ischaemic Stroke Lesion Segmentation},%
+descriptionplural={Ischaemic Stroke Lesion Segmentation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Ischaemic Stroke Lesion Segmentation},%
+longplural={Ischaemic Stroke Lesion Segmentations},%
+short={ISLES},%
+shortplural={ISLESs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{tn}{}%
+{%
+\gls@defglossaryentry{tn}%
+{%
+name={TN},%
+sort={TN},%
+type={acronym},%
+first={True Negative\glsspace (TN)},%
+firstplural={True Negative\acrpluralsuffix \glsspace (TN\acrpluralsuffix )},%
+text={TN},%
+plural={TN\acrpluralsuffix },%
+description={True Negative},%
+descriptionplural={True Negative\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={True Negative},%
+longplural={True Negatives},%
+short={TN},%
+shortplural={TNs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{tp}{}%
+{%
+\gls@defglossaryentry{tp}%
+{%
+name={TP},%
+sort={TP},%
+type={acronym},%
+first={True Positive\glsspace (TP)},%
+firstplural={True Positive\acrpluralsuffix \glsspace (TP\acrpluralsuffix )},%
+text={TP},%
+plural={TP\acrpluralsuffix },%
+description={True Positive},%
+descriptionplural={True Positive\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={True Positive},%
+longplural={True Positives},%
+short={TP},%
+shortplural={TPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{fn}{}%
+{%
+\gls@defglossaryentry{fn}%
+{%
+name={FN},%
+sort={FN},%
+type={acronym},%
+first={False Negative\glsspace (FN)},%
+firstplural={False Negative\acrpluralsuffix \glsspace (FN\acrpluralsuffix )},%
+text={FN},%
+plural={FN\acrpluralsuffix },%
+description={False Negative},%
+descriptionplural={False Negative\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={False Negative},%
+longplural={False Negatives},%
+short={FN},%
+shortplural={FNs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{fp}{}%
+{%
+\gls@defglossaryentry{fp}%
+{%
+name={FP},%
+sort={FP},%
+type={acronym},%
+first={False Positive\glsspace (FP)},%
+firstplural={False Positive\acrpluralsuffix \glsspace (FP\acrpluralsuffix )},%
+text={FP},%
+plural={FP\acrpluralsuffix },%
+description={False Positive},%
+descriptionplural={False Positive\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={False Positive},%
+longplural={False Positives},%
+short={FP},%
+shortplural={FPs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{hd}{}%
+{%
+\gls@defglossaryentry{hd}%
+{%
+name={HD},%
+sort={HD},%
+type={acronym},%
+first={Hausdorff Distance\glsspace (HD)},%
+firstplural={Hausdorff Distance\acrpluralsuffix \glsspace (HD\acrpluralsuffix )},%
+text={HD},%
+plural={HD\acrpluralsuffix },%
+description={Hausdorff Distance},%
+descriptionplural={Hausdorff Distance\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Hausdorff Distance},%
+longplural={Hausdorff Distances},%
+short={HD},%
+shortplural={HDs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{assd}{}%
+{%
+\gls@defglossaryentry{assd}%
+{%
+name={ASSD},%
+sort={ASSD},%
+type={acronym},%
+first={Average Symmetric Surface Distance\glsspace (ASSD)},%
+firstplural={Average Symmetric Surface Distance\acrpluralsuffix \glsspace (ASSD\acrpluralsuffix )},%
+text={ASSD},%
+plural={ASSD\acrpluralsuffix },%
+description={Average Symmetric Surface Distance},%
+descriptionplural={Average Symmetric Surface Distance\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Average Symmetric Surface Distance},%
+longplural={Average Symmetric Surface Distances},%
+short={ASSD},%
+shortplural={ASSDs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{gt}{}%
+{%
+\gls@defglossaryentry{gt}%
+{%
+name={GT},%
+sort={GT},%
+type={acronym},%
+first={Ground Truth\glsspace (GT)},%
+firstplural={Ground Truth\acrpluralsuffix \glsspace (GT\acrpluralsuffix )},%
+text={GT},%
+plural={GT\acrpluralsuffix },%
+description={Ground Truth},%
+descriptionplural={Ground Truth\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Ground Truth},%
+longplural={Ground Truths},%
+short={GT},%
+shortplural={GTs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{fcnn}{}%
+{%
+\gls@defglossaryentry{fcnn}%
+{%
+name={FCNN},%
+sort={FCNN},%
+type={acronym},%
+first={Fully Convolutional Neural Network\glsspace (FCNN)},%
+firstplural={Fully Convolutional Neural Network\acrpluralsuffix \glsspace (FCNN\acrpluralsuffix )},%
+text={FCNN},%
+plural={FCNN\acrpluralsuffix },%
+description={Fully Convolutional Neural Network},%
+descriptionplural={Fully Convolutional Neural Network\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Fully Convolutional Neural Network},%
+longplural={Fully Convolutional Neural Networks},%
+short={FCNN},%
+shortplural={FCNNs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{fmri}{}%
+{%
+\gls@defglossaryentry{fmri}%
+{%
+name={fMRI},%
+sort={fMRI},%
+type={acronym},%
+first={Functional Magnetic Resonance Imaging\glsspace (fMRI)},%
+firstplural={Functional Magnetic Resonance Imaging\acrpluralsuffix \glsspace (fMRI\acrpluralsuffix )},%
+text={fMRI},%
+plural={fMRI\acrpluralsuffix },%
+description={Functional Magnetic Resonance Imaging},%
+descriptionplural={Functional Magnetic Resonance Imaging\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Functional Magnetic Resonance Imaging},%
+longplural={Functional Magnetic Resonance Imagings},%
+short={fMRI},%
+shortplural={fMRIs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{siss}{}%
+{%
+\gls@defglossaryentry{siss}%
+{%
+name={SISS},%
+sort={SISS},%
+type={acronym},%
+first={Sub-acute Ischaemic Stroke Lesion Segmentation\glsspace (SISS)},%
+firstplural={Sub-acute Ischaemic Stroke Lesion Segmentation\acrpluralsuffix \glsspace (SISS\acrpluralsuffix )},%
+text={SISS},%
+plural={SISS\acrpluralsuffix },%
+description={Sub-acute Ischaemic Stroke Lesion Segmentation},%
+descriptionplural={Sub-acute Ischaemic Stroke Lesion Segmentation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Sub-acute Ischaemic Stroke Lesion Segmentation},%
+longplural={Sub-acute Ischaemic Stroke Lesion Segmentations},%
+short={SISS},%
+shortplural={SISSs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{spes}{}%
+{%
+\gls@defglossaryentry{spes}%
+{%
+name={SPES},%
+sort={SPES},%
+type={acronym},%
+first={Acute Stroke Outcome/Penumbra Estimation\glsspace (SPES)},%
+firstplural={Acute Stroke Outcome/Penumbra Estimation\acrpluralsuffix \glsspace (SPES\acrpluralsuffix )},%
+text={SPES},%
+plural={SPES\acrpluralsuffix },%
+description={Acute Stroke Outcome/Penumbra Estimation},%
+descriptionplural={Acute Stroke Outcome/Penumbra Estimation\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Acute Stroke Outcome/Penumbra Estimation},%
+longplural={Acute Stroke Outcome/Penumbra Estimations},%
+short={SPES},%
+shortplural={SPESs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{ttt}{}%
+{%
+\gls@defglossaryentry{ttt}%
+{%
+name={TTT},%
+sort={TTT},%
+type={acronym},%
+first={Time to Treatment\glsspace (TTT)},%
+firstplural={Time to Treatment\acrpluralsuffix \glsspace (TTT\acrpluralsuffix )},%
+text={TTT},%
+plural={TTT\acrpluralsuffix },%
+description={Time to Treatment},%
+descriptionplural={Time to Treatment\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Time to Treatment},%
+longplural={Time to Treatments},%
+short={TTT},%
+shortplural={TTTs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{tss}{}%
+{%
+\gls@defglossaryentry{tss}%
+{%
+name={TSS},%
+sort={TSS},%
+type={acronym},%
+first={Time-Since-Stroke\glsspace (TSS)},%
+firstplural={Time-Since-Stroke\acrpluralsuffix \glsspace (TSS\acrpluralsuffix )},%
+text={TSS},%
+plural={TSS\acrpluralsuffix },%
+description={Time-Since-Stroke},%
+descriptionplural={Time-Since-Stroke\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Time-Since-Stroke},%
+longplural={Time-Since-Strokes},%
+short={TSS},%
+shortplural={TSSs},%
+counter={page},%
+parent={},%
+%
+}%
+}%
+\ifglsentryexists{gru}{}%
+{%
+\gls@defglossaryentry{gru}%
+{%
+name={GRU},%
+sort={GRU},%
+type={acronym},%
+first={Gated Recurrent Unit\glsspace (GRU)},%
+firstplural={Gated Recurrent Unit\acrpluralsuffix \glsspace (GRU\acrpluralsuffix )},%
+text={GRU},%
+plural={GRU\acrpluralsuffix },%
+description={Gated Recurrent Unit},%
+descriptionplural={Gated Recurrent Unit\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Gated Recurrent Unit},%
+longplural={Gated Recurrent Units},%
+short={GRU},%
+shortplural={GRUs},%
+counter={page},%
+parent={},%
+%
+}%
+}%

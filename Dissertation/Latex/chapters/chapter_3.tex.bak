@@ -1,0 +1,378 @@
+\chapter{Machine Learning}
+\label{chap:chap3}
+
+In this chapter, we discuss the relevant topics used to develop the deep learning-based prediction methods of this dissertation. We begin by presenting general concepts. Taking into account that we resorted to both supervised and unsupervised methods, we discuss these two different types of learning. Additionally, we introduce the concept of classification to understand the process of assigning a probability to each voxel of either belonging to the lesion or healthy tissue, when performing the prediction. In the following section, the concepts of under- and overfitting are discussed as well, along with some of the possible causes that might justify bad generalization behaviours in stroke lesion prediction. 
+
+The second part of this chapter focuses on Artificial Neural Networks, where two types are introduced: the Feedforward and the Convolutional Neural Networks, with the latter one being our main focus. There, we compare the regular convolution operation with the depthwise separable convolution, as well as the dilated convolution, to understand why we resorted to them. Furthermore, we also address different types of network regularization and optimization, and the differences among them. Then, we explain why we resorted to the soft dice loss function, instead of the most common one, the cross-entropy loss. In addition, we describe how a variational autoencoder works and present its advantages. Lastly, we describe some mechanisms behind attention models, especially those dedicated to semantic segmentation.
+
+As to understand the reason why some concepts are approached, Figure \ref{fig:sys} presents an overview of the proposed prediction system.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_3/system.png}
+ 	\caption[Overview of the proposed prediction system.]
+ 	{Overview of the proposed prediction system.}
+ 	\label{fig:sys}
+\end{figure}
+
+\section{General Concepts}
+
+Machine Learning (\acrshort{ml}) consists of algorithms with the purpose of learning directly from a dataset how to execute a certain task. The \acrshort{ml} algorithm learns how to fulfill this task based on a mapping function from the data. The dataset comprises examples, commonly referred as features, which are quantitative measures with respect to the data, and can be denoted through a vector $ x \in \mathbb{R}^{n} $, with $ x_{i} $ being a feature and $ n $ the total number of examples \cite{murphy, goodfellow}. 
+
+The \acrshort{ml} algorithm is divided in two phases, the learning and the evaluation phases. While the first stage is designated as training, and may be supervised or unsupervised, the evaluation step is called test \cite{goodfellow}. Throughout this dissertation, we mostly focus on the supervised learning for the training phase.
+
+Depending on how the algorithm processes the examples, the \acrshort{ml} task may be designated as classification, regression, clustering, among other categories \cite{goodfellow}. The problem of ischemic stroke, which aims to predict the final infarct volume at a 90-day follow-up, may be considered as a classification problem. 
+
+In order to perceive if the model is learning the information correctly during training, it is often used a performance measure such as accuracy or error rate, which allows us to assess its generalization capacity \cite{goodfellow}. 
+
+
+\subsection{Learning Types}
+
+There are two kinds of \acrshort{ml} algorithms based on how they are allowed to learn the task. On one hand, there are the supervised learning algorithms, which utilize datasets that contain targets, also known as labels or ground truths (\acrshort{gt}), besides its features. These targets define the true category/value of the input data. Therefore, based on a label $ y $ and its respective vector $ x $, the algorithm, e.g., a classifier, estimates $ p(y|x) $ and learns to predict the label from the input vector. The system presented in Figure \ref{fig:sys} is an example of a system based on supervised learning. On the other hand, we have the unsupervised algorithms which are able to learn relevant information with respect to the structure of the dataset by learning useful properties through the many features contained in this one. Unsupervised learning does not take into account ground truths, observing only the data. For this reason, it learns implicitly, or explicitly, the probability distribution that characterizes the dataset based on a random vector $ x $ \cite{goodfellow}. Examples of unsupervised learning are the clustering and dimensionality reduction algorithms, such as principal component analysis and autoencoders \cite{goodfellow}.
+
+\subsection{Classification}
+
+In Machine Learning, when the target $ y $ is categorical, the task is designated as classification. The classification task consists of determining to which class, out of a total of $ k $ classes, an input belongs to. To do so, the model generates an approximation of an unknown function $ f $, denoted by $ \hat{f} : \mathbb{R}^n \longrightarrow \{1, ..., k\} $, to map the observed data. Then, an input characterized by the vector $ x $ is assigned to a certain estimated class denoted by $ \hat{y} $, given $ \hat{y}=\hat{f}(x) $ \cite{goodfellow, murphy}. Depending on the cardinality of $ k $, the modality of the classification task differs. If $ k>2 $ the problem is addressed as a multiclass classification; when $ k=2 $ the task is designated as a binary problem \cite{murphy}. 
+
+In an ischemic stroke prediction system, such as the one depicted on Figure \ref{fig:sys}, the task is binary, since the goal consists of distinguishing lesion tissue from the healthy one. In this context, the function $\hat{f} $ of the model outputs a probabilistic distribution over the two classes. We assume two labels -- 0 and 1 -- being the healthy tissue characterized by the first target, and the lesion area by the latter label. Therefore, given a training set $ \mathcal{D} $ and the input vector $ x $, the probability distribution is denoted as $ p(y|x,\mathcal{D}) $. As there only exist two classes, $ p(y=1|x,\mathcal{D})+p(y=0|x,\mathcal{D})=1 $. Knowing this, the model computes the corresponding target, $ \hat{y} $, through Equation \ref{eq:1}.
+\begin{eqnarray}
+\label{eq:1}
+\hat{y}=\hat{f}(x)={{\argmax}^{k}_{c=1}}\, p(y=c|x,\mathcal{D})
+\end{eqnarray}
+The computed $ \hat{y} $ corresponds to the most probable class label and is designated as the mode of the distribution $ p(y|x, \mathcal{D}) $, or as the maximum a posteriori estimate \cite{murphy}.
+
+\subsection{Generalization}
+\label{generalization}
+To obtain a \acrshort{ml} model that learns the task correctly, it should be able to generalize well, i.e., have a good performance given new inputs. Hence, during the learning process, an error measure, known as training error, is computed to perceive how the training is performing and to reduce it to its minimum value. However, from this information only, one cannot conclude that the algorithm could perform well on other unseen inputs. Therefore, it is necessary to compute the validation error, also known as generalization error, which should be low as well. In addition, it is important to make sure that the gap between these two errors is small \cite{goodfellow}.
+
+When the learning process presents low performance, it means that either the model suffered from overfitting or underfitting. While overfitting happens when the gap between the training error and the validation error is large, underfitting occurs when the training and validation errors are not able to reach sufficiently low values \cite{goodfellow}. Overfitting is usually due to the attempt to model every little variation of the input, which have a high probability of being noise \cite{murphy}. 
+
+Whether a model is capable of fitting correctly, or not, the given data, it depends on its generalization capacity, i.e., its ability to fit a large variety of functions. Although a high capacity allows the model to solve more complex tasks, if it is too high for that task then the model will most likely overfit. This happens because the model learns a mapping function, $ \hat{f} $, highly tuned to the training set and, therefore, may be incapable of performing well in the test set. On the contrary, if it has low capacity then it will struggle to fit the data \cite{goodfellow}. Figure \ref{fig:curves} shows the boundary between the underfitting and overfitting zones, and how the training and generalization errors evolve with increasing capacity, exemplifying the previous explained behaviour.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.85\textwidth]{/chpt_3/cap_f.png}
+ 	\caption[Relationship between the training and validation errors. Adapted from \cite{goodfellow}.]
+ 	{Relationship between the training and validation errors. Adapted from \cite{goodfellow}.}
+ 	\label{fig:curves}
+\end{figure}
+
+The generalization capacity of a model may be impaired by dataset shift as well, more precisely by source component shift \cite{datashift}. In the stroke case scenario, the dataset information may vary for many reasons. The main cause lies on the fact that the \acrshort{mri} acquisitions are obtained from different medical centers, which may use different protocols for image acquisition. Furthermore, low generalization may result from predictions on acquisitions performed on patients that already have brain lesions from past stroke seizures. Moreover, the data contained in the dataset may be imbalanced \cite{datashift}, i.e., some datasets may comprise more cases of small lesion volumes, instead of larger lesion volumes, or vice-versa. In addition, let us consider $ set_{1} $  and $ set_{2} $ as two different ischemic stroke datasets. The acquisitions comprised in $ set_{1} $  and those of $ set_{2} $ may belong to patients with, e.g., different age ranges, which means that the capability to recover from a stroke lesion may not be the same. As a result of all these factors, a model may generalize well for a certain dataset with certain characteristics, but might not be able to when the set is substituted for an other one with different characteristics.
+
+\section{Artificial Neural Networks}
+Artificial Neural Networks (\acrshort{ann}s) consist of algorithms inspired on the complex propagation of information on a biological brain, in order to learn some task. There are many types of \acrshort{ann}s, from the simplest architecture, e.g., Feedforward Neural Networks, to more complex ones such as Fully Convolutional Neural Networks. Furthermore, there are special types of neural networks such as autoencoders (\acrshort{ae}s), which consist of unsupervised learning algorithms.
+
+\acrshort{ann}s learn a certain task based on a set of features. Some of them, however, do not provide relevant information, leading to lower performances. One way to address this issue consists of implementing attention mechanisms, which are capable of suppressing redundant information, in order to retain only the most informative features and enhance the accuracy of the predictions \cite{hu}. Further in this chapter we will discuss some of these models.
+
+\subsection{Feedforward Neural Networks}
+In the case of Feedforward Neural Networks, the goal is to approximate some function $ f $. When the input $ x $ enters the network, the information flows along the network from the input node to the output node(s), which produce(s) $ \hat{y} $. In other words, the network learns a mapping function $ \hat{y}=\hat{f}(x;w) $, as well as the network parameters $ w $ to obtain the best approximation of $ f $ \cite{goodfellow}. 
+
+Feedforward networks may be represented by a composition of various functions in a chain, whose outputs are fed to the following layers. For instance, let us consider a chain of three different functions with $ \hat{f}^{(1)} $ being the first layer,  $ \hat{f}^{(2)} $ the second layer and  $ \hat{f}^{(3)} $ the third one, then $ \hat{f}(x)=\hat{f}^{(3)}(\hat{f}^{(2)}(\hat{f}^{(1)}(x))) $. Note that this example does not take into account the input node. The last layer of the network is designated as the output layer. The length of a chain defines the depth of the model, therefore, the longer the chain, the deeper is the network \cite{goodfellow}. 
+
+The training phase consists of trying to make $ \hat{f}(x) $ the closest approximation to $ f(x) $. As the process progresses, noisy approximate examples of $y$, that are evaluated at the different training points, are provided by the training data. The value of the output layer at a certain point $ x $ is directly specified by the training data, in order to generate an approximate value of $ y $. That being said, the behaviour of the intermediate layers is not directly related to the training examples. Due to this, these layers are designated as hidden layers. Since there is nothing defining the output of the hidden layers, the learning algorithm needs to decide how to use these as to obtain the closest approximation of $ f $. The dimensionality of the hidden layers defines the width of the model. Each one of these is vector-valued and each element of these vectors are considered to have a behaviour analogous to that of a biological neuron \cite{goodfellow}.
+
+\subsection{Convolutional Neural Networks}
+Convolutional Neural Networks are a special type of neural networks, which were intrinsically developed to process data that possess a known grid-like structure. Examples of this kind of data are time-series data, which can be seen as a \acrshort{1d} grid of samples, and image data, which consists of a \acrshort{2d} grid of pixels. These networks differ from the feedforward ones, because they implement the mathematical operation of convolution, instead of a multiplication with regular matrices, in one or more layers \cite{goodfellow}. Figure \ref{fig:cnn} presents the structure of a \acrshort{cnn}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_3/cnn.png}
+ 	\caption[Architecture of a Convolutional Neural Network.]
+ 	{Architecture of a Convolutional Neural Network.}
+ 	\label{fig:cnn}
+\end{figure}
+
+When using this kind of neural network, we consider the convolution between an input, $ x $, and a second argument, $ k $, designated as kernel.  The result of the latter operation is usually designated as feature map. Mathematically, a discrete convolution between $ x $ and $ k $, applied to a discrete value $ n $, is given by Equation \ref{eq:3}, where $ * $ denotes the convolution operation \cite{goodfellow}.
+\begin{eqnarray}
+\label{eq:3}
+s[n]=(x*k)[n]
+\end{eqnarray}
+
+In case the input consists of a \acrshort{2d} image, $ I $, then, the discrete convolution is given by
+\begin{eqnarray}
+\label{eq:3extra}
+S(i,j)=(I*K)(i,j)=\sum_{p} \sum_{q} I(p,q)K(i-p,j-q),
+\end{eqnarray}
+where $ K $ is the \acrshort{2d} kernel, $ i $ and $ j $ denote the rows and columns of the image, and $ p $ and $ q $ are the respective coordinates of the kernel.
+
+Both the input and the kernel are multidimensional arrays, usually named  tensors. While the first one consists of data, the latter comprises learning parameters, which are tuned through an adaptation process imposed by the learning algorithm \cite{goodfellow}.
+
+\acrshort{cnn}s possess some advantages that traditional neural networks lack, namely parameter sharing. Contrarily to regular \acrshort{ann}s, \acrshort{cnn}s share parameters, or weights, when computing the output of a layer, which means that each element of the weight matrix is multiplied by all elements of the input. This greatly reduces the storage requirements of the model, since it allows the model to learn only one set of parameters for each convolution, instead of different sets for each location \cite{goodfellow}.
+
+Another advantage consists of equivariant representations, more specifically equivariant translation. In other words, if the input suffers spatial changes, then, the output will be altered in the same way. When using image data, the convolution operation generates a \acrshort{2d} map that represents the location of certain features in the input, therefore if we translate the input, the output will move likewise \cite{goodfellow}. 
+
+The third and last advantage consists of sparse interactions. Traditional \acrshort{ann}s resort to multiplications between the input and a matrix of parameters. Due to that, every output unit is connected to every input unit. In contrast, \acrshort{cnn}s make use of smaller kernels, which are consequently smaller than the input. This feature makes it possible to detect details with reduced dimensions, since an input image, for instance, has at least thousands of pixels and the kernel consists of a grid with at the most hundreds of pixels. This allows an improvement in its efficiency, as well as a reduction in the computational cost \cite{goodfellow}.  
+
+\subsubsection{Fully Convolutional Neural Networks}
+The dense layers present in a \acrshort{cnn} impose a great computational cost on the network, since with a single forward pass it is only possible to classify one voxel. This also implies that the computation of the loss function does not take into account the neighbouring voxels. Besides, due to these fully connected layers, the amount of parameters of a \acrshort{cnn} is still relatively large. Furthermore, the input patches are relatively small, otherwise the number of weights would increase proportionally \cite{long2015fully}.
+ 
+Fully Convolutional Neural Networks came to mitigate these problems by removing the fully connected layers and replacing them by convolutional layers. Due to that, the computational cost is reduced, reason why they are preferred over the conventional \acrshort{cnn} model, nowadays. Besides, \acrshort{fcnn}s can take an input of any dimensions and output probability maps with smaller or the same spatial dimensions \cite{long2015fully}. The most commonly used \acrshort{fcnn} is the U-Net, developed by \citet{unet}, which has been considered a good approach in biomedical image processing. This particular \acrshort{fcnn} structure with an U shape is the base network architecture of the system proposed in Figure \ref{fig:sys}.
+
+\subsubsection{Depthwise Separable Convolutions}
+\label{dilconv}
+ As we will see later on Chapter \ref{chap:chap4}, when we combine both the data-driven \acrshort{4d} \acrshort{pwi} with the standard parametric \acrshort{mri} maps, the number of parameters of the network may reach a large value, e.g., $ 1\times10^6 $. One simple way to reduce the amount of weights of a model consists of replacing the regular convolution, described on the section above, for a depthwise separable one. In the latter convolution, first, a depthwise convolution, that focuses on spatial relationships, is applied individually to each feature map of the input. Then, it is followed by a pointwise convolution that produces a new channel space \cite{mobilenets}. Figure \ref{fig:sep} depicts the depthwise separable convolution process.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.55\textwidth]{/chpt_3/SEP_CONV_3.png}
+ 	\caption[\acrshort{2d} depthwise separable convolution applied to an input with three feature maps.]
+ 	{\acrshort{2d} depthwise separable convolution applied to an input with three feature maps.}
+ 	\label{fig:sep}
+\end{figure}
+
+Let us consider $ C_{i} $ as the number of input channels, $ C_{o} $ the amount of output feature maps, $ H $ and $ W $ the height and width of the input, respectively. Lastly, let $ K $ be the height and width of the kernel, assuming the same dimension for both parameters. For each conventional convolution we get $ K^2 \times C_{i} \times C_{o} $ weights and a computational cost of $ K^2 \times C_{i} \times C_{o} \times H \times W $. However, when we switch to a depthwise separable convolution, both the amount of parameters and the computational cost reduce to $ C_{i} (K^2 + C_{o}) $ and $ H \times W \times C_{i}(K^2+C_{o}) $, respectively \cite{mobilenets}. However, despite the described benefits, when we resort to separable convolutions, some of the representational power is lost.
+
+
+
+\subsubsection{Dilated Convolutions}
+Besides the discrete convolution and the depthwise separable one, there is one other type, the dilated convolution. The dilated convolution is capable of expanding the receptive field without losing resolution or coverage, and allows multi-scale context aggregation \cite{dilated}. These convolutions may be useful in the ischemic stroke lesion outcome prediction, especially when it comes to the detection of small volume areas.
+
+Consider  $ X: \mathbb{Z}^2 \to \mathbb{R} $ as a discrete function, $ \Omega_{r}=\{-r,...,r\}^2 \cap \mathbb{Z}^2 $ and $ k: \Omega_{r} \to \mathbb{R} $ as a kernel of size $ (2r+1)^2 $. Let us consider as well $ p $, $ s $ and $ t $ as discrete values, where $ t=p-s $. While the regular convolution is represented by $ (X*k)[p]= \sum_{s+t=p} X[s]k[t] $, where $ p $ denotes the coordinates of a certain output pixel, the dilated convolution may be defined as $  (X*_{l}k)[p]=\sum_{s+lt=p} X[s]k[t] $, where $ *_{l} $ represents the dilated convolution with a dilation factor of $ l $. By varying only the dilation factor, it is possible to apply the same filter with different ranges \cite{dilated}. 
+
+Assuming we have a chain of convolutions of discrete functions ($ F_{0}, F_{1}, ..., F_{n-1} $) with increasing dilation factors and a baseline filter of $ 3\times3 $, the receptive field of a pixel $ p $ in $ F_{i+1} $ comprises the set of elements in $ F_{0} $ that modify the output of $ F_{i+1} $. In other words, the receptive field of $ p $ is defined by $ (2^{i+2}-1)(2^{i+2}-1) $ \cite{dilated}. Although the receptive field grows exponentially with increasing dilations, the number of weights increases linearly \cite{dilated}. Figure \ref{fig:dilation} depicts the exponential expansion of the receptive field.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=1\textwidth]{/chpt_3/dilated.png}
+ 	\caption[Exponential expansion of the receptive field. (\textit{Left}) $ 3\times3 $ receptive field from $ F_{1} $, which results from a convolution of $ F_{0} $ with $ l=1 $. (\textit{Center}) A convolution of $ F_{1} $ with $ l=2 $, i.e., $ F_{2} $, produces a receptive field of $ 7\times7 $. (\textit{Right}) 4-dilated convolution applied to $ F_{2} $, creating a receptive field of $ 15\times15 $.]
+ 	{Exponential expansion of the receptive field. (\textit{Left}) $ 3\times3 $ receptive field from $ F_{1} $, which results from a convolution of $ F_{0} $ with $ l=1 $. (\textit{Center}) A convolution of $ F_{1} $ with $ l=2 $, i.e., $ F_{2} $, produces a receptive field of $ 7\times7 $. (\textit{Right}) 4-dilated convolution applied to $ F_{2} $, creating a receptive field of $ 15\times15 $.}
+ 	\label{fig:dilation}
+\end{figure}
+
+Note that when using dilated convolutions with increasing dilation factors, gridding artifacts may arise. In order to avoid them, it is necessary to add convolutions that reduce $ l $ proportionally to its increments \cite{yu2017dilated}. For instance, if we have a chain of three dilated convolutions with $ l_{1}=1 $, $ l_{2}=2 $ and $ l_{3}=3 $, then we should add two more at the end with $ l_{4}=2 $ and $ l_{5}=1 $, respectively. This strategy has been proved to be capable of improving the performance of the network \cite{dilated, yu2017dilated, wang2017automatic}. 
+\newpage
+
+\subsubsection{Pooling}
+
+Pooling operations are very common in \acrshort{cnn}s. After several convolutional layers that generate sets of linear outputs, which are then passed through non-linear activations, a pooling function may be used to further alter the output. The goal of this function consists of replacing the output at a certain point of the neural network with a summary of the statistics of the neighbouring outputs, through a reduction of the dimensions of the matrix.
+This layer is very useful as it increases the capability of being invariant to any small local translation on the input. It is especially helpful when we intend to know if a certain pattern is present in the data or not, regardless of its location \cite{goodfellow}. 
+
+In this work, we resorted mostly to max-pooling layers, which are very common in U-Nets to down-sample the input to a lower dimensional space \cite{unet}. Nonetheless, in some cases we replaced the max-pooling function for convolutions with stride 2, which were proven to be capable of reducing the input dimensions likewise \cite{springenberg2014striving}. This substitution, however, increases the number of parameters, in comparison to the application of the max-pooling layer. Nevertheless, it may enhance the performance of the network \cite{springenberg2014striving}.
+
+%\subsection{Back-Propagation}
+%Back-propagation, or backprop, is complementary to forward propagation. During forward propagation, the input $ x $ provides information that propagates through the network, more precisely through its hidden units, generating the output $ \hat{y} $ at the end. While training, this process may continue until a scalar cost $ J(\theta) $ is computed. Then, the backprop algorithm takes action by making the information contained it the scalar cost to flow backward until the beginning of the network, in order to compute the gradient \cite{goodfellow}.
+
+
+%\subsection{Stochastic Gradient Descent}
+%Stochastic gradient descent (\acrshort{sgd}), based on the gradient descent algorithm, plays a very important role in regularizing most deep learning models. By altering $ x $ in some function $ f(x) $, we either minimize or maximize it. This function $ f(x) $ is usually named objective function or criterion. If its minimization is the goal, then we may also call it cost function, loss function or even error function. We will assume a minimization case, from here onwards \cite{goodfellow}.
+%
+%The stochastic gradient algorithm relies on the derivative of the loss function, $ f'(x) $, as it describes the slope of the cost function at a certain point $ x $. Through $ f'(x) $, we are able to scale small changes ($ \epsilon $) in the input, reaching the altered output depicted in Equation \ref{eq:2} \cite{goodfellow}.
+%\begin{eqnarray}
+%\label{eq:2}
+%f(x + \epsilon) \approx f(x) + \epsilon f'(x)
+%\end{eqnarray}
+%
+%If $ f'(x) $ is null, we say that the loss function reached a critical or stationary point, as it does not contribute to the decision of which direction the function should move to. A local maximum consists of a point where $ f(x) $ is greater than at all neighbouring points and, therefore, it is not possible to increase it through infinitesimal steps. Contrarily, when $ f(x) $ is lower than at all neighbouring points, not being able to decrease the error function anymore, we say that it reached a local minimum. The absolute lowest value of the loss function is obtained at a point named global minimum (or at multiple global minima). Critical points that are neither minima or maxima are called saddle points \cite{goodfellow}.
+%
+%Ideally, we want the $ f(x) $ to arrive at a global minimum, but sometimes it might be too difficult for the loss function to reach it. Therefore, sometimes we stop the optimization when we a find point where $ f $ is very small, but is not a global minimum.
+%
+%Figure \ref{fig:glb_min} illustrates the process explained above, being $ f(x)=\dfrac{1}{2}x^{2} $ the cost function.
+%\begin{figure}[!htb]
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{/chpt_3/global_min.png}
+% 	\caption[An example of how the derivative aids the gradient descent driving the function $ f(x) $ to a minimum. Adapted from \cite{goodfellow}.]
+% 	{An example of how the derivative aids the gradient descent driving the function $ f(x) $ to a minimum. Adapted from \cite{goodfellow}.}
+% 	\label{fig:glb_min}
+%\end{figure}
+
+
+
+\subsection{Regularization}
+
+In order to avoid over- or underfitting, sometimes it is necessary to resort to methods capable of controlling the representational capacity of a model. Some of them include changing the number of input features, adding or removing functions from the hypothesis space of solutions or even giving the model a preference for one solution in its hypothesis space over the other ones \cite{goodfellow}. Here, we will only focus on the L\textsubscript{2} norm, dropout and batch normalization.
+
+\subsubsection{L\textsubscript{2} Regularization}
+Suppose we want to regularize the loss function, $ J(w) $, with respect to the network parameters $ w $. One way to do that is to include the L\textsubscript{2} norm, also referred as weight decay ($W_{d}$) when applied to deep learning-based algorithms, in the loss function. With this inclusion, we obtain a regularized loss function, $ J_{R}(w) $, which expresses a preference for smaller squared L\textsubscript{2} norm. This is expressed in Equation \ref{eq:5},
+\begin{eqnarray}
+\label{eq:5}
+J_{R}(w) = J(w) + \lambda w^{T}w,
+\end{eqnarray}
+where $ \lambda $ denotes the hyperparameter that controls the strength of the preference for reduced parameters. Whenever $ \lambda $ is null, it means that we have no preference, therefore, there is no regularization and the parameters may grow as needed, so the model may overfit the training dataset. Increasing $ \lambda $ results in smaller magnitudes of the weight updates. However, if we increase it to an excessive value, the model may suffer from underfitting, because it will only be able to learn a constant function \cite{goodfellow}.
+
+Therefore, through minimization of the regularized loss function, we can obtain a good tradeoff between the fitting of the training dataset and the capacity of the model \cite{goodfellow}.
+
+
+\subsubsection{Dropout}
+Due to backpropagation learning, the model creates coadaptations between the training data that may not work well for the test data. To this extent, dropout proves to be extremely useful since it is able to remove those coadaptations, allowing the model to fit the data properly and, consequently, avoiding overfitting \cite{dropout}. Besides being very powerful, it does not demand additional computational resources \cite{goodfellow}.
+
+This regularizer works by temporarily turning off hidden and visible output units, acting as if they were removed from the network. These units are chosen through a random process where a certain fixed and independent probability $ p_{drop} $ is assigned to each unit. If $ p_{drop} $ equals, or exceeds, the chosen threshold, the unit is removed. Therefore, when we apply dropout to a base network such as the one represented on the left side of Figure \ref{fig:drop}, we may obtain a subnetwork where some units are removed, as depicted on the right \cite{dropout}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=1\textwidth]{/chpt_3/dropout.png}
+ 	\caption[Effect of using dropout. (\textit{Left}) Base network with two hidden layers. (\textit{Right}) One of the many possible subnetworks obtained after applying dropout to the latter one..]
+ 	{Effect of using dropout. (\textit{Left}) Base network with two hidden layers. (\textit{Right}) One of the many possible subnetworks obtained after applying dropout to the latter one.}
+ 	\label{fig:drop}
+\end{figure}
+
+When applying this regularization technique, the training time increases due to the reduction of the number parameter updates that a node receives  \cite{dropout}.
+
+\subsubsection{Batch Normalization}
+Batch Normalization (\acrshort{bn}) consists of a regularizer capable of stabilizing the distributions of internal activations during the learning process. This tool allows the usage of high learning rates, helps reducing the sensitivity to initialization by diminishing the dependence of gradients on the scale of the weights or their initial values, and, consequently, helps accelerating the training. Additionally, it reduces the need to use dropout. All these effects are attained through a normalization process that fixes the means and variances of layer inputs \cite{batch, batch2}.
+
+Let $ \mathcal{B} $ be a mini-batch of size $ m $ and $ x_{i} $ a certain example, then $\mathcal{B}= \{ x_{1},...,x_{m} \} $. When applying \acrshort{bn}, the normalized values are denoted as
+\begin{eqnarray}
+\label{eq:47}
+\begin{split}
+\hat{x_{i}} \longleftarrow \frac{x_{i}-\mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{B}}^{2} + \epsilon} } \\
+y_i \longleftarrow \gamma \hat{x_{i}}+\beta ,
+\end{split}
+\end{eqnarray}
+where $ \mu_{\mathcal{B}} $ and $ \sigma_{\mathcal{B}}^{2} $ are the sample mean and variance, respectively, $ \epsilon $ is added for numerical stability, and $\gamma$ and $\beta$ are trainable parameters. The distribution of normalized values possesses a null mean and a unitary variance. In order for \acrshort{bn} to process an activation, it needs the corresponding training example, as well as the other ones in $ \mathcal{B} $. By introducing normalized activations in the network, the layers are capable of learning from input distributions that exhibit less changes in the internal nodes during training \cite{batch, batch2}.
+
+When using \acrshort{cnn}s, \citet{batch} suggested that this regularizer should not be applied on the input of the layer as this one was probably generated through another nonlinearity, and the shape of its distribution is likely to change during the learning process. In other words, if the input of the layer was to be normalized, the covariate shift would most likely not disappear. Therefore, the authors proposed that \acrshort{bn} should be added just before the nonlinearity \cite{batch}.
+
+
+\subsection{Optimizers -- Adam and AdamW}
+Optimizers are algorithms dedicated to find the best network parameters $ w $ that drive the loss function to its minimum \cite{goodfellow}. In this section, the Adam and AdamW optimizers are addressed and compared.
+
+Derived from adaptive moment estimation \cite{adam}, Adam consists of a different stochastic optimization method that resorts to few memory resources and to first-order gradients to minimize the expected value of the objective function. This optimization method computes single adaptive learning rates based on estimates of the first two moments of the gradients, for distinct parameters. Therefore, to determine the gradient $ g_t = \nabla f_t (w_{t-1}) $, where $ w_{t-1} $ represents the parameters at timestep $ t-1 $, Adam resorts to the exponential moving averages of the gradient ($ m_t $) and the squared gradient ($ v_t $). The decay rates of these moving averages are controlled by the hyperparameters $ \beta_1 $, $ \beta_2 \in [0,1) $, respectively. These moments represent the mean and the uncentered variance of the gradient and may be determined through $ m_t = \beta_1 m_{t-1}+(1- \beta_1)g_t $ and $ v_t = \beta_2 v_{t-1}+(1- \beta_2)g_t^{2} $, respectively. The parameters $ w_t $ are computed through
+\begin{eqnarray}
+\label{eq:adam}
+w_t = w_{t-1} - \alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t}+\epsilon},
+\end{eqnarray}
+where $ \alpha $ denotes the learning rate, $ \hat{m}_t $ and $ \hat{v}_t $ are the bias corrected estimates, and $ \epsilon $ is a constant, e.g., $ 1\times10^{-7} $, used to avoid the explosion of the parameters of the network. Both moments suffer a bias correction because they are initialized as 0, which would lead them to move towards 0 during the first timesteps, and also when using small decay rates. In order to do this, $ \hat{m}_t = m_t / (1-\beta_1^t) $ and $ \hat{v}_t =v_t /(1-\beta_2^t) $ \cite{adam}.
+
+Adam is advantageous as it does not require a stationary objective, i.e., it is appropriate for problems that change over time, e.g., the list of tasks in a factory and the list of resources needed to perform the latter. Besides, Adam works with sparse/noisy gradients and its stepsizes are bounded by the stepsize hyperparameter. Additionally, the magnitudes of the parameter updates are invariant to rescaling of the gradient, i.e., by rescaling the gradient with a factor $ c $, both $ \hat{m}_t $ and $ \hat{v}_t $ are also rescaled by factors of $ c $ and $ c^2 $, respectively. Specifically, $ (c\times \hat{m}_t) / (\sqrt{c^2 \times \hat{v}_t})=\hat{m}_t / \hat{v}_t $. Furthermore, this optimizer is considered to be suited for problems with a large number of parameters or large datasets \cite{adam}.
+
+The L\textsubscript{2} norm and weight decay are considered to have different effects when applied to Adam. \citet{adamw} showed that when resorting to L\textsubscript{2} to regularize the loss function, the computation of the parameters $ w $ is not effectively regularized. Mathematically, knowing that the regularized loss gradient is defined by $ g_t = \nabla f_t(w_{t-1}) + L\textsubscript{2} w_{t-1}$, then both $ \hat{m}_t $ and $ \hat{v}_t $ keep track of the gradients of the loss function, as well as those of the regularization term. Assuming a large $ t $ value so that the decay rates are close to zero, then the computation of the parameters is given by 
+\begin{eqnarray}
+\label{eq:adaml2}
+w_t = w_{t-1} - \alpha \frac{ \beta_1 m_{t-1}+(1- \beta_1)( \nabla f_t(w_{t-1}) + L_2 w_{t-1})}{\sqrt{{v}_t}+\epsilon}.
+\end{eqnarray}
+As one can see in Equation \ref{eq:adaml2}, this regularization term is included in the parameter update in such a way that ends up being normalized by $ \sqrt{{v}_t} $. Due to this, if the gradient is very large, then the squared gradient will be large as well, and the weight ends up being less regularized than small weights with slower gradients. 
+
+\citet{adamw} proposed a correction of the way $ W_d $ is included to calculate the parameters, since the authors claim that the latter regularizer does not provide a consistent update of the weight parameters with Adam, and named this algorithm AdamW. To that extent, they proposed updating the parameters through
+\begin{eqnarray}
+\label{eq:adamw}
+\begin{split}
+w_t & = (1-W_d)w_{t-1} - \alpha \nabla f_t(w_{t-1}) \\
+& = w_{t-1} - W_d w_{t-1} - \alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t}+\epsilon}.
+\end{split}
+\end{eqnarray}
+
+Resorting to this adaptation for weight decay, the squared gradient does not interfere with the regularizer and, therefore, the regularization of the loss weights is effective. Their proposal proved to generalize substantially better than Adam with L\textsubscript{2}. While L\textsubscript{2} regularization only works well in stochastic gradient descent (\acrshort{sgd}), weight decay is capable of being equally effective in both \acrshort{sgd} and Adam algorithms. 
+
+%If combined with adaptive gradients, $ \ell_{2} $ creates weights with large gradients that are less regularized than if weight decay was employed instead. 
+Additionally, it has been shown that the smaller the number of weight updates, the higher the optimal $W_{d}$ attained, and vice versa. However, the best $W_{d}$ obtained for a short run does not generalize well for longer ones \cite{adamw}.
+
+
+\subsection{Loss Functions}
+Choosing the correct cost function when designing a neural network is very important to achieve a good generalization capacity. Here, we present only two loss functions -- cross-entropy and soft dice loss -- and explain why we chose to implement the latter function on the system presented in Figure \ref{fig:sys}, over the first one for our problem solving. 
+  
+\subsubsection{Cross-Entropy Loss}
+Most neural networks usually resort to the negative log-likelihood loss function, also commonly referred as the cross-entropy between the training data and the model distribution. The cross-entropy loss may be defined as
+\begin{eqnarray}
+\label{eq:cross}
+J(w)=- \EX_{x,y \sim \hat{p}_{data}} \log p_{model}(y|x),
+\end{eqnarray}
+where $ \EX_{x,y \sim \hat{p}_{data}} $ denotes the average value of the logarithmic function with respect to the estimated distribution of the data. However, the specific form of this cost function changes according to the specific form of the $ \log p_{model} $ term \cite{goodfellow}.
+
+Neural networks demand that the gradient of the cost function needs to be sufficiently large in order to be a good guide for the learning algorithm \cite[p.~173]{goodfellow}. The cross-entropy loss is useful in this matter since it avoids saturating behaviours observed in other loss functions, which result in very small gradients and, therefore, sabotage the referred principle. More specifically, its logarithmic function undoes the exponential function present in the last activation functions of the networks, which are most likely to be the source of the saturation \cite{goodfellow}.
+
+Cross-entropy does not require a minimum value when performing maximum likelihood estimation. That being said, for real-valued output variables, the cross-entropy may approach negative infinity if the model is not capable of controlling the density of the output distribution. However, regularization techniques may help avoid this issue \cite{goodfellow}.
+
+
+\subsubsection{Soft Dice Loss}
+%\subsection{Loss Function -- Soft Dice}
+When processing medical images, it is very common that the anatomy of interest possesses a very small volume. Sometimes, this may lead to erroneous predictions, as the network predicts part of the foreground as background. Most loss functions, such as cross-entropy, do not take this matter into account and, therefore, resort to sample re-weighting, giving more relevance to the foreground \cite{loss}. However, there is one way of softening this problem without the need to assign weights to samples. The solution consists of using the soft dice loss developed by \citet{loss}. The gradient of the Dice, computed with respect to the $ j $-th voxel of the prediction, may be formulated as
+\begin{eqnarray}
+\label{eq:46}
+\frac{\partial D}{\partial p_{j}}=2 \Bigg[ \ \frac{g_{j} \big(\sum_{i}^{N} {p_{i}}^{2} + \sum_{i}^{N} {g_{i}}^{2} \big) - 2p_{j} \big(\sum_{i}^{N} {p_{i}}^{2} {g_{i}}^{2} \big)}{\sum_{i}^{N} {p_{i}}^{2} + \sum_{i}^{N} {g_{i}}^{2}} \Bigg] \ ,
+\end{eqnarray}
+where $ N $ denotes the total number of voxels, $ D $ is the Dice coefficient between two binary volumes, $ p_{i} \in P$ is the predicted binary segmentation and $ g_{i} \in G$ is the ground truth binary volume. In their work, they showed that by implementing this loss, instead of a multinomial logistic one, it was possible to establish the correct balance between the background and foreground voxels. For this reason, soft dice loss was the chosen loss function in this dissertation.
+
+
+\subsection{Activation Layers}
+Activation functions are nonlinear transformations used to avoid the network being limited to linear combinations and, therefore, produce features with higher complexity, to further improve the prediction accuracy. Although there are many activation functions \cite{goodfellow}, we will only focus on two of them, which were the ones used in this work.
+%that decide whether the information that a neuron receives is relevant or not, in order to activate or deactivate, respectively, that same neuron.
+
+
+\subsubsection{Rectified Linear Unit}
+Rectified Linear Units, or \acrshort{relu}s, are commonly used as activation functions on the hidden nodes. Throughout this work, we opted for this activation function instead of the conventional sigmoidal unit ($ g(z) = \sigma (z) $, with $ z $ being a preactivation of the neuron) because the sigmoid function saturates across most of its domain. When $ z $ has a high magnitude, it saturates to large values. Similarly, if $ z $ comprises very negative values, the function saturates to low values. Both result in vanishing gradients. That being said, sigmoidal units are only extremely sensitive to their inputs when $ z $ is close to 0. Due to their widespread saturation, the model struggles in the presence of gradient-based learning methods. However, the \acrshort{relu} function can soften this issue. Being defined by $ g(z)=\max (0, z) $, its output equals zero only in the negative part of its domain and acts like a linear function on its other half. The fact that it has null gradients helps in making the network sparse, which makes it less dense and helps decreasing the computation. Its behaviour is advantageous since it is able to make both the derivatives and gradients remain large and consistent \cite{goodfellow, pedamonti2018comparison}. 
+
+
+\subsubsection{Softmax}
+The softmax function is very useful whenever we want to represent a probability distribution over a discrete variable that contains $ k $ different classes. Sometimes, it is also used inside the model itself, when we desire that the model chooses one option out of $ k $ possible ones \cite{goodfellow}.
+
+In order to use this function, the output of the model should consist of a vector $ \hat{y} $, with $ \hat{y_{i}} = p(y=i|x) $, being $ i $ a class out of the $ k $ possible ones. Furthermore, to be interpreted as a valid probability distribution, the total sum of the vector should equal 1 and each element of $ \hat{y_{i}} $ needs to belong to a range between 0 and 1 \cite{goodfellow}.
+
+To apply the softmax function, we first need to pass the vector $ \hat{y} $ through an earlier linear layer to predict non-normalized logarithmic probabilities, obtaining a vector $ z $, where $ z_{i} = \log \tilde{p}(y=i|x) $. Then, softmax exponentiates and normalizes $ z $, to obtain the desired $ \hat{y} $, as shown in Equation \ref{eq:4} \cite{goodfellow}.
+\begin{eqnarray}
+\label{eq:4}
+\softmax(z)_{i} = \dfrac{\exp (z_{i})}{\sum_{j=1}^k \exp (z_{j})}
+\end{eqnarray}
+
+This function can saturate and it has many output values that saturate when the differences between its inputs values are too large. On one hand, when the input is maximal, i.e., $ z_{i} = \max_{i} z_{i}$, and $ z_{i} $ is larger than all other inputs, then the output $ \softmax(z)_{i} $ will saturate to 1. On the other hand, the output may saturate to 0, if $ z_{i} $ is not maximal and the maximum is superior \cite{goodfellow}.
+
+
+\subsection{Variational Autoencoders}
+Autoencoders consist of algorithms used for feature discovery and dimensionality reduction. \acrshort{ae}s aim to reproduce the input data based on a smaller space, designated as latent space. As a result they learn to prioritize which details should be copied, emphasizing useful data properties \cite{goodfellow}. This type of neural network resorts to a hidden layer $ h $ which represents a code that describes the input \cite{goodfellow, murphy}. An \acrshort{ae} comprises an encoder ($ h=f(x) $) and a decoder function, which creates a reconstruction ($ r=g(h) $). In order to avoid learning trivial identity mapping, the hidden layer usually comprises a narrow bottleneck \cite{goodfellow}. By ensuring that this hidden layer retrieves the most important features, the system is able to minimize the reconstruction error  \cite{murphy}. This kind of neural network is not designed to be able to learn to copy the input perfectly. Instead, it aims to copy only the input information that actually resembles the training data \cite{goodfellow}. Although there are many \acrshort{ae} variants \cite{rifai2011contractive, ranzato2007efficient, bengio2013generalized}, we will only focus on the variational \acrshort{ae}.
+
+The Variational Autoencoder (\acrshort{vae}) consists of a directed model that resorts to past approximate inference and may be trained solely with gradient-based methods \cite{goodfellow}. This type of \acrshort{ae} is composed by a probabilistic encoder, or recognition model, which consists of a conditional Bayesian network of the form $ q_{\phi}(z|x) $ with parameters $ \phi $, where $ x $ represents a random input sample and $ z $ depicts a latent variable. The latter variable consists of encoded variables that are part of the model, but cannot be measured. A \acrshort{vae} includes a decoder, or generative model, as well, which is also a Bayesian network of the form $ p_{\theta}(x|z) $ with parameters $ \theta $. Both these models are independently parameterized. \acrshort{vae}s aim to optimize the variational parameters $ \phi $, which include both weights and biases of the model, so that $ q_{\phi}(z|x) \approx  p_{\theta}(x|z)$. While the encoder provides the generative model an approximation to its posterior over latent random variables, the decoder works as a support for the encoder to learn useful details of the data \cite{vae}. Figure \ref{fig:vaesch} shows the underlying process of the reconstruction.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_3/VAE_SCHEM_F.png}
+ 	\caption[Overview of the system of a variational autoencoder.]
+ 	{Overview of the system of a variational autoencoder.}
+ 	\label{fig:vaesch}
+\end{figure}
+
+Regardless of the chosen recognition model $ q_{\phi}(z|x) $ and its parameters, the objective function of a model $ p(x) $ is defined through the following equation \cite{vae},
+\begin{eqnarray}
+\label{eq:45}
+\begin{split}
+\log p_{\theta}(x) & = \EX_{q_{\phi}(z|x)} \Bigg[ \log \Bigg(\frac{p_{\theta}(z)p_{\theta}(x|z)}{q_{\phi}(z|x)} \Bigg) \Bigg] + \EX_{q_{\phi}(z|x)} \Bigg[ \log \Bigg( \frac{q_{\phi}(z|x)}{p_{\theta}(x|z)} \Bigg) \Bigg] \\ 
+& = \EX_{q_{\phi}(z|x)} \Bigg[ \log \Bigg(\frac{p_{\theta}(x,z)}{q_{\phi}(z|x)} \Bigg) \Bigg] + \EX_{q_{\phi}(z|x)} \Bigg[ \log \Bigg( \frac{q_{\phi}(z|x)}{p_{\theta}(x|z)} \Bigg) \Bigg] \\ 
+& = J_{\theta , \phi}(x) + D_{KL}(q_{\phi}(z|x)||p_{\theta}(x|z)),
+\end{split}
+\end{eqnarray}
+where the first term denotes the variational lower bound, the second one is the Kullback-Leibler (\acrshort{kl}) divergence between the encoder and the decoder, $ \EX_{q_{\phi}(z|x)} $ denotes the average value of the function with respect to the encoder distribution and $ p_{\theta}(z) $ is the prior distribution over $ z $. The \acrshort{kl} divergence is non-negative, which results in the first term being a variational lower bound on the log-likelihood of the data. The \acrshort{kl} divergence may equal zero if $ q_{\phi}(z|x) $ equals the true posterior distribution $ p_{\theta}(x|z)$ \cite{vae}. Since this divergence forces these distributions to be similar, it works as a regularization term \cite{vaecomp}. Note that the weights of the model are trained jointly, through the simultaneous optimization of the reconstruction loss, i.e., the variational lower bound, and the \acrshort{kl} divergence between the learned latent distribution and the prior unit \cite{vaeadd}. 
+
+Due to the fact that it is commonly assumed that the relationship between variables in the latent space is simpler than the original input data space, the distribution of $ z $ is usually considered to be isotropic normal. The distribution $ p_{\theta}(x|z)$, however, depends on the nature of data. Therefore, when the data is binary, a Bernoulli distribution should be used, otherwise, if it is real-valued, the distribution should be a Multivariate Gaussian one \cite{vaecomp}.
+
+Since the \acrshort{vae} models the parameters of $ q_{\phi}(z|x) $ through the use of a neural network, and $ f(x,\phi) $ outputs only the parameters of the $ q_{\phi}(z|x) $, it is necessary to sample from $ q(z;f(x,\phi)) $ in order to obtain the latent variable. Having retrieved a sample from the latent distribution, the reconstruction $ \hat{x} $ can be obtained through $ p_{\theta}(x;g(z,\theta)) $, since the parameter of $ p_{\theta}(x|z) $ may be determined by $ g(z,\theta) $ \cite{vaecomp}.
+
+The \acrshort{vae} also utilizes a reparameterization step to reduce variance in the gradients. This step is useful since \acrshort{vae}s resort to backpropagation and to Monte Carlo gradient methods, which are known for suffering from high variance when optimizing variational lower bound \cite{vae, vaecomp}. Reparameterization resorts to a random variable from a standard normal distribution $ z \sim q_{\phi}(z|x) $. This variable is reparameterized through a deterministic transformation $ h_{\phi}(\epsilon,x) $, where $ \epsilon $ belongs to a standard normal distribution. As a result, $ \tilde{z}=h_{\phi}(\epsilon,x) $ with $ \epsilon \sim \mathcal{N}(0,1) $. The only restriction of this trick is that it has to ensure that the variable $ \tilde{z} $ follows the same distribution of $ q_{\phi}(z|x) $ \cite{vaecomp}.
+
+\acrshort{vae}s are advantageous over the basic autoencoder model since they provide a probability measure, instead of a reconstruction error. This means that, while the \acrshort{ae} learns an arbitrary function to encode and decode the input data, the \acrshort{vae} learns the parameters of a probability distribution that best encode the input, which are then used to produce samples that will reconstruct the given data \cite{vaecomp}.
+
+
+ %Consider the prior over the latent variables is the centered isotropic multivariate Gaussian $ p_{\theta}(z)=\mathcal{N}(z;0,I) $. The variational approximate posterior may be a multivariate Gaussian with a diagonal covariance structure $ \log q_{\Phi}(z|x^{(i)})=\log \mathcal{N}(z;\mu^{(i)},\sigma^{2(i)}I) $, where $ \mu^{(i)} $ and $ \sigma^{(i)} $ are the mean and standard deviation of the approximate posterior and consist of nonlinear functions of $ x^{(i)} $ and the variational parameters $ \Phi $ \cite{vae2}. The genesis of a sample from the model is conducted by first extracting a sample $ z $, through the \acrshort{vae}, from the code distribution $ p_{model}(z) $, which then passes through a differentiable generator network $ g(z) $. The latter step is then followed by the sampling of $ x $ from a distribution $ p_{model}(x;g(z))=p_{model}(x|z) $, which helps obtaining $ z $. $ p_{model}(x|z) $ is then viewed as a decoder function \cite{goodfellow}.
+
+\subsection{Attention Methods}
+%Attention mechanisms, as mentioned before, provide the network a higher sensitivity to informative features in order to improve its performance.
+
+Attention models can be considered as mechanisms capable of directing the computational resources towards the most discriminative features of a signal. For instance, \citet{hu} developed an attention model designated as Squeeze-and-Excitation (\acrshort{se}) block, which is dedicated to classification problems. This lightweight gating mechanism involves low computational cost and provides the network more representational power by modulating channel-wise relationships. The referred modulation is commonly known as feature recalibration. This operation provides the network the capability of emphasizing the informative features. The capacity of a \acrshort{se} block, as well as the computational cost associated with its usage, depend on a hyperparameter designated as reduction ratio $ r $. This ratio should be tuned according to the problem in study in order to attain a good trade-off between performance and computational cost.
+
+A \acrshort{se} block involves two steps: a squeeze operation and an excitation mechanism. Let $ U \in \mathbb{R} ^{H \times W \times C} $, with $ U $ being the input feature maps, $ H $ and $ W $ the height and width of $ U $, respectively, and $ C $ the number of channels. A squeeze operation, such as a global average pooling function, is first applied to $ U $ across its spatial domain. This provides channel-wise statistics and generates a channel descriptor. Through this descriptor, the network layers are capable of sharing the global receptive field information. Afterwards, the channel-wise dependencies are extracted through an excitation operation, producing a collection of per-channel modulation weights, which are then multiplied by the input. The adaptive feature recalibration is required to be flexible in order to learn nonlinear interactions between channels, and should be capable of learning non-mutually-exclusive relationships so that multiple channels are emphasized \cite{hu}.
+
+The simplest \acrshort{se} block comprises four layers. First comes a layer that reduces the dimensionality by $ r $, then a \acrshort{relu} activation, which is followed by the reestablishment of the dimensionality and, finally, a rescaling layer which produces the final output \cite{hu}.
+
+ However, the \acrshort{se} block is only applicable on categorical classification algorithms. Therefore, we focus on two \acrshort{se} blocks specifically designed for semantic segmentation \cite{roy, pereira}, which were based on the Squeeze-and-Excitation mechanism developed by \citet{hu}. These three \acrshort{se} blocks are depicted in Figure \ref{fig:attention}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_3/seblocks.png}
+ 	\caption[Attention models. (\emph{Left}) Vanilla \acrshort{se} block proposed for categorical classification tasks \cite{hu}. (\emph{Center}) Segmentation \acrshort{se} block based on linear expansion and compression \cite{pereira}. (\emph{Right}) Concurrent spatial and channel \acrshort{se} block for semantic segmentation \cite{roy}.]
+ 	{Attention models. (\emph{Left}) Vanilla \acrshort{se} block proposed for categorical classification tasks \cite{hu}. (\emph{Center}) Segmentation \acrshort{se} block based on linear expansion and compression \cite{pereira}. (\emph{Right}) Concurrent spatial and channel \acrshort{se} block for semantic segmentation \cite{roy}.}
+ 	\label{fig:attention}
+\end{figure}
+
+\citet{pereira} designed a segmentation \acrshort{se} mechanism (\acrshort{segse}) that mixes the information through the usage of a linear expansion followed by a compression. This block removed the global average pooling layer present in the vanilla \acrshort{se} block to maintain the spatial correspondence between the units of the feature maps and the segmented voxels. Instead, the authors resorted to a dilated convolution with a kernel size of $ 3\times3 $ and dilation factor $ d $, to provide contextual information and to reduce the dimensionality of the data by a reduction factor $ r $. As in the \acrshort{se} block, the dimensions of the feature maps are reset and the output passes through a sigmoid layer. Then, the input is recalibrated and the resultant data is compressed to its original number of channels, suppressing the least informative features. Nevertheless, the \acrshort{segse} demands a high amount of weights due to the expansion and recombination step, which may be unfavorable when using shallow architectures and/or small datasets.
+
+Similarly, \citet{roy} developed a concurrent spatial and channel \acrshort{se} (\acrshort{scse}) block capable of defining how much emphasis should be given to each channel and spatial region. \acrshort{scse} comprises a combination of the basic \acrshort{se} mechanism, which the authors call channel \acrshort{se} (\acrshort{cse}) since it squeezes spatially and excites channel-wise, and a \acrshort{se} block which squeezes channel-wise and recalibrates spatially, designated as spatial \acrshort{se} (\acrshort{sse}). On one hand, the \acrshort{cse} squeezes the data $ U  $ through a global average pooling layer, producing a vector $ z $. Then, the dimensionality of $ z $ is reduced through a reduction ratio $ r $ and the output is passed through a \acrshort{relu} layer. The activation layer is followed by the restitution of the dimensions of the vectors and a sigmoidal unit, which is responsible for indicating the importance of each channel. The resultant output is multiplied by the input in order to obtain its channel-wise recalibration $ \hat{U}_{cSE} $. On the other hand, the \acrshort{sse} block, squeezes the spatial information of input $ U $ in a single channel, through a convolutional layer with a kernel size of $ 1\times1 $. Then, a sigmoid activation function is applied to the tensor to rescale it to $ [0,1] $ and its result is multiplied by $ U $ to obtain the spatial recalibration $ \hat{U}_{sSE} $. Lastly, in order to combine both features, a max-out layer between $ \hat{U}_{cSE} $ and $ \hat{U}_{sSE} $ is applied, in order to excite both spatially and channel-wise.
+ 
+ 
+
+
+
+
+\section{Summary}
+As a binary prediction problem, the \acrshort{ann}s, more precisely the \acrshort{cnn}s, are the most employed approaches in the Machine Learning field, more specifically in the Computer Vision field. Due to their capability of extracting information context- and localization-wise they are considered to be highly adequate to the stroke lesion outcome prediction problem, as the corresponding data comprises small and complex details. Additionally, \acrshort{cnn}s are preferred to the Feedfoward networks due to the parameters sharing, sparse interactions and equivariance to translation, which, together, result in higher efficiency and lower computational cost. To further reduce this cost, one may replace the regular convolutions for depthwise separable ones, which comprise fewer parameters. An additional method to avoid increasing the amount of weights, consists of employing dilated convolutions which allow an expansion of the context while maintaining the resolution.
+
+Since most \acrshort{fcnn}s consist of deep architectures, they require good regularization and optimizers in order to control their capacity during the training process and, therefore, avoid under- and overfitting. To that extent, different tools may be used such as dropout, batch normalization, L\textsubscript{2} norm, among other regularizers. In addition, the choice of the loss function is very important. For instance, in the ischemic stroke scenario, the soft dice loss function is considered to be adequate since it takes into account the fact that the region of interest may sometimes comprise a small area.
+
+The employment of Autoencoders has proved to be useful as they are capable of emphasizing the most discriminative features. In particular, variational \acrshort{ae}s encode latent variables in a lower dimensional space, which allows a reduction of the number of weights. These latent variables are no more than samples retrieved from a distribution found by the \acrshort{vae} that best represents the input. Through these special neural networks it is possible to encode real features that could not be measured by the simple application of a \acrshort{fcnn}.
+
+Being a complex problem, it is common for the stroke lesion outcome prediction datasets to contain details that are very difficult for the network to learn. One way to address this problem consists of including attention mechanisms in the neural network, which are capable of enhancing the performance by emphasizing the most discriminative features to the lesion prediction.
+	

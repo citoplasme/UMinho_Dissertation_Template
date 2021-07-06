@@ -1,0 +1,48 @@
+\chapter{Introduction}
+\label{chap:chap0}
+
+	In this chapter, the motivation and the main goal behind the development of this dissertation are presented. In addition, it addresses the contributions resultant from this year's work, as well as the remaining structure of the following chapters.
+
+\section{Motivation}
+	According to a study performed by the World Health Organization in 2014, cardiovascular diseases were responsible for 17.5 million deaths in 2012. Within this value, 6.7 million were due to stroke, affecting all ranges of ages \cite{world2017global}. Moreover, annually, one third of the population that suffers from stroke is usually left permanently disabled. Although this disease affects both developed and developing countries, it takes more lives in the former, which is highly concerning knowing that those have more and better resources to prevent and treat stroke \cite{atlas}.
+	
+	This cardiovascular disease results from a perturbation of the blood provision to the brain, due to a blood vessel that was either ruptured -- hemorrhagic stroke -- or blocked -- ischemic stroke -- which is the most common, and the main focus of this dissertation. Stroke is mostly connected to problems such as obesity, high blood pressure and cholesterol, low fruit and vegetable intake, among many other risk factors \cite{atlas}.
+	
+	Currently, in order to diagnose the patients that suffered from stroke, clinicians resort to manual segmentation of Magnetic Resonance Imaging (\acrshort{mri}) or Computed Tomography (\acrshort{ct}) sequences. However, besides being time consuming, this procedure is prone to subjective judgments. In other words, different experts might have different opinions regarding the true area of the lesion. Furthermore, this task is quite difficult as there may occur overlapping of intensities for different tissues \cite{fiez}. Despite the many efforts put in the development of robust and accurate automated methods to segment these sequences and predict the tissue outcome, and even though there has been great progress over the years, there still does not exist a sufficiently reliable and robust algorithm that can replace the clinician. 
+	
+\section{Goal}
+	Ischemic stroke lesions are constituted by the penumbra and core. On one hand, the penumbra is defined as the region of the brain that will eventually infarct, but is potentially salvageable if reperfused in an early stage. On the other hand, the core consists of the ischemic area that is irreversibly damaged. If the occlusion is not removed, blood will not reach the brain through that vessel. As a result, the ischemic core will continuously grow and, consequently, the salvageable tissue will decrease proportionally. Therefore, the identification of these regions is crucial as it can provide prognostic information and help the clinician decide the next steps towards the treatment of the patient \cite{gonzalez}. 
+	
+	The main goal of this work consisted of developing an automated prediction method capable of predicting the final infarct volume in patients that suffered from ischemic stroke, using standard perfusion (Mean Transit Time, relative Cerebral Blood Flow and Volume, Time to Maximum, Time to Peak) and diffusion (Apparent Diffusion Coefficient) \acrshort{mri} maps, as well as data-driven 4D \acrshort{pwi}. Together, these imaging modalities provide relevant information to differentiate the ischemic core and the penumbra. Therefore, they possess a highly important role in the extraction of the most discriminative features for the stroke lesion outcome prediction problem. 
+	
+	The data used to evaluate the performance of the proposed methods belong to the publicly available ISLES 2017 database, part of the Ischemic Stroke Lesion Segmentation (\acrshort{isles}) Challenge 2017. This Challenge consists of a medical image segmentation competition, organized by A. Hakim, M. Reyes, R. Wiest, M. G. Lansberg, S. Christensen, G. Zaharchuk, S. Winzeck and D. Robben. ISLES Challenge 2017 was presented at the conference on Medical Image Computing and Computer Assisted Intervention (\acrshort{miccai}) 2017.
+
+\section{Contributions}
+	Throughout this dissertation's year, the author contributed to the development of some methods that may be considered as original contributions, namely:
+	
+\begin{itemize}
+%	\item An extension of the study of the supervised method proposed by \citet{pinto} in the \emph{Medical Image Computing and Computer Assisted Intervention} (\acrshort{miccai}) 2018 conference.
+%	\begin{itemize}
+%		\item Article submitted to the \emph{Neurocomputing} journal, \hl{under revision}.
+%	\end{itemize}
+	\item An automated lesion outcome prediction algorithm based on the work developed by \citet{pinto} with an upgraded version of the Segmentation Squeeze-and-Excitation model \cite{pereira} included, to further discriminate the most important features.
+%	\begin{itemize}
+%	\item Method published on the \emph{6th IEEE Portuguese Meeting on Bioengineering} (ENBENG 2019) conference \cite{amorim}.
+%	\end{itemize}
+	\item  The validation of the application of the Segmentation Squeeze-and-Excitation block, proposed by \citet{pereira}, on the stroke lesion evolution prediction problem.
+%	\begin{itemize}
+%		\item Methodology published on the \emph{IEEE Transactions on Medical Imaging} \cite{pereira2019adaptive}.
+%	\end{itemize}
+	\item A methodology that merges the standard diffusion and perfusion \acrshort{mri} maps with the data-driven \acrshort{4d} Perfusion-Weighted Imaging (\acrshort{pwi}) at three different levels to further complement each of the encoded datum. Temporal preprocessing applied to the \acrshort{pwi} data to retrieve features encoding the bolus passage. Compound features were retrieved from the standard parametric maps to further complement the \acrshort{pwi}. Two different sets of merged features were fed to U-Nets, which generated two other sets that were later merged and processed as well.
+%	\begin{itemize}
+%		\item Article still in development.
+%	\end{itemize}
+	\item A method that combines supervised and unsupervised learning approaches, taking the standard diffusion and perfusion maps as input, or a combination of the \acrshort{4d} \acrshort{pwi} with the latter ones. Inclusion of a variational autoencoder to further help the final infarct prediction.
+
+\end{itemize}
+
+
+
+\section{Structure of the Dissertation}
+	This dissertation is divided in six main chapters. The present one introduces the motivation and context, the contributions and the main goal of this work. On Chapter \ref{chap:chap1}, the clinical context about stroke is presented. Chapter \ref{chap:chap2} describes various automated methods for stroke lesion segmentation and outcome prediction developed until now, with complementary analysis. Then, Chapter \ref{chap:chap3} consists of the theoretical foundations needed to develop a robust automated prediction method, based on supervised fully convolutional networks. Afterwards, in Chapter \ref{chap:chap4}, the implementation details and results are described and discussed. Lastly, Chapter \ref{chap:chap6} describes the main conclusions and proposed future work.
+	

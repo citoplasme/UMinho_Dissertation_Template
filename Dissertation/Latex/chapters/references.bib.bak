@@ -1,0 +1,679 @@
+%%%%%%%%%%%%%  CHAPTER 1  %%%%%%%%%%%%%%
+
+@misc{world2017global,
+  title={Global status report on noncommunicable diseases 2014. 2014},
+  author={World Health Organization and others},
+  year={2017}
+}
+
+@book{atlas,
+  title={The atlas of heart disease and stroke},
+  author={Mackay, Judith},
+  volume={5},
+  year={2004},
+  publisher={World Health Organization}
+}
+
+@article{fiez,
+  title={Lesion segmentation and manual warping to a reference brain: Intra-and interobserver reliability},
+  author={Fiez, Julie A and Damasio, Hanna and Grabowski, Thomas J},
+  journal={Human brain mapping},
+  volume={9},
+  number={4},
+  pages={192--211},
+  year={2000},
+  publisher={Wiley Online Library}
+}
+
+@book{gonzalez,
+  title={Acute ischemic stroke},
+  author={Gonz{\'a}lez, R Gilberto and Hirsch, Joshua A and Koroshetz, WJ and Lev, Michael H and Schaefer, Pamela W},
+  year={2011},
+  publisher={Springer}
+}
+
+@book{goodfellow,
+  title={Deep learning},
+  author={Goodfellow, Ian and Bengio, Yoshua and Courville, Aaron},
+  year={2016},
+  publisher={MIT press}
+}
+
+@book {murphy,
+  title={Machine Learning: A Probabilistic Perspective},
+  author={Murphy, Kevin P.},
+  year={2012},
+  publisher={MIT press}
+}
+
+@article{dropout,
+  title={Dropout: a simple way to prevent neural networks from overfitting},
+  author={Srivastava, Nitish and Hinton, Geoffrey and Krizhevsky, Alex and Sutskever, Ilya and Salakhutdinov, Ruslan},
+  journal={The journal of machine learning research},
+  volume={15},
+  number={1},
+  pages={1929--1958},
+  year={2014},
+  publisher={JMLR. org}
+}
+
+@article{adam,
+  title={Adam: A method for stochastic optimization},
+  author={Kingma, Diederik P and Ba, Jimmy},
+  journal={arXiv preprint arXiv:1412.6980},
+  year={2014}
+}
+
+@book{textbook,
+  title={Textbook of stroke medicine},
+  author={Brainin, Michael and Heiss, Wolf-Dieter},
+  year={2019},
+  publisher={Cambridge University Press}
+}
+
+@article{tici,
+  title={Trial design and reporting standards for intra-arterial cerebral thrombolysis for acute ischemic stroke},
+  author={Higashida, Randall T and Furlan, Anthony J},
+  journal={Stroke},
+  volume={34},
+  number={8},
+  pages={e109--e137},
+  year={2003},
+  publisher={Am Heart Assoc}
+}
+
+@article{mobilenets,
+  title={Mobilenets: Efficient convolutional neural networks for mobile vision applications},
+  author={Howard, Andrew G and Zhu, Menglong and Chen, Bo and Kalenichenko, Dmitry and Wang, Weijun and Weyand, Tobias and Andreetto, Marco and Adam, Hartwig},
+  journal={arXiv preprint arXiv:1704.04861},
+  year={2017}
+}
+
+@article{dilated,
+  title={Multi-scale context aggregation by dilated convolutions},
+  author={Yu, Fisher and Koltun, Vladlen},
+  journal={arXiv preprint arXiv:1511.07122},
+  year={2015}
+}
+
+@inproceedings{yu2017dilated,
+  title={Dilated residual networks},
+  author={Yu, Fisher and Koltun, Vladlen and Funkhouser, Thomas},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={472--480},
+  year={2017}
+}
+
+@article{adamw,
+  title={Fixing weight decay regularization in adam},
+  author={Loshchilov, Ilya and Hutter, Frank},
+  journal={arXiv preprint arXiv:1711.05101},
+  year={2017}
+}
+
+@article{hu,
+  title={Squeeze-and-excitation networks},
+  author={Hu, Jie and Shen, Li and Sun, Gang},
+  journal={arXiv preprint arXiv:1709.01507},
+  volume={7},
+  year={2017}
+}
+
+@InProceedings{pereira,
+author="Pereira, S{\'e}rgio
+and Alves, Victor
+and Silva, Carlos A.",
+editor="Frangi, Alejandro F.
+and Schnabel, Julia A.
+and Davatzikos, Christos
+and Alberola-L{\'o}pez, Carlos
+and Fichtinger, Gabor",
+title="Adaptive Feature Recombination and Recalibration for Semantic Segmentation: Application to Brain Tumor Segmentation in MRI",
+booktitle="Medical Image Computing and Computer Assisted Intervention -- MICCAI 2018",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="706--714",
+abstract="Convolutional neural networks (CNNs) have been successfully used for brain tumor segmentation, specifically, fully convolutional networks (FCNs). FCNs can segment a set of voxels at once, having a direct spatial correspondence between units in feature maps (FMs) at a given location and the corresponding classified voxels. In convolutional layers, FMs are merged to create new FMs, so, channel combination is crucial. However, not all FMs have the same relevance for a given class. Recently, in classification problems, Squeeze-and-Excitation (SE) blocks have been proposed to re-calibrate FMs as a whole, and suppress the less informative ones. However, this is not optimal in FCN due to the spatial correspondence between units and voxels. In this article, we propose feature recombination through linear expansion and compression to create more complex features for semantic segmentation. Additionally, we propose a segmentation SE (SegSE) block for feature recalibration that collects contextual information, while maintaining the spatial meaning. Finally, we evaluate the proposed methods in brain tumor segmentation, using publicly available data.",
+isbn="978-3-030-00931-1"
+}
+
+@InProceedings{roy,
+author="Roy, Abhijit Guha
+and Navab, Nassir
+and Wachinger, Christian",
+editor="Frangi, Alejandro F.
+and Schnabel, Julia A.
+and Davatzikos, Christos
+and Alberola-L{\'o}pez, Carlos
+and Fichtinger, Gabor",
+title="Concurrent Spatial and Channel `Squeeze {\&} Excitation' in Fully Convolutional Networks",
+booktitle="Medical Image Computing and Computer Assisted Intervention -- MICCAI 2018",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="421--429",
+abstract="Fully convolutional neural networks (F-CNNs) have set the state-of-the-art in image segmentation for a plethora of applications. Architectural innovations within F-CNNs have mainly focused on improving spatial encoding or network connectivity to aid gradient flow. In this paper, we explore an alternate direction of recalibrating the feature maps adaptively, to boost meaningful features, while suppressing weak ones. We draw inspiration from the recently proposed squeeze {\&} excitation (SE) module for channel recalibration of feature maps for image classification. Towards this end, we introduce three variants of SE modules for image segmentation, (i) squeezing spatially and exciting channel-wise (cSE), (ii) squeezing channel-wise and exciting spatially (sSE) and (iii) concurrent spatial and channel squeeze {\&} excitation (scSE). We effectively incorporate these SE modules within three different state-of-the-art F-CNNs (DenseNet, SD-Net, U-Net) and observe consistent improvement of performance across all architectures, while minimally effecting model complexity. Evaluations are performed on two challenging applications: whole brain segmentation on MRI scans and organ segmentation on whole body contrast enhanced CT scans.",
+isbn="978-3-030-00928-1"
+}
+
+@inproceedings{loss,
+  title={V-net: Fully convolutional neural networks for volumetric medical image segmentation},
+  author={Milletari, Fausto and Navab, Nassir and Ahmadi, Seyed-Ahmad},
+  booktitle={2016 Fourth International Conference on 3D Vision (3DV)},
+  pages={565--571},
+  year={2016},
+  organization={IEEE}
+}
+
+@article{vae,
+  author    = {Diederik P. Kingma and
+               Max Welling},
+  title     = {An Introduction to Variational Autoencoders},
+  journal   = {CoRR},
+  volume    = {abs/1906.02691},
+  year      = {2019},
+  url       = {http://arxiv.org/abs/1906.02691},
+  archivePrefix = {arXiv},
+  eprint    = {1906.02691},
+  timestamp = {Thu, 13 Jun 2019 13:36:00 +0200},
+  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1906-02691},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{vae2,
+  title={Auto-encoding variational bayes},
+  author={Kingma, Diederik P and Welling, Max},
+  journal={arXiv preprint arXiv:1312.6114},
+  year={2013}
+}
+
+@article{vaecomp,
+  title={Variational autoencoder based anomaly detection using reconstruction probability},
+  author={An, Jinwon and Cho, Sungzoon},
+  journal={Special Lecture on IE},
+  volume={2},
+  number={1},
+  year={2015}
+}
+
+@article{vaeadd,
+  title={Unsupervised learning of phase transitions: From principal component analysis to variational autoencoders},
+  author={Wetzel, Sebastian J},
+  journal={Physical Review E},
+  volume={96},
+  number={2},
+  pages={022140},
+  year={2017},
+  publisher={APS}
+}
+
+@book{datashift,
+  title={Dataset shift in machine learning},
+  author={Quionero-Candela, Joaquin and Sugiyama, Masashi and Schwaighofer, Anton and Lawrence, Neil D},
+  year={2009},
+  publisher={The MIT Press}
+}
+
+@inproceedings{batch2,
+  title={Batch renormalization: Towards reducing minibatch dependence in batch-normalized models},
+  author={Ioffe, Sergey},
+  booktitle={Advances in neural information processing systems},
+  pages={1945--1953},
+  year={2017}
+}
+
+@article{batch,
+  title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
+  author={Ioffe, Sergey and Szegedy, Christian},
+  journal={arXiv preprint arXiv:1502.03167},
+  year={2015}
+}
+
+@misc{plt,
+  title = {ISLES Challenge 2017},
+  howpublished = {\url{https://www.smir.ch/ISLES/Start2017}},
+  note = {Acessed: 2019-09-23}
+}
+
+@article{isles,
+  title={ISLES 2015-A public evaluation benchmark for ischemic stroke lesion segmentation from multispectral MRI},
+  author={Maier, Oskar and Menze, Bjoern H and von der Gablentz, Janina and H{\"a}ni, Levin and Heinrich, Mattias P and Liebrand, Matthias and Winzeck, Stefan and Basit, Abdul and Bentley, Paul and Chen, Liang and others},
+  journal={Medical image analysis},
+  volume={35},
+  pages={250--269},
+  year={2017},
+  publisher={Elsevier}
+}
+
+@inproceedings{pinto,
+  title={Enhancing clinical MRI Perfusion maps with data-driven maps of complementary nature for lesion outcome prediction},
+  author={Pinto, Adriano and Pereira, S{\'e}rgio and Meier, Raphael and Alves, Victor and Wiest, Roland and Silva, Carlos A and Reyes, Mauricio},
+  booktitle={International Conference on Medical Image Computing and Computer-Assisted Intervention},
+  pages={107--115},
+  year={2018},
+  organization={Springer}
+}
+
+@article{dice,
+  title={Comparison of similarity coefficients based on RAPD markers in the common bean},
+  author={Duarte, Jair Moura and Santos, Jo{\~a}o Bosco dos and Melo, Leonardo Cunha},
+  journal={Genetics and Molecular Biology},
+  volume={22},
+  number={3},
+  pages={427--432},
+  year={1999},
+  publisher={SciELO Brasil}
+}
+
+@article{hd,
+  title={Similarity measures of intuitionistic fuzzy sets based on Hausdorff distance},
+  author={Hung, Wen-Liang and Yang, Miin-Shen},
+  journal={Pattern Recognition Letters},
+  volume={25},
+  number={14},
+  pages={1603--1611},
+  year={2004},
+  publisher={Elsevier}
+}
+
+@inproceedings{assddice,
+  title={Coronary lumen segmentation using graph cuts and robust kernel regression},
+  author={Schaap, Michiel and Neefjes, Lisan and Metz, Coert and van der Giessen, Alina and Weustink, Annick and Mollet, Nico and Wentzel, Jolanda and van Walsum, Theo and Niessen, Wiro},
+  booktitle={International Conference on Information Processing in Medical Imaging},
+  pages={528--539},
+  year={2009},
+  organization={Springer}
+}
+
+@article{precrec,
+  title={Statistical validation metric for accuracy assessment in medical image segmentation},
+  author={Popovic, Aleksandra and De la Fuente, Mat{\'\i}as and Engelhardt, Martin and Radermacher, Klaus},
+  journal={International Journal of Computer Assisted Radiology and Surgery},
+  volume={2},
+  number={3-4},
+  pages={169--181},
+  year={2007},
+  publisher={Springer}
+}
+
+@inproceedings{unet,
+  title={U-net: Convolutional networks for biomedical image segmentation},
+  author={Ronneberger, Olaf and Fischer, Philipp and Brox, Thomas},
+  booktitle={International Conference on Medical image computing and computer-assisted intervention},
+  pages={234--241},
+  year={2015},
+  organization={Springer}
+}
+
+@inproceedings{amorim,
+  title={Segmentation Squeeze-and-Excitation Blocks in Stroke Lesion Outcome Prediction},
+  author={Amorim, Joana and Pinto, Adriano and Pereira, S{\'e}rgio and Silva, Carlos A},
+  booktitle={2019 IEEE 6th Portuguese Meeting on Bioengineering (ENBENG)},
+  pages={1--4},
+  year={2019},
+  organization={IEEE}
+}
+
+@article{winzeck2018isles,
+  title={Isles 2016 and 2017-benchmarking ischemic stroke lesion outcome prediction based on multispectral mri},
+  author={Winzeck, Stefan and Hakim, Arsany and McKinley, Richard and Pinto, Jos{\'e} AADSR and Alves, Victor and Silva, Carlos and Pisov, Maxim and Krivov, Egor and Belyaev, Mikhail and Monteiro, Miguel and others},
+  journal={Frontiers in neurology},
+  volume={9},
+  year={2018},
+  publisher={Frontiers Media SA}
+}
+
+@inproceedings{vaeblock,
+  title={3D MRI brain tumor segmentation using autoencoder regularization},
+  author={Myronenko, Andriy},
+  booktitle={International MICCAI Brainlesion Workshop},
+  pages={311--320},
+  year={2018},
+  organization={Springer}
+}
+
+%-----STATE OF THE ART---------
+
+@article{chyzhyk2015active,
+  title={An active learning approach for stroke lesion segmentation on multimodal MRI data},
+  author={Chyzhyk, Darya and Dacosta-Aguayo, Rosal{\'\i}a and Matar{\'o}, Maria and Gra{\~n}a, Manuel},
+  journal={Neurocomputing},
+  volume={150},
+  pages={26--36},
+  year={2015},
+  publisher={Elsevier}
+}
+
+
+
+@article{mitra2014lesion,
+  title={Lesion segmentation from multimodal MRI using random forest following ischemic stroke},
+  author={Mitra, Jhimli and Bourgeat, Pierrick and Fripp, Jurgen and Ghose, Soumya and Rose, Stephen and Salvado, Olivier and Connelly, Alan and Campbell, Bruce and Palmer, Susan and Sharma, Gagan and others},
+  journal={NeuroImage},
+  volume={98},
+  pages={324--335},
+  year={2014},
+  publisher={Elsevier}
+}
+
+@inproceedings{halme2015isles,
+  title={ISLES (SISS) challenge 2015: segmentation of stroke lesions using spatial normalization, random forest classification and contextual clustering},
+  author={Halme, Hanna-Leena and Korvenoja, Antti and Salli, Eero},
+  booktitle={BrainLes 2015},
+  pages={211--221},
+  year={2015},
+  organization={Springer}
+}
+
+@inproceedings{wang2015stroke,
+  title={Stroke lesion segmentation of 3D brain MRI using multiple random forests and 3D registration},
+  author={Wang, Ching-Wei and Lee, Jia-Hong},
+  booktitle={BrainLes 2015},
+  pages={222--232},
+  year={2015},
+  organization={Springer}
+}
+
+@inproceedings{mahmood2015automatic,
+  title={Automatic ischemic stroke lesion segmentation in multi-spectral MRI images using random forests classifier},
+  author={Mahmood, Qaiser and Basit, Abdul},
+  booktitle={BrainLes 2015},
+  pages={266--274},
+  year={2015},
+  organization={Springer}
+}
+
+@article{maier2015extra,
+  title={Extra tree forests for sub-acute ischemic stroke lesion segmentation in MR sequences},
+  author={Maier, Oskar and Wilms, Matthias and von der Gablentz, Janina and Kr{\"a}mer, Ulrike M and M{\"u}nte, Thomas F and Handels, Heinz},
+  journal={Journal of neuroscience methods},
+  volume={240},
+  pages={89--100},
+  year={2015},
+  publisher={Elsevier}
+}
+
+@inproceedings{robben2015voxel,
+  title={A Voxel-wise, cascaded classification approach to ischemic stroke lesion segmentation},
+  author={Robben, David and Christiaens, Daan and Rangarajan, Janaki Raman and Gelderblom, Jaap and Joris, Philip and Maes, Frederik and Suetens, Paul},
+  booktitle={BrainLes 2015},
+  pages={254--265},
+  year={2015},
+  organization={Springer}
+}
+
+@inproceedings{mckinley2015segmenting,
+  title={Segmenting the ischemic penumbra: a decision forest approach with automatic threshold finding},
+  author={McKinley, Richard and H{\"a}ni, Levin and Wiest, Roland and Reyes, Mauricio},
+  booktitle={BrainLes 2015},
+  pages={275--283},
+  year={2015},
+  organization={Springer}
+}
+
+@article{scalzo2012regional,
+  title={Regional prediction of tissue fate in acute ischemic stroke},
+  author={Scalzo, Fabien and Hao, Qing and Alger, Jeffry R and Hu, Xiao and Liebeskind, David S},
+  journal={Annals of biomedical engineering},
+  volume={40},
+  number={10},
+  pages={2177--2187},
+  year={2012},
+  publisher={Springer}
+}
+
+@article{griffis2016voxel,
+  title={Voxel-based Gaussian na{\"\i}ve Bayes classification of ischemic stroke lesions in individual T1-weighted MRI scans},
+  author={Griffis, Joseph C and Allendorfer, Jane B and Szaflarski, Jerzy P},
+  journal={Journal of neuroscience methods},
+  volume={257},
+  pages={97--108},
+  year={2016},
+  publisher={Elsevier}
+}
+
+@article{mckinley2017fully,
+  title={Fully automated stroke tissue estimation using random forest classifiers (FASTER)},
+  author={McKinley, Richard and H{\"a}ni, Levin and Gralla, Jan and El-Koussy, Marwan and Bauer, S and Arnold, Marcel and Fischer, Urs and Jung, Simon and Mattmann, Kaspar and Reyes, Mauricio and others},
+  journal={Journal of Cerebral Blood Flow \& Metabolism},
+  volume={37},
+  number={8},
+  pages={2728--2741},
+  year={2017},
+  publisher={SAGE Publications Sage UK: London, England}
+}
+
+@inproceedings{choi2016ensemble,
+  title={Ensemble of deep convolutional neural networks for prognosis of ischemic stroke},
+  author={Choi, Youngwon and Kwon, Yongchan and Lee, Hanbyul and Kim, Beom Joon and Paik, Myunghee Cho and Won, Joong-Ho},
+  booktitle={International Workshop on Brainlesion: Glioma, Multiple Sclerosis, Stroke and Traumatic Brain Injuries},
+  pages={231--243},
+  year={2016},
+  organization={Springer}
+}
+
+@article{robben2018prediction,
+  title={Prediction of final infarct volume from native CT perfusion and treatment parameters using deep learning},
+  author={Robben, David and Boers, Anna MM and Marquering, Henk A and Langezaal, Lucianne LCM and Roos, Yvo BWEM and van Oostenbrugge, Robert J and van Zwam, Wim H and Dippel, Diederik WJ and Majoie, Charles BLM and van der Lugt, Aad and others},
+  journal={arXiv preprint arXiv:1812.02496},
+  year={2018}
+}
+
+@inproceedings{hess2018synthetic,
+  title={Synthetic Perfusion Maps: Imaging Perfusion Deficits in DSC-MRI with Deep Learning},
+  author={Hess, Andreas and Meier, Raphael and Kaesmacher, Johannes and Jung, Simon and Scalzo, Fabien and Liebeskind, David and Wiest, Roland and McKinley, Richard},
+  booktitle={International MICCAI Brainlesion Workshop},
+  pages={447--455},
+  year={2018},
+  organization={Springer}
+}
+
+@article{nielsen2018prediction,
+  title={Prediction of tissue outcome and assessment of treatment effect in acute ischemic stroke using deep learning},
+  author={Nielsen, Anne and Hansen, Mikkel Bo and Tietze, Anna and Mouridsen, Kim},
+  journal={Stroke},
+  volume={49},
+  number={6},
+  pages={1394--1401},
+  year={2018},
+  publisher={Am Heart Assoc}
+}
+
+@article{pinto2018stroke,
+  title={Stroke lesion outcome prediction based on MRI imaging combined with clinical information},
+  author={Pinto, Jos{\'e} Adriano Azevedo Da Silva and Mckinley, Richard and Alves, Victor and Wiest, Roland and Silva, Carlos Alberto and Reyes, Mauricio and others},
+  journal={Frontiers in neurology},
+  volume={9},
+  pages={1060},
+  year={2018},
+  publisher={Frontiers}
+}
+
+@article{rose2001mri,
+  title={MRI based diffusion and perfusion predictive model to estimate stroke evolution},
+  author={Rose, Stephen E and Chalk, Jonathan B and Griffin, Mark P and Janke, Andrew L and Chen, Fang and McLachan, Geoffrey J and Peel, David and Zelaya, Fernando O and Markus, Hugh S and Jones, Derek K and others},
+  journal={Magnetic resonance imaging},
+  volume={19},
+  number={8},
+  pages={1043--1053},
+  year={2001},
+  publisher={Elsevier}
+}
+
+@article{gillebert2014automated,
+  title={Automated delineation of stroke lesions using brain CT images},
+  author={Gillebert, Celine R and Humphreys, Glyn W and Mantini, Dante},
+  journal={NeuroImage: Clinical},
+  volume={4},
+  pages={540--548},
+  year={2014},
+  publisher={Elsevier}
+}
+
+@article{rajini2013computer,
+  title={Computer aided detection of ischemic stroke using segmentation and texture features},
+  author={Rajini, N Hema and Bhavani, R},
+  journal={Measurement},
+  volume={46},
+  number={6},
+  pages={1865--1874},
+  year={2013},
+  publisher={Elsevier}
+}
+
+@article{segnet,
+  title={Segnet: A deep convolutional encoder-decoder architecture for image segmentation},
+  author={Badrinarayanan, Vijay and Kendall, Alex and Cipolla, Roberto},
+  journal={IEEE transactions on pattern analysis and machine intelligence},
+  volume={39},
+  number={12},
+  pages={2481--2495},
+  year={2017},
+  publisher={IEEE}
+}
+
+@article{kamnitsas,
+  title={Efficient multi-scale 3D CNN with fully connected CRF for accurate brain lesion segmentation},
+  author={Kamnitsas, Konstantinos and Ledig, Christian and Newcombe, Virginia FJ and Simpson, Joanna P and Kane, Andrew D and Menon, David K and Rueckert, Daniel and Glocker, Ben},
+  journal={Medical image analysis},
+  volume={36},
+  pages={61--78},
+  year={2017},
+  publisher={Elsevier}
+}
+
+
+@inproceedings{he2016deep,
+  title={Deep residual learning for image recognition},
+  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={770--778},
+  year={2016}
+}
+
+%-------------------------------------------------------------------------------------
+@inproceedings{long2015fully,
+  title={Fully convolutional networks for semantic segmentation},
+  author={Long, Jonathan and Shelhamer, Evan and Darrell, Trevor},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={3431--3440},
+  year={2015}
+}
+
+@inproceedings{wang2017automatic,
+  title={Automatic brain tumor segmentation using cascaded anisotropic convolutional neural networks},
+  author={Wang, Guotai and Li, Wenqi and Ourselin, S{\'e}bastien and Vercauteren, Tom},
+  booktitle={International MICCAI Brainlesion Workshop},
+  pages={178--190},
+  year={2017},
+  organization={Springer}
+}
+
+@article{springenberg2014striving,
+  title={Striving for simplicity: The all convolutional net},
+  author={Springenberg, Jost Tobias and Dosovitskiy, Alexey and Brox, Thomas and Riedmiller, Martin},
+  journal={arXiv preprint arXiv:1412.6806},
+  year={2014}
+}
+
+@article{pereira2019adaptive,
+  title={Adaptive feature recombination and recalibration for semantic segmentation with Fully Convolutional Networks},
+  author={Pereira, S{\'e}rgio and Pinto, Adriano and Amorim, Joana and Ribeiro, Alexandrine and Alves, Victor and Silva, Carlos A},
+  journal={IEEE transactions on medical imaging},
+  year={2019},
+  publisher={IEEE}
+}
+
+@article{pedamonti2018comparison,
+  title={Comparison of non-linear activation functions for deep neural networks on MNIST classification task},
+  author={Pedamonti, Dabal},
+  journal={arXiv preprint arXiv:1804.02763},
+  year={2018}
+}
+
+@incollection{nanjundaswamy2011neuroimaging,
+  title={Neuroimaging in acute ischemic stroke},
+  author={Nanjundaswamy, Shashidhara and Cohen, Ronald A and Fisher, Marc},
+  booktitle={Brain Imaging in Behavioral Medicine and Clinical Neuroscience},
+  pages={293--308},
+  year={2011},
+  publisher={Springer}
+}
+
+@article{butcher2010acute,
+  title={Acute Stroke Imaging Part I: Fundamentals},
+  author={Butcher, K and Emery, D},
+  journal={Canadian Journal of Neurological Sciences},
+  volume={37},
+  number={1},
+  pages={4--16},
+  year={2010},
+  publisher={Cambridge University Press}
+}
+
+@article{butcher2010acute_2,
+  title={Acute stroke imaging part II: the ischemic penumbra},
+  author={Butcher, K and Emery, D},
+  journal={Canadian Journal of Neurological Sciences},
+  volume={37},
+  number={1},
+  pages={17--27},
+  year={2010},
+  publisher={Cambridge University Press}
+}
+
+@article{mokin2014endovascular,
+  title={Endovascular treatment of acute ischemic stroke: the end or just the beginning?},
+  author={Mokin, Maxim and Khalessi, Alexander A and Mocco, J and Lanzino, Giuseppe and Dumont, Travis M and Hanel, Ricardo A and Lopes, Demetrius K and Fessler, Richard D and Ringer, Andrew J and Bendok, Bernard R and others},
+  journal={Neurosurgical focus},
+  volume={36},
+  number={1},
+  pages={E5},
+  year={2014},
+  publisher={American Association of Neurological Surgeons}
+}
+
+@article{adams1993classification,
+  title={Classification of subtype of acute ischemic stroke. Definitions for use in a multicenter clinical trial. TOAST. Trial of Org 10172 in Acute Stroke Treatment.},
+  author={Adams Jr, Harold P and Bendixen, Birgitte H and Kappelle, L Jaap and Biller, Jose and Love, Betsy B and Gordon, David Lee and Marsh 3rd, EE},
+  journal={Stroke},
+  volume={24},
+  number={1},
+  pages={35--41},
+  year={1993},
+  publisher={Am Heart Assoc}
+}
+
+@inproceedings{rifai2011contractive,
+  title={Contractive auto-encoders: Explicit invariance during feature extraction},
+  author={Rifai, Salah and Vincent, Pascal and Muller, Xavier and Glorot, Xavier and Bengio, Yoshua},
+  booktitle={Proceedings of the 28th International Conference on International Conference on Machine Learning},
+  pages={833--840},
+  year={2011},
+  organization={Omnipress}
+}
+
+@inproceedings{ranzato2007efficient,
+  title={Efficient learning of sparse representations with an energy-based model},
+  author={Ranzato, Marc'Aurelio and Poultney, Christopher and Chopra, Sumit and Cun, Yann L},
+  booktitle={Advances in neural information processing systems},
+  pages={1137--1144},
+  year={2007}
+}
+
+@inproceedings{bengio2013generalized,
+  title={Generalized denoising auto-encoders as generative models},
+  author={Bengio, Yoshua and Yao, Li and Alain, Guillaume and Vincent, Pascal},
+  booktitle={Advances in neural information processing systems},
+  pages={899--907},
+  year={2013}
+}
+
+@inproceedings{he2015delving,
+  title={Delving deep into rectifiers: Surpassing human-level performance on imagenet classification},
+  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle={Proceedings of the IEEE international conference on computer vision},
+  pages={1026--1034},
+  year={2015}
+}

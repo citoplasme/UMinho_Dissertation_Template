@@ -1,0 +1,246 @@
+% Tipo de documento a utilizar
+\documentclass[12pt, a4paper, twoside, openright, english]{book}
+%Idioma e tipo de escrita (encriptacao latina)
+\usepackage[english]{babel}
+%\usepackage[
+%singlelinecheck=false % <-- important
+%]{caption}
+
+\usepackage[xetex]{graphicx}
+\usepackage{fontspec,xunicode}
+\setmainfont[ AutoFakeSlant=0.15 ]{NewsGotT}
+
+\renewcommand{\baselinestretch}{1.25cm}
+% Identacao no primeiro paragrafo
+\usepackage{indentfirst}
+
+%simbolos matematicos
+\usepackage{amssymb}
+
+%Espaçamento
+\usepackage[onehalfspacing]{setspace}
+
+%Margens do documento
+\usepackage[inner=2.5cm,outer=2.5cm,top=2.5cm, bottom=2.5cm, headheight=20pt, headsep=0.75cm]{geometry}
+
+%rotacao de figuras para a horizontal
+\usepackage{pdflscape}
+
+%\usepackage{rotating}
+
+%Tipo de letra, cabeçalhos, tabela de conteúdos, equações e referências
+\usepackage{ fancyhdr, amsmath, textcomp, array, booktabs} %, cite} \bibliographystyle{unsrt}
+%Estilo da bibliografia e modos operandi
+
+\usepackage[square, sort&compress, numbers]{natbib}
+\bibliographystyle{unsrtnat}
+
+\usepackage{notoccite} % nao considerar a lista de figuras e tabelas para construcao das referencias
+\usepackage[nottoc]{tocbibind} %- remove o índice do hyperef
+
+%Configuração das tabelas
+%\setlength{\tabcolsep}{3pt}
+\usepackage{caption, multirow}
+\usepackage[table, xcdraw, color]{xcolor}
+
+\usepackage{geometry}
+\usepackage{pdflscape} % rotacao de tabelas 
+\captionsetup[table]{skip=6pt}
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+\counterwithout{equation}{chapter}
+%Lista de itens
+\usepackage[shortlabels]{enumitem}
+\setlist[enumerate]{nosep}
+
+%PACKAGE PARA ADICIONAR FICHEIROS PDF (CAPA)
+\usepackage[final]{pdfpages}
+
+%Alterar o comportamento das imagens
+%\usepackage{graphicx, float, subcaption, epstopdf, morefloats, multicol}
+\usepackage{graphicx, float, subcaption, morefloats, multicol}
+\graphicspath{ {images/} }
+
+%Estilo dos Capítulos
+\usepackage[Lenny]{fncychap}
+
+%Apagar o que fica entre capítulos
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{%
+  \clearpage
+  {\pagestyle{empty}\origdoublepage}%
+}
+
+% Modo de referência das figuras
+\newcommand{\fref}[1]{Figure~\ref{#1}}
+\newcommand{\tref}[1]{Table~\ref{#1}}
+\newcommand{\eref}[1]{(\ref{#1})}
+\newcommand{\cref}[1]{Chapter~\ref{#1}}
+\newcommand{\sref}[1]{Section~\ref{#1}}
+\newcommand{\aref}[1]{Appendix~\ref{#1}}
+
+\usepackage{boldline}
+%Incluir subsecções na tabela de conteúdos
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Criacao de links para o pdf
+\usepackage[bookmarksnumbered=true, hidelinks]{hyperref}
+ 
+%Listagem de figuras e tabelas no TABLE od CONTENTS
+\renewcommand{\listoffigures}{\begingroup
+\tocsection
+\tocfile{\listfigurename}{lof}
+\endgroup}
+
+%Package para acrónimos e nomenclaturas
+\usepackage[acronym, toc]{glossaries}
+\usepackage{amsmath}
+\DeclareMathOperator{\mtt}{MTT}
+\DeclareMathOperator{\rcbv}{rCBV}
+\DeclareMathOperator{\rcbf}{rCBF}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\dist}{d}
+\DeclareMathOperator{\EX}{\mathbb{E}}
+
+\usepackage{soul,color}
+\DeclareRobustCommand{\hlcyan}[1]{{\sethlcolor{cyan}\hl{#1}}}
+\soulregister\cite7
+\soulregister\citet7
+\soulregister\ref7
+\soulregister\pageref7
+\soulregister\acrshort7
+\soulregister\textsubscript7
+\usepackage{textcomp}
+\input{chapters/acronyms.tex}
+
+\makeglossaries
+
+%APENDICES
+\usepackage[titletoc]{appendix} % \usepackage[titletoc, page]{appendix}
+
+% alteracao do nome da tabela dos conteúdos
+%\addto\captionsportuguese{% Replace "portuguese" with the language you use
+ % \renewcommand{\contentsname}%
+   % {Índice}%
+%}
+\usepackage{arydshln}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+% Para colocar paragraph com numeração e no index
+\usepackage{titlesec}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+% Para espaçar as legendas de sub-imagens
+\usepackage{subcaption}
+\newlength{\imagewidth}
+
+% Para fazer listings
+\usepackage{listings}
+
+\begin{document}
+\selectlanguage{english}
+	
+	%CAPA DA TESE
+	%ELIMINAR AS MARGENS
+	\newgeometry{inner=0in,outer=0in,top=0in, bottom=0in}
+	%\includepdf[pages=1]{chapters/contracapa_final_final_final.pdf}
+	%\includepdf[pages=1]{chapters/CAPA-Dissertacao-Mestrado-EE.pdf}	
+	\includepdf[pages=1]{chapters/FOLHA-ROSTO-EE.pdf}	
+	\restoregeometry
+	
+	% Numeração dos listings apenas com o seu número
+	\renewcommand{\thelstlisting}{\arabic{lstlisting}}
+
+	\let\cleardoublepage\clearpage
+
+	%PÁGINAS INICAIS
+	\frontmatter
+
+	%HEADER E FOOT
+	\pagestyle{plain}	
+	
+	%COPYRIGHTS
+	\input{chapters/copyrights.tex}	
+	
+	%AGRADECIMENTOS
+	\input{chapters/agradecimentos}
+
+    %DECLARACAO INTEGRIDADE
+	\pagestyle{plain}	
+    \input{chapters/declaracao_2.tex}	
+
+	%RESUMO
+	\input{chapters/resumo}
+	\input{chapters/abstract}
+	
+
+	%INDICE
+	\tableofcontents
+	
+	%LISTA DE ACRÓNIMOS
+   
+	\printglossary[type=\acronymtype, title = List of Acronyms]
+	
+	%LISTA DE FIGURAS
+	\listoffigures
+	
+	%LISTA DE TABELAS
+	\listoftables
+	
+
+	%LISTA DE NOMENCLATURA
+	%\printglossary[title=Nomenclature]
+	%\clearemptydoublepage
+	
+	
+	%CORPO DA TESE
+	\mainmatter
+
+
+	%HEADER E FOOT
+	\pagestyle{fancy}% 
+	\fancyhead{} % clear all fields
+	\renewcommand{\headrulewidth}{0.4pt}
+	\renewcommand{\footrulewidth}{0.4pt}
+	\fancyhead[LE,RO]{{\footnotesize \slshape \leftmark}}
+	\fancyfoot[C]{\thepage}
+	
+	% Introduction
+	\input{chapters/chapter_0}
+		
+	% State of the Art
+	\input{chapters/chapter_1}	
+	
+	\input{chapters/chapter_2}
+		
+	%\input{chapters/chapter_3}
+		
+	\input{chapters/chapter_4}
+		
+	\input{chapters/chapter_5}
+	%\clearemptydoublepage
+%	
+	\input{chapters/chapter_6}
+	
+	
+	
+	
+	\bibliography{chapters/references.bib}
+	
+	
+	\input{chapters/appendix}
+	
+	
+	%\input{chapters/chapter_7}
+	%\clearemptydoublepage
+\end{document}

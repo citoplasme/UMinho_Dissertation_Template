@@ -1,0 +1,17 @@
+\chapter{Abstract}
+\begin{center}
+\textbf{Fusion of Perfusion and Diffusion Maps with 4D PWI Sequences in Ischemic Stroke Lesion Outcome Prediction}
+\end{center}
+
+Ischemic stroke is one of the cardiovascular diseases most responsible for taking lives, usually leaving the affected permanently disabled. This health problem is usually due to risk factors like obesity and high blood pressure. In order to diagnose and treat the patients, nowadays, clinicians acquire and analyze \acrshort{mri} or \acrshort{ct} scans. However, being a manual procedure, it is very time consuming and prone to errors. Therefore, the development of robust automated algorithms for segmentation and prediction of the lesion outcome is crucial. Recently, many methodologies to predict the evolution of the lesions were developed, but none has been capable of producing accurate results. 
+
+The aim of this dissertation consisted of developing an automated method to enhance the prediction of the lesion evolution at a 90-day follow-up, given different \acrshort{dwi} and \acrshort{pwi} sequences acquired on the first day. To that extent, several studies were conducted based on a U-Net architecture, where a combination of \acrshort{4d} \acrshort{pwi} data with standard diffusion and perfusion maps, or just the latter set, were fed to the network. In this work, we explored the best number of channels along the network, the inclusion of data augmentation mechanisms, the effect of enlarging the context, the impact of adding attention models, of including the temporal data from the \acrshort{4d} \acrshort{pwi}, and of combining supervised and unsupervised learning methods.
+
+All the conducted studies were evaluated on the publicly available \acrshort{isles} 2017 database, whose data were preprocessed according to the state of the art.
+
+Among all the implemented models, the best approach consisted of a fully convolutional network with an extra set of rotation operations over the already existent data augmentation mechanism of the baseline. This method achieved a top Dice score of 0.35, a Precision of 0.40 and a Recall value of 0.51. Nevertheless, other variants, with different network structures, achieved favorable performances, which were capable of surpassing the most recently published state of the art methodologies.
+
+With this work, it was possible to verify that the best proportion of filters for this problem was 40/80/160 and that data augmentation mechanisms are crucial since the database is very small. In addition, the enlargement of the context may, or may not, benefit the network, depending on the used training subjects. Moreover, the advantages of attention models were verified, but should be further explored in this context. The inclusion of temporally processed \acrshort{pwi} proved to be useful in enhancing the predictions, as well as joining different learning methods, which should be to be tuned to the clinical context. 
+\newline
+
+\textbf{Keywords: Diffusion, 4D \acrshort{pwi}, \acrshort{mri}, Prediction, Stroke}

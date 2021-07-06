@@ -1,0 +1,57 @@
+%Captiluo 1
+\newacronym{1d}{1D}{One Dimensional}
+\newacronym{2d}{2D}{Two Dimensional}
+\newacronym{3d}{3D}{Three Dimensional}
+\newacronym{4d}{4D}{Four Dimensional}
+\newacronym{adc}{ADC}{Apparent Diffusion Coefficient}
+\newacronym{ann}{ANN}{Artificial Neural Network}
+\newacronym{ct}{CT}{Computed Tomography}
+\newacronym{cnn}{CNN}{Convolutional Neural Network}
+\newacronym{dwi}{DWI}{Diffusion Weighted Imaging}
+\newacronym{miccai}{MICCAI}{Medical Image Computing and Computer Assisted Intervention}
+\newacronym{mri}{MRI}{Magnetic Resonance Imaging}
+\newacronym{mtt}{MTT}{Mean Transit Time}
+\newacronym{pwi}{PWI}{Perfusion Weighted Imaging}
+\newacronym{rcbf}{rCBF}{Relative Cerebral Blood Flow}
+\newacronym{rcbv}{rCBV}{Relative Cerebral Blood Volume}
+\newacronym{sgd}{SGD}{Stochastic Gradient Descent}
+\newacronym{tmax}{Tmax}{Time to Maximum}
+\newacronym{ttp}{TTP}{Time to Peak}
+\newacronym{relu}{ReLU}{Rectified Linear Unit}
+\newacronym{toast}{TOAST}{Trial of Org 10172 in Acute Stroke Treatment}
+\newacronym{pet}{PET}{Positron Emission Tomography}
+\newacronym{flair}{FLAIR}{Fluid-Attenuated Inversion Recovery}
+\newacronym{mra}{MRA}{Magnetic Resonance Angiography}
+\newacronym{dsc}{DSC}{Dynamic Susceptibility Contrast}
+\newacronym{aif}{AIF}{Arterial Input Function}
+\newacronym{ctp}{CTP}{Computed Tomography Perfusion}
+\newacronym{tici}{TICI}{Thrombolysis in Cerebral Infarction}
+\newacronym{se}{SE}{Squeeze-and-Excitation}
+\newacronym{segse}{SegSE}{Segmentation Squeeze-and-Excitation}
+\newacronym{scse}{scSE}{Spatial and Channel Squeeze-and-Excitation}
+\newacronym{sepsegse}{SepSegSE}{Separable Segmentation Squeeze-and-Excitation}
+\newacronym{ae}{AE}{Autoencoder}
+\newacronym{vae}{VAE}{Variational Autoencoder}
+\newacronym{bn}{BN}{Batch Normalization}
+\newacronym{isles}{ISLES}{Ischemic Stroke Lesion Segmentation}
+\newacronym{tn}{TN}{True Negative}
+\newacronym{tp}{TP}{True Positive}
+\newacronym{fn}{FN}{False Negative}
+\newacronym{fp}{FP}{False Positive}
+\newacronym{hd}{HD}{Hausdorff Distance}
+\newacronym{assd}{ASSD}{Average Symmetric Surface Distance}
+\newacronym{gt}{GT}{Ground Truth}
+\newacronym{fcnn}{FCNN}{Fully Convolutional Neural Network}
+\newacronym{fmri}{fMRI}{Functional Magnetic Resonance Imaging}
+\newacronym{siss}{SISS}{Sub-acute Ischemic Stroke Lesion Segmentation}
+\newacronym{spes}{SPES}{Acute Stroke Outcome/Penumbra Estimation}
+\newacronym{ttt}{TTT}{Time to Treatment}
+\newacronym{tss}{TSS}{Time-Since-Stroke}
+\newacronym{gru}{GRU}{Gated Recurrent Unit}
+\newacronym{kl}{KL}{Kullback-Leibler}
+\newacronym{cse}{cSE}{Channel Squeeze-and-Excitation}
+\newacronym{sse}{sSE}{Spatial Squeeze-and-Excitation}
+\newacronym{roi}{ROI}{Region of Interest}
+\newacronym{avc}{AVC}{Acidente Vascular Cerebral}
+\newacronym{ml}{ML}{Machine Learning}
+\newacronym{asd}{ASD}{Average Surface Distance}

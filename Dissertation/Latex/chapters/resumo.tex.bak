@@ -1,0 +1,17 @@
+\chapter{Resumo}
+\begin{center}
+\textbf{Fusão de Mapas de Perfusão e Difusão com Sequências 4D PWI na Predição do Derrame Cerebral Isquémico}
+\end{center}
+
+O acidente vascular cerebral isquémico é uma das doenças cardiovasculares que mais causa mortes, deixando geralmente os pacientes permanentemente desabilitados. Este problema de saúde deve-se a fatores de risco como obesidade e hipertensão. De modo a diagnosticar e tratar os pacientes atualmente os especialistas adquirem e analisam sequências de \acrshort{mri} ou \acrshort{ct}. No entanto, sendo um processo manual, é moroso e suscestível a erros. Desta forma, o desenvolvimento de algoritmos automáticos robustos para segmentação e predição da evolução da lesão é crucial. Recentemente, vários métodos para predição do derrame cerebral foram desenvovidos, mas nenhum foi capaz de produzir resultados precisos.
+
+O objetivo desta dissertação consistiu no desenvolvimento de um método automático para melhorar a predição da evolução da lesão ao fim de 90 dias, tendo em conta diferentes sequências de \acrshort{dwi} e \acrshort{pwi} adquiridas no primeiro dia. Para tal, realizaram-se vários estudos, com base numa U-Net, alimentando a rede com uma combinação de informação de \acrshort{4d} \acrshort{pwi} com mapas de difusão e perfusão, ou apenas com o último conjunto. Neste trabalho, explorou-se a melhor proporção de canais ao longo da rede, a inclusão de métodos de \emph{data augmentation}, o efeito de aumentar o contexto, o impacto de adicionar modelos de atenção, de incluir informação temporal da \acrshort{pwi} não processada, e de combinar métodos de aprendizagem supervisionados e não supervisionados.
+
+Todos estes estudos foram avaliados na base de dados publicamente acessível \acrshort{isles} 2017, cujos dados foram pré-processados de acordo com o estado da arte.
+
+De todos os modelos implementados, o melhor consistiu numa rede totalmente convolucional com um conjunto extra de rotações além das já existentes do modelo base. Este método atingiu um Dice máximo de 0.35, uma Precisão de 0.40 e Recall de 0.51. Não obstante, outras variantes, com estruturas de rede diferentes, alcançaram desempenhos favoráveis, sendo capazes de superar o estado da arte.
+
+Neste trabalho, verificou-se que o melhor número de canais para este problema era 40/80/160 e que métodos de \emph{data augmentation} são cruciais, pois a base de dados é pequena. Ademais, o aumento do contexto pode, ou não, beneficiar a rede, dependendo dos casos de treino utilizados. Verificaram-se ainda os benefícios dos modelos de atenção, sendo necessário um estudo mais aprofundado neste contexto. Incluir a \acrshort{pwi} processada temporalmente provou ser útil para melhorar as predições, tal como a junção de métodos de aprendizagem diferentes, a qual necessita de ser aperfeiçoada para o contexto clínico. \newline
+
+
+\textbf{Palavras-Chave: \acrshort{avc}, Difusão, 4D \acrshort{pwi}, \acrshort{mri}, Predição}

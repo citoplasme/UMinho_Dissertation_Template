@@ -1,0 +1,1089 @@
+\chapter{Implementation Details and Results}
+\label{chap:chap4}
+\renewcommand{\arraystretch}{1.2}
+
+In the current chapter we first describe the dataset, as well as the preprocessing applied to the \acrshort{mri} images and the respective performance metrics used to evaluate our methods. Then, the baseline architecture, which was the starting point of this work, is presented. Afterwards, it is given a description of the different approaches taken when using standard parametric maps. These consisted of studying the effect of varying the number of channels per convolution along the network, the impact of adding data augmentation mechanisms, and replacing the baseline structure for a similar one with dilated convolutions. Then, the chapter presents the fusion models of \acrshort{4d} \acrshort{pwi} with diffusion and perfusion maps. Those approaches comprised the inclusion of attention mechanisms, data fusion at three different levels of the network, as well as a novel preprocessing step to include the temporal data of \acrshort{pwi}. The last study consisted of analyzing the effect of joining supervised and unsupervised learning methods. In each section, the methodologies are fully described, analyzed and discussed. Lastly, a comparison against the state of the art is performed.
+	
+	
+\section{Dataset}
+\label{db}
+All the developed work was evaluated on the publicly available \acrshort{isles} 2017 database \cite{plt}. The training was conducted on the Training set, which contains \acrshort{mri} sequences from 43 patients with the respective manual delineation of the lesion at a 90-day follow-up, while the testing resorted to the Challenge set, which includes images from 32 patients with stroke. Every case includes \acrshort{4d} \acrshort{pwi} data, five \acrshort{3d} \acrshort{pwi}-derived maps (\acrshort{mtt}, \acrshort{rcbf}, \acrshort{rcbv}, \acrshort{tmax}, \acrshort{ttp}) and a \acrshort{3d} \acrshort{dwi} map (\acrshort{adc}), alongside non-imaging clinical information such as \acrshort{tici}. All maps were co-registered and skull-stripped \cite{isles}. In order to get a sense of the population of the Training set, Table \ref{tab:stici} shows the number of Training cases per \acrshort{tici} score.
+
+\begin{table*}[htb!]
+    \label{tab:stici}
+    \caption[Number of Training cases per \acrshort{tici} score]{Number of Training cases per \acrshort{tici} score}
+    \centering
+    \resizebox{0.7\textwidth}{!}{
+    \begin{tabular}{c c c c c c}
+       \noalign{\hrule height 1.5pt}
+
+    %\multicolumn{1}{c}{\textbf{}}& \multicolumn{5}{c}{\textbf{TICI}}\\
+    \multicolumn{1}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{TICI 0}}& \multicolumn{1}{c}{\textbf{TICI 1}}& \multicolumn{1}{c}{\textbf{TICI 2a}}& \multicolumn{1}{c}{\textbf{TICI 2b}}& \multicolumn{1}{c}{\textbf{TICI 3}}\\
+    \cline{2-6} 
+    No. of Training cases  & 6 & 3 & 3 & 11 & 20  \\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:stici}
+    }
+    \end{table*}
+    
+%    \begin{table*}[htb!]
+%    \label{tab:stici}
+%    \caption[Number of Training cases per \acrshort{tici} score]{Number of Training cases per \acrshort{tici} score}
+%    \centering
+%    \resizebox{0.29\textwidth}{!}{
+%    \begin{tabular}{c c c c c c}
+%       \noalign{\hrule height 1.5pt}
+%
+%    \multicolumn{1}{c}{\textbf{TICI}}& \multicolumn{1}{c}{\textbf{No. Training cases}}\\
+%    %\multicolumn{1}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{TICI 0}}& \multicolumn{1}{c}{\textbf{TICI 1}}& \multicolumn{1}{c}{\textbf{TICI 2a}}& \multicolumn{1}{c}{\textbf{TICI 2b}}& \multicolumn{1}{c}{\textbf{TICI 3}}\\
+%    \hline 
+%    0  & 6 \\
+%    1 & 3 \\
+%    2a & 3\\
+%    2b & 11\\
+%    3 & 20  \\
+%    \noalign{\hrule height 1.5pt}%\hline
+%    \end{tabular}
+%    \label{tab:stici}
+%    }
+%    \end{table*}
+    
+For training, 33, or 37, cases from the Training dataset were used, depending on which type of imaging information was being considered, more specifically if the \acrshort{4d} \acrshort{pwi} was present, or not, respectively. The removal of training subjects from the training set, in the presence of latter data, was due to the fact that four cases with stroke did not provide viable \acrshort{4d} \acrshort{pwi} data. Therefore, they could not be utilized. From the remaining six Training set's cases, only four were used during validation, regardless of which imaging information was being considered. The remainder two were excluded from the validation set because their presence during that step would produce performances that provided no correlation with the corresponding results obtained when evaluated on the Challenge set. In preliminary studies, we observed that these two cases had a \acrshort{tici} score of 0, which means that they comprised large lesions. After many experiments, we verified that the inclusion of these subjects on the validation phase allowed a good characterization of the training set. However, the same behavior would not transpose to the Challenge results, reason why we believe that the Challenge dataset comprises a bigger amount of small lesions, which may even be smaller than the ones comprised in the Training set. This assumption comes also from the fact that, when these cases were added to the training set in some of our experiments, the network would generalize well to that same dataset, but, when applied to the Challenge, the performance decayed, with traces of overestimation.
+
+ %Specifically, when we included these two cases, along with the other four, the evaluation metrics would increase to extremely superior values, when compared to those verified on the Challenge evaluation. Therefore, although this larger validation set was capable of characterizing well the training set, it did not provide accurate insight to the performance of the model on the Challenge set. These cases were not used during the training phase as well since they did not provide any contribution on the performance of the tested models and, sometimes, even lowered the performance of the model on the Challenge set. Taking into account that the Training and Challenge datasets comprise acquisitions from different centers, which may not resort to the same image acquisition protocols, it may explain why these two cases were not capable of contributing to the enhancement of the performance, as explained in sec \ref{generalization} in Chapter \ref{chap:chap3}.}
+%Although we don't know the size of the lesions comprised in the Challenge dataset, we believe that it is composed by smaller lesions in comparison to the ones present in the Training set (see the following sections for more details). Therefore, knowing that both these two Training cases comprise large lesions, it may justify why they did not 
+
+\section{Preprocessing}
+\label{preproc}
+The preprocessing applied to the stroke data corresponds to the one implemented by \citet{pinto}. The \acrshort{4d} \acrshort{pwi} sequences were aligned across the peak concentration of the contrast agent. This step was performed to detect a temporal window which we believe to contain hemodynamic information necessary to the estimation of the tissue at risk of infarction. The size of this window was 26 slices, as in \citet{pinto}. Then, all maps were resized to the same volume space -- $ 256 \times 256 \times 32 $ -- since the image acquisitions were performed in different centers \cite{winzeck2018isles}. Besides, \acrshort{tmax} and \acrshort{adc} were clipped to $ [0,20 ] s$ and $ [0,2600 ] \times 10^{-6} mm^{2}/s$, respectively. A linear scaling was then applied in order for the pixels to be within $ [0,255 ] $. Prior to the resizing and scaling phases, a bias filed correction was performed on the \acrshort{4d} \acrshort{pwi} data.
+
+	
+\section{Performance Evaluation Metrics}
+As explained previously, the aim of lesion outcome prediction is to predict the lesion area accurately 90-days from the image acquisitions, so that the clinicians may assess more easily the patient state. Therefore, each image voxel may belong to one of two classes -- background/healthy tissue or lesion. On one hand, if a voxel belongs to the lesion area, or to the background, and it is classified correctly as such, then we can say that it is defined as a true positive (\acrshort{tp}) or true negative (\acrshort{tn}) case, respectively. On the other hand, if a voxel belongs to the lesion and is classified as background, it is defined as a false negative (\acrshort{fn}) voxel. Similarly, in the reverse situation, the voxel would be defined as a false positive (\acrshort{fp}) case \cite{precrec}. Based on these sets of voxels, it is possible to determine three of the performance evaluation metrics used -- Dice \cite{assddice}, Precision and Recall \cite{precrec} -- which are defined by
+\begin{eqnarray}
+\label{eq:51}
+Dice = \frac{2TP}{2TP + FP + FN},
+\end{eqnarray}
+\begin{eqnarray}
+\label{eq:52}
+Precision = \frac{TP}{TP+FP},
+\end{eqnarray}
+\begin{eqnarray}
+\label{eq:53}
+Recall = \frac{TP}{TP+FN}.
+\end{eqnarray}
+
+To evaluate the performance of the models, we also resorted the Hausdorff distance (\acrshort{hd}) and average symmetric surface distance (\acrshort{assd}) metrics.  
+
+The \acrshort{hd} measures the resemblance in a metric space of two non-empty compact sets with respect to their positions \cite{hd}. Considering $ A_S $ and $ B_S $ as the ground truth and prediction surface voxels, respectively, then \acrshort{hd} may be defined as 
+\begin{eqnarray}
+\label{eq:54}
+HD(A_S , B_S ) = \max \Big\{ \max_{a \in A_S} \min_{b \in B_S} \dist(a,b), \max_{b \in B_S} \min_{A \in A_S} \dist(b,a) \Big\},
+\end{eqnarray}
+where $ \dist(\cdot,\cdot) $ is the Euclidean distance \cite{winzeck2018isles}.
+ 
+ The \acrshort{assd} may be determined by first computing the distance to the closest point on the \acrshort{gt} for each pixel on the prediction, and vice-versa, and then averaging these distances \cite{assddice}. That being said, it depends on the average surface distance (\acrshort{asd}) between $ A_S $ and $ B_S $ \cite{winzeck2018isles}. Therefore, \acrshort{assd} may defined as follows
+ \begin{eqnarray}
+\label{eq:hd}
+ASSD(A_S , B_S ) = \frac{ASD(A_S, B_S)+ASD(B_S, A_S)}{2} \text{,   where}
+\end{eqnarray}
+ \begin{eqnarray}
+\label{eq:55}
+ASD(A_S , B_S ) = \frac{\sum_{a \in A_S} \min_{b \in B_S} d(a,b)}{|A_S|}. 
+\end{eqnarray}
+
+These performance metrics are the same used to evaluate the Challenge predictions on the submission platform \cite{plt}.
+
+\section{Baseline Architecture}
+\label{baseline}
+The developed baseline model (Figure \ref{fig:baseline}) consisted of an U-Net inspired from the works of \citet{unet} and \citet{pinto}. As any other U-Net, the one presented in this dissertation comprised an encoder and a decoder, both composed by three levels. The first level of the encoder consisted of four \acrshort{2d} convolutional blocks with 40 filters. The remaining two levels included two \acrshort{2d} convolutional blocks with 80 and 160 channels each, along with the respective max-pooling layers with a down-sampling factor of 2. Each convolutional block comprised not only the convolution with a kernel size of $ 3\times3 $, but also \acrshort{bn} and \acrshort{relu} layers, as well as spatial dropout every two blocks, in this exact order. The decoder comprised a total of four convolutional blocks, two in each level, along with the up-sampling layers. The decoding process mimicked the encoder counterpart. Additionally, long skip connections were employed between the encoder and decoder levels. At the end, a \acrshort{2d} convolution with a kernel size of $ 1\times1 $ was applied, followed by a softmax layer to retrieve the predictions. The input of this architecture consisted only of the six standard diffusion and perfusion \acrshort{mri} maps, as presented in the prime state of the art deep learning-based implementations. 
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=1\textwidth]{/chpt_4/last/baseline.png}
+ 	\caption[Baseline network architecture.]
+ 	{Baseline network architecture.}
+ 	\label{fig:baseline}
+\end{figure}
+
+To train this model, 200 patches of size $ 88\times88 $ were extracted randomly from each of the 37 training cases, forming mini-batches of size 4. The loss function used in all our models was the soft dice loss and the optimizer consisted of Adam. In addition, we resorted to He Normal initialization \cite{he2015delving} to achieve convergence. Lastly, $90\textdegree$ rotations were applied to the patch as a data augmentation mechanism. These details, as well as the hyperparameters of the network, do not change in the next sections, unless otherwise stated. Table \ref{tab:51} summarizes the best hyperparameters for the baseline network.
+
+\begin{table*}[htb!]
+    \label{tab:51}
+    \caption[Hyperparameters of the baseline architecture, where p\textsubscript{D} denotes the probability of dropout and $ \lambda $ is the L\textsubscript{2} norm parameter]{Hyperparameters of the baseline architecture, where $ p_{drop} $ denotes the probability of dropout and $ \lambda $ is the L\textsubscript{2} norm parameter}
+    \centering
+    \resizebox{0.33\textwidth}{!}{
+    \begin{tabular}{c c}
+       \noalign{\hrule height 1.5pt}
+
+    \multicolumn{1}{c}{\textbf{Training Settings}}& \multicolumn{1}{c}{\textbf{Value}}\\
+    \hline 
+    Input Patch Size  &  $ 88\times88 $  \\
+    No. of Patches & $200$ \\
+    $ p_{drop} $  & $0.25$ \\
+    $ \lambda $  &  $ 1\times10^{-7} $ \\
+    Learning Rate  &  $ 1\times10^{-5} $ \\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:51}
+    }
+    \end{table*}
+
+\section{Effect of Varying the Number of the Feature Maps}
+\label{width}
+In this dissertation, we begin by analyzing the effect of varying the number of the channels across the network. Therefore, a variant of the \emph{Baseline} model, with an identical architecture, is compared to the same, except that instead of having the 40/80/160 filters' proportion presented in the base model, this one employs 32, 64 and 128 channels at the higher, middle and lower resolution levels of the U-Net, respectively. The choice of these values was based on the work developed by \citet{pinto}. Through this approach, we hoped to understand if the choice of the amount of filters in \cite{pinto} provided enough context for the lesion outcome prediction. All the hyperparameters of the employed new model remained untouched, based on the ones used on the \emph{Baseline} method.
+
+
+
+\subsection{Experimental Results and Analysis}
+The obtained metrics when applying this variant to the validation and Challenge datasets are exhibited on Table \ref{tab:52}, as well as the \emph{Baseline} results, in order to compare them.
+
+\begin{table*}[htb!]
+    \label{tab:52}
+    \caption[Average scores and standard deviations obtained by varying the proportion of the feature maps from 40/80/160 to 32/64/128 on the validation and \acrshort{isles} 2017 Challenge datasets]{Average scores and standard deviations obtained by varying the proportion of the feature maps from 40/80/160 to 32/64/128 on the validation and \acrshort{isles} 2017 Challenge datasets}
+    \centering
+    \resizebox{0.95\textwidth}{!}{
+    \begin{tabular}{l c c c c c c}
+       \noalign{\hrule height 1.5pt}
+
+    \multicolumn{2}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{Dice}}& \multicolumn{1}{c}{\textbf{HD}}&  \multicolumn{1}{c}{\textbf{ASSD}}& \multicolumn{1}{c}{\textbf{Precision}}& \multicolumn{1}{c}{\textbf{Recall}}\\
+    \cline{3-7} 
+    \multirow{2}{*}{\rotatebox[origin=c]{90}{\textit{Val.}}} &
+     \multicolumn{1}{c}{Baseline}             & \underline{0.37} $\pm$ 0.23 & \underline{17.47} $\pm$ 11.60 & \underline{8.66} $\pm$ 12.49 & \underline{0.36} $\pm$ 0.27 & \underline{0.49} $\pm$ 0.31 \\ &
+    \multicolumn{1}{c}{32/64/128 Variant}  & 0.35 $\pm$ 0.23 & 18.77 $\pm$ 11.04 & 8.78 $\pm$ 12.42 & 0.34 $\pm$ 0.27 & 0.47 $\pm$ 0.29 \\  
+    \hline\hline
+    \multirow{2}{*}{\rotatebox[origin=c]{90}{\textit{Chal.}}} &
+    \multicolumn{1}{c}{Baseline}             & \underline{0.35} $\pm$ 0.21 & 29.13 $\pm$ 16.09 & 5.21 $\pm$ 3.81 & \underline{0.39} $\pm$ 0.26 & 0.52 $\pm$ 0.30 \\ &
+    \multicolumn{1}{c}{32/64/128 Variant}  & \underline{0.35} $\pm$ 0.21 & \underline{29.05} $\pm$ 15.52 & \underline{5.10} $\pm$ 3.65 & 0.37 $\pm$ 0.25 & \underline{0.54} $\pm$ 0.30 \\     
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:52}
+    }
+    \end{table*}
+    
+Looking at the validation metrics, everything indicates that the \emph{Baseline} would perform better when applied to the Challenge dataset, as all metrics surpassed those obtained on its variant with a filter proportion of 32/64/128. However, when we analyze the Challenge metrics, that does not happen. Here, we verify that, although both models achieved the same Dice score, the remaining metrics are slightly different. Regarding the distance metrics, it is seen that those obtained with the variant with fewer channels are slightly lower than those of the \emph{Baseline}. Examining the Precision and Recall scores, we verify an interesting behavior. Both have a good balance between the two, which is very important in this problem's context \cite{winzeck2018isles}, but the \emph{Baseline} was capable of attaining higher Precision values, whereas its variant achieved superior Recall scores. This means that the \emph{32/64/128 Variant} generated bigger lesion volumes on its predictions, while the \emph{Baseline} produced more accurate predictions. We can then say that having a bigger proportion of channels in this problem is more advantageous, as the network is capable of propagating more context information to higher resolution layers and this is why the \emph{Baseline} was capable of detecting smaller lesions more accurately. In the stroke problem context, the \emph{Baseline} results are preferable as the over-delineation of a lesion obtained through the implementation of the other model may result in unnecessary treatments/surgical procedures on healthy tissue.
+
+Figure \ref{fig:widthval} exhibits the standard parametric maps and \acrshort{gt} from validation subject 5, whose \acrshort{tici} score is 3, alongside the resultant delineations of the lesion retrieved from the \emph{Baseline} and \emph{32/64/128 Variant} models. As one can see, using a channels' proportion of 32/64/128 led to the inclusion of \acrshort{fp} voxels present on the hemisphere opposite to where the lesion is located. Although using a proportion of 40/80/160 channels along the network, as in \emph{Baseline}, resulted in overestimation of the lesion of this validation subject, it was capable of detecting accurately a bigger amount of lesion tissue voxels than the other variant, which misplaced the lesion. The fact that the prediction obtained with \emph{Baseline} was the one that best resembled the true lesion, among the two methods, may be verified through the respective evaluation metrics.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.95\textwidth]{/chpt_4/last/width.png}
+ 	\caption[Diffusion and perfusion \acrshort{mri} parametric maps of validation case 5 (first row), alongside the ground truth (red) and the predictions (yellow) obtained with the \emph{Baseline} and \emph{32/64/128 Variant} models (second row). Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Diffusion and perfusion \acrshort{mri} parametric maps of validation case 5 (first row), alongside the ground truth (red) and the predictions (yellow) obtained with the \emph{Baseline} and \emph{32/64/128 Variant} models (second row). Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:widthval}
+\end{figure}
+
+    
+\section{Impact of Data Augmentation -- Rotations}
+\label{rot}
+Data augmentation is crucial in the stroke tissue outcome prediction context since the database has scarce data, which might undermine the performance of the methods. One of the many performed studies involved employing different rotation angles as a data augmentation mechanism. 
+
+To emphasize how important data augmentation is, a test where no rotations were employed was first conducted. Then, we trained two other models where, besides having the $90\textdegree$ rotations, we added more angles. One of them, named \emph{Range}, had an additional range of angles, $[-20\textdegree, 20\textdegree]$, from which the model would choose values randomly and perform rotations accordingly. In the other one, \emph{Population}, an additional population of angles, $\{-20\textdegree, -10\textdegree, 10\textdegree, 20\textdegree \}$, was included. With these extra rotations over the $90\textdegree$, we hoped to get more natural variations of the lesion orientation. Note that both the range and the population were limited to the same minimum and maximum. This decision was based on the verification that the increment of these two values would lead to lower performance values, and therefore, it was assumed that the network was producing repetitive cases. All conducted tests had the same architecture as the \emph{Baseline} model presented in section \ref{baseline}.
+
+When adding new rotation angles over the $90\textdegree$ rotations, we introduced a probability $ p_{r} $ which acted over the choice of the patch after applying one of those angles, i.e., the selection of a patch as input training data where a rotation angle $ \alpha $ was performed had a probability of $ p_{r} $. As a result, and knowing that the probability of choosing a patch after performing a $90\textdegree$ rotation is $ 0.25 $, then the final patch, where $ \alpha $ was performed over the latter rotation, had a probability $ 0.25\times p_{r} $ of being chosen. Both the \emph{Range} and \emph{Population} models had $ p_r=0.5 $.
+
+
+Table \ref{tab:53} presents the implementation details of each model. Note that only those that differed from the \emph{Baseline} ones are exhibited, and that both the patch size and the number of patches differ when new rotation angles were included. The input patch size had to be increased through padding in order to assure that we would be able to obtain a patch with the same dimensions as those used in the \emph{Baseline} ($ 88\times88 $) at the beginning of the network, after cropping it. Since there was an increment of the probability of choosing a certain patch with, or without, rotations applied, we also increased the number of patches to ensure that some of the original input patches were included as well. Both the number of input patches and the $ p_r $ value presented represent the best values used in each test.
+
+\begin{table*}[htb!]
+    \label{tab:53}
+    \caption[Implementation details of the tested models comprising different data augmentation methods]{Implementation details of the tested models comprising different data augmentation methods}
+    \centering
+    \resizebox{0.85\textwidth}{!}{
+    \begin{tabular}{c c c c}
+       \noalign{\hrule height 1.5pt}
+    \multicolumn{1}{c}{\textbf{}} &  \multicolumn{1}{c}{} &  \multicolumn{1}{c}{\textbf{Model}} &  \multicolumn{1}{c}{}\\
+    \multicolumn{1}{c}{\textbf{Training Settings}}& \multicolumn{1}{c}{\textbf{No rotations}}& \multicolumn{1}{c}{\textbf{Range}}& \multicolumn{1}{c}{\textbf{Population}}\\ 
+   
+    \hline 
+    Input Patch Size  & $88\times88$ & $124\times124$ & $124\times124$  \\
+    No. of Patches &$ 200$ & $400$ & $1000$ \\
+    Data Augmentation  & -- &  \begin{tabular}{@{}c@{}}$90\textdegree + [-20\textdegree, 20\textdegree]$ \\ Rotations, $ p_{r}=0.5 $ \end{tabular} &  \begin{tabular}{@{}c@{}}$90\textdegree + \{-20\textdegree, -10\textdegree, 10\textdegree, 20\textdegree \}$ \\ Rotations, $ p_{r}=0.5 $ \end{tabular} \\
+      %\multirow{2}{*}{90º + [-20º, 20º] Rotations, $ p_{r}=0.5 $} & \multirow{2}{*}{90º + \{-20º, -10º, 10º, 20º\} Rotations, $ p_{r}=0.5 $}  \\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:53}
+    }
+    \end{table*}
+
+\subsection{Experimental Results and Analysis}
+Table \ref{tab:54} presents the results of the evaluation of the latter methods on the validation set and on the 32 subjects of the Challenge dataset.
+
+\begin{table*}[htb!]
+    \label{tab:54}
+    \caption[Average scores and standard deviations attained through the application of different (or none) rotation angles as a data augmentation mechanism on the validation and \acrshort{isles} 2017 Challenge datasets]{Average scores and standard deviations attained through the application of different (or none) rotation angles as a data augmentation mechanism on the validation and \acrshort{isles} 2017 Challenge datasets}
+    \centering
+    \resizebox{0.9\textwidth}{!}{
+    \begin{tabular}{l c c c c c c}
+       \noalign{\hrule height 1.5pt}
+    \multicolumn{2}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{Dice}}& \multicolumn{1}{c}{\textbf{HD}}&  \multicolumn{1}{c}{\textbf{ASSD}}& \multicolumn{1}{c}{\textbf{Precision}}& \multicolumn{1}{c}{\textbf{Recall}}\\
+    \cline{3-7} 
+    \multirow{4}{*}{\rotatebox[origin=c]{90}{\textit{Validation}}} &
+    \multicolumn{1}{c}{No rotations}  & 0.37 $\pm$ 0.23 & 13.30 $\pm$ 5.97 & 2.17 $\pm$ 1.15 & \underline{0.37} $\pm$ 0.29 & 0.48 $\pm$ 0.26 \\ &
+    \multicolumn{1}{c}{Range} & 0.39 $\pm$ 0.24 & 15.94 $\pm$ 12.18 & 8.49 $\pm$ 12.59 & \underline{0.37} $\pm$ 0.27 & 0.51 $\pm$ 0.33 \\ &
+    \multicolumn{1}{c}{Population} &  \underline{0.43} $\pm$ 0.22 & \underline{10.82} $\pm$ 2.18 & \underline{1.69} $\pm$ 0.80 & 0.36  $\pm$ 0.24 & \underline{0.64} $\pm$ 0.23 \\
+    \cline{2-7}  &
+     \multicolumn{1}{c}{Baseline}             & 0.37 $\pm$ 0.23 & 17.47 $\pm$ 11.60 & 8.66 $\pm$ 12.49 & 0.36 $\pm$ 0.27 & 0.49 $\pm$ 0.31 \\
+    \hline\hline
+    \multirow{4}{*}{\rotatebox[origin=c]{90}{\textit{Challenge}}} &
+     \multicolumn{1}{c}{No rotations}  & 0.31 $\pm$ 0.22 & 32.76 $\pm$ 14.85 & 6.99 $\pm$ 1.60 & 0.30 $\pm$ 0.24 & 0.53 $\pm$ 0.30 \\ &
+    \multicolumn{1}{c}{Range} & \underline{0.35} $\pm$ 0.22 & \underline{28.62}  $\pm$ 16.03 & 5.54 $\pm$ 4.43 & \underline{0.40} $\pm$ 0.27 & 0.51 $\pm$ 0.30 \\ &
+    \multicolumn{1}{c}{Population} &  0.34 $\pm$ 0.22 & 29.95 $\pm$ 13.77 & \underline{5.10} $\pm$ 3.26 & 0.33  $\pm$ 0.24 & \underline{0.59} $\pm$ 0.30 \\
+    \cline{2-7} 
+    \multicolumn{1}{c}{} &
+    \multicolumn{1}{c}{Baseline}             & \underline{0.35} $\pm$ 0.21 & 29.13 $\pm$ 16.09 & 5.21 $\pm$ 3.81 & 0.39 $\pm$ 0.26 & 0.52 $\pm$ 0.30 \\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:54}
+    }
+    \end{table*}
+
+Regarding the removal of $90\textdegree$ rotations, the model was capable of obtaining the same Dice score achieved with the \emph{Baseline} on the validation set. Looking at those results, and comparing them with the base model, one may verify that both the \acrshort{hd} and \acrshort{assd} decreased and a better Precision-Recall balance was attained. However, the same behavior was not verified on the Challenge dataset. Contrarily, the performance reduced and the model obtained higher distance values, while the Precision decreased significantly. The Precision-Recall balance was lost, resulting in overestimation of the lesions. This suggests that the Training dataset may be composed mostly by stroke lesions that do not present much variability regarding the lesions' orientation, unlike what happens on the Challenge dataset. Hence, we demonstrate the added value of data augmentation, more specifically rotations of $90\textdegree$, in the problem of predicting the stroke tissue outcome. Additionally, the disruption on the balance between Precision and Recall might be due to the fact that the Challenge data were acquired in different centers which may have different image acquisition protocols. Due to this, as we referred in section \ref{generalization}, the generalization capacity of model may be compromised.
+
+Comparing the validation metrics obtained using a range of rotation angles to the \emph{Baseline}'s, one would expect an increase of the performance in the Challenge set, since the validation performance surpassed the \emph{Baseline} method in every metric. However, looking at the Challenge scores, we observed that the application of the \emph{Range} model resulted on a similar performance, in comparison to the \emph{Baseline}, which means that, the assumption made when analyzing the validation metrics revealed to be incorrect. Even though the Dice score maintained its value, the employment of a range of rotation angles contributed to lower the Hausdorff distance, and to a slightly better balance between the Precision and Recall metrics. Therefore, the inclusion of the random selection of the rotation angles contributed to the creation of relevant stroke lesions' orientation cases, which were capable of enhancing the prediction of the background pixels as such.
+
+Lastly, analyzing the effect of including a population of rotation angles (\emph{Population} model) on the validation set, one may observe the achievement of the best performance among all four models, reaching a top Dice score of 0.43 and the lowest values on both distance metrics. Yet, the balance between Precision and Recall was lost, with the latter metric increasing exponentially to 0.64.  From experience gained throughout the studies conducted over this year, great increments on Recall with the Precision maintaining its value, or even decreasing, often led to poorer results on Challenge, which actually can be seen in Table \ref{tab:54}. Even though the Dice score decreased only 1\% in comparison to the \emph{Baseline} results, the Precision reduced, with Recall increasing proportionally. Hence, we might conclude that adding a population of new rotation angles results in poorer prediction of the evolution of the lesions. This may be justified if the Challenge dataset is mostly comprised by cases with smaller lesions than the Training set's. That being said, applying discrete valued rotations over those smaller lesions, such as the ones included in the \emph{Population} model, may lead to the generation of more repetitive cases, instead of helping create more natural variations.
+
+Figure \ref{fig:popval} shows the comparison between the predictions of the lesion of the validation case 5 obtained during the validation phase with these three variants of data augmentation and with \emph{Baseline}. Looking at this figure, one can see that, as stated previously, the absence of data augmentation mechanisms does not enhance the predictions. Regarding the \emph{Range} and \emph{Population} predictions, one may see that the latter comprises more \acrshort{tp} and \acrshort{fp} voxels, which is in conformity with the validation results. Nevertheless, both these models overestimate the lesion, as we can observe by the incorrect predicted voxels on the right hemisphere of the brain.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.85\textwidth]{/chpt_4/last/rot_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Baseline}, \emph{No rotations}, \emph{Range} and \emph{Population} models on validation case 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Baseline}, \emph{No rotations}, \emph{Range} and \emph{Population} models on validation case 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:popval}
+\end{figure}
+
+\newpage
+\section{Dilated Convolutions: The Impact of Context}
+\label{dilated}
+In order to better characterize the transition zone between the healthy tissue and the lesion area, we explored the effect of using dilated convolutions to predict the final infarct volume. To that extent, the effect of further expanding the context, while reducing the number of weights associated to the model, was analyzed. To do so, the U-Net architecture of the base model was substituted for a fully dilated convolutional network in an U-shaped block. An example of this network is shown in Figure \ref{fig:dilated}.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/dilated.png}
+ 	\caption[Fully dilated convolutional architecture in an U-block shape.]
+ 	{Fully dilated convolutional architecture in an U-block shape.}
+ 	\label{fig:dilated}
+\end{figure}
+
+This architecture is composed by an encoder and a decoder. The higher level of the encoder comprises four convolutional blocks, as in the \emph{Baseline} architecture. However, before the third block we added a residual connection that connects its input to the end of the last block. The aim of these convolutional blocks with a skip connection, was to create more complex features, since this network only comprises two levels. By removing the third level of the U-Net of the \emph{Baseline}, we further altered the second level of the network, without losing the receptive field, through the addition of increasing dilated layers \cite{yu2017dilated}. In addition, we replaced the max-pooling layer by a convolution with stride 2 to down-sample the input. This substitution was proved to be beneficial when employing this network, since max-pooling generates high frequency activations, which can be propagated and end up aggravating gridding artifacts \cite{yu2017dilated}. The bottleneck of the network consists of a chain of dilated convolutions with increasing dilation factors $ l $, along with residual connections to further compound the features, granting higher levels of context. Then, they are followed by dilated convolutions with reducing $ l $, to avoid gridding artifacts \cite{yu2017dilated}, and an up-sampling layer. The upper level of the decoder is similar to the one implemented in the \emph{Baseline} model, involving two $ 3\times3 $ convolutions and one with a kernel size of $ 1\times1 $, followed by a softmax layer. 
+
+As explained in section \ref{db}, when we intend to include the \acrshort{4d} \acrshort{pwi} information, we will need to remove four of the training examples because they do not possess viable acquisitions of this raw perfusion modality. Since we wanted to provide evidence whether this would be a good architecture to use when combining both \acrshort{mri} modalities, we removed those four subjects and trained the same model with dilated convolutions. However, in order to be able to make direct comparisons with the latter model, the \emph{Baseline} architecture architecture was trained in the same set of training cases. 
+
+As it will be shown later on the discussion of these tests, the employment of a dilated convolutional network, when resorting to all training subjects, fails to provide better results. So, a cascade of two dilated U-blocks, based on the architecture of Figure \ref{fig:dilated}, was implemented. This decision was based on the fact that cascading networks may help improving performance and reduce overfitting \cite{wang2017automatic}. Furthermore, we aimed to enrich the retrieved features by generating more complex ones, through an enlargement of the field of view. To that extent, we made a copy of the architecture shown in Figure \ref{fig:dilated}, starting from the third convolutional layer, inclusive, until the output of the up-sampling layer and placed it right before the second to last dilated convolutional layer of the upper level of the decoder. This new architecture is shown in Figure \ref{fig:cascade}. 
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/cascade.png}
+ 	\caption[Cascade of two dilated convolutional networks in U-block shapes.]
+ 	{Cascade of two dilated convolutional networks in U-block shapes.}
+ 	\label{fig:cascade}
+\end{figure}
+
+In the cascade method, two losses were used: an auxiliary loss at the end of the first U-block, and a main loss which was placed at the end of the network. Thus, the total loss comprised the sum of both loss functions. An auxiliary loss was employed in hope to help compensate the small gradient at the beginning of the network, resultant from the increment of the depth of the network, and, therefore, avoid vanishing gradients. Both of these losses consisted of soft dice loss functions and each had a different weight on the final loss function. The main loss had a constant weight of 1, whereas the weight of the auxiliary loss varied periodically in cycles, starting with an unitary value and gradually decreasing to $ 1\times10^{-2} $. These reducing weight cycles were implemented to make sure that the auxiliary loss had some effect on the total loss, while ensuring that it should not take control over its conduct.
+
+Later on, we studied the effect of including a range of new rotation angles on the cascade, $[-20\textdegree, 20\textdegree]$, with $ p_r=0.5 $. Additionally, a population of angles, $\{-20\textdegree, -10\textdegree, 10\textdegree, 20\textdegree \}$, was also added in another test, with the same $ p_r $ value, to validate once more the effect of extra rotations. These additions were meant to add more variability to the training data and, consequently, improve the performance. On Tables \ref{tab:55} and \ref{tab:56} we showcase the different implementation details between these six models.
+
+
+\begin{table*}[htb!]
+    \label{tab:55}
+    \caption[Implementation details of the different cascade models' variants]{Implementation details of the different cascade models' variants}
+    \centering
+    \resizebox{0.98\textwidth}{!}{
+    \begin{tabular}{c c c c c}
+       \noalign{\hrule height 1.5pt}
+    \multicolumn{1}{c}{\textbf{}} &  \multicolumn{4}{c}{\textbf{Model}}\\
+    %\multicolumn{1}{c}{\textbf{Hyperparameter}}& \multicolumn{1}{c}{\textbf{Dilated Conv.}} &  \multicolumn{1}{c}{\textbf{Subjects Removal}}& \multicolumn{1}{c}{\textbf{Subj. Removal + Dil. Conv.}}\\ 
+    
+    \textbf{Training Settings}  & \textbf{Dilated Conv.} & \textbf{Cascade} & \textbf{Cascade + Population} & \textbf{Cascade + Range} \\% & \begin{tabular}{@{}c@{}}\textbf{Subjects'} \\ \textbf{Removal} \end{tabular} &  \begin{tabular}{@{}c@{}}\textbf{Subj. Removal} \\ \textbf{+ Dil. Conv.} \end{tabular}\\
+   
+    \hline 
+    Input Patch Size  & $104\times104$ & $148\times148$ & $148\times148$ & $148\times148$ \\% & $88\times88$ & $104\times104$ \\
+    No. of Patches & $200$ & $200$ & $400$ & $1000$ \\ %& $200$ & $200$\\
+	Data Augmentation  & $90\textdegree$ Rotations & $90\textdegree$ Rotations &  \begin{tabular}{@{}c@{}}$90\textdegree + \{-20\textdegree, -10\textdegree, 10\textdegree,  20\textdegree \} $ \\ Rotations, $ p_{r}=0.5 $ \end{tabular} &  \begin{tabular}{@{}c@{}}$90\textdegree + [-20\textdegree,20\textdegree]$ \\ Rotations, $ p_{r}=0.5 $ \end{tabular} \\   
+   % \multirow{1}{*}{Data Augmentation}  & \multirow{1}{*}{90º Rotations}  %& \multirow{1}{*}{90º Rotations} & \multirow{1}{*}{90º Rotations} \\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:55}
+    }
+    \end{table*}
+    
+\begin{table*}[htb!]
+    \label{tab:56}
+    \caption[Implementation details of the models with replacement of the U-Net for a dilated U-block with and without subjects removal]{Implementation details of the models with replacement of the U-Net for a dilated U-block with and without subjects removal}
+    \centering
+    \resizebox{0.7\textwidth}{!}{
+    \begin{tabular}{c c c}
+       \noalign{\hrule height 1.5pt}
+    \multicolumn{1}{c}{\textbf{}} &  \multicolumn{2}{c}{\textbf{Model}}\\
+    \multicolumn{1}{c}{\textbf{Training Settings}}& \multicolumn{1}{c}{\textbf{Subjects' Removal}} & \multicolumn{1}{c}{\textbf{Subj. Removal + Dil. Conv.}}\\ 
+   
+    \hline 
+    Input Patch Size  & $88\times88$ & $104\times104$ \\
+    No. of Patches & $200$ & $200$\\
+    \multirow{1}{*}{Data Augmentation}  & \multirow{1}{*}{$90\textdegree$ Rotations}  & \multirow{1}{*}{$90\textdegree$ Rotations} \\
+    %Data Augmentation  & 90º Rotations &  \begin{tabular}{@{}c@{}}90º + \{-20º, -10º, 10º,  20º\}  \\ Rotations, $ p_{r}=0.5 $ \end{tabular} &  \begin{tabular}{@{}c@{}}90º + [-20º,20º] \\ Rotations, $ p_{r}=0.5 $ \end{tabular} \\
+%    \multirow{2}{*}{Data Augmentation}  & \multirow{2}{*}{90º Rotations} &  90º + \{-20º, -10º, 10º,  20º\}  Rotations & 90º + [-20º,20º] Rotations \\
+%    & & $ p_{r}=0.5 $  & $ p_{r}=0.5 $  \\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:56}
+    }
+    \end{table*}
+
+\subsection{Experimental Results and Analysis}
+Table \ref{tab:57} shows the results attained when applying these variants to the validation and Challenge datasets, in comparison to those obtained on the baseline model.
+
+\begin{table*}[htb!]
+    \label{tab:57}
+    \caption[Average scores and standard deviations on the validation and \acrshort{isles} 2017 Challenge datasets, where dilated convolutions replaced the regular ones and cascades of dilated U-blocks were employed]{Average scores and standard deviations on the validation and \acrshort{isles} 2017 Challenge datasets, where dilated convolutions replaced the regular ones and cascades of dilated U-blocks were employed}
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l c c c c c c}
+       \noalign{\hrule height 1.5pt}
+
+    \multicolumn{2}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{Dice}}& \multicolumn{1}{c}{\textbf{HD}}&  \multicolumn{1}{c}{\textbf{ASSD}}& \multicolumn{1}{c}{\textbf{Precision}}& \multicolumn{1}{c}{\textbf{Recall}}\\
+    \cline{3-7} 
+    \multirow{7}{*}{\rotatebox[origin=c]{90}{\textit{Validation}}} &
+    \multicolumn{1}{c}{Dilated Convolutions}  &  0.37 $\pm$ 0.25  & \underline{13.51} $\pm$ 5.76 & \underline{2.04} $\pm$ 1.08 & 0.36 $\pm$ 0.28 & 0.46 $\pm$ 0.29 \\ &
+    \multicolumn{1}{c}{Cascade}  & 0.38 $\pm$ 0.26 & 18.63 $\pm$ 15.61 & 3.48 $\pm$ 3.35 & 0.32 $\pm$ 0.26 & \underline{0.78} $\pm$ 0.09 \\ &
+    \multicolumn{1}{c}{Cascade + Population}  & 0.40 $\pm$ 0.16 & 14.81 $\pm$ 7.18 & \underline{2.04} $\pm$ 0.75 & \underline{0.39} $\pm$ 0.26 & 0.58 $\pm$ 0.21 \\ &
+    \multicolumn{1}{c}{Cascade + Range}  & \underline{0.43} $\pm$ 0.21 & 16.26 $\pm$ 9.76 & 2.29 $\pm$ 1.31 & 0.33 $\pm$ 0.21 & 0.70 $\pm$ 0.20 \\
+     \cdashline{2-7}
+    \multicolumn{1}{c}{} & 
+    \multicolumn{1}{c}{Subjects' Removal}  & 0.38 $\pm$ 0.24 & 19.37 $\pm$ 11.66 &	8.81 $\pm$ 12.41 & 	0.35 $\pm$	0.27	 &  0.53 $\pm$	0.32              \\ &
+   \multicolumn{1}{c}{Subj. Removal + Dil. Conv.}  & 0.37 $\pm$ 0.25  & 17.91 $\pm$ 14.07 & 3.81  $\pm$ 2.82 & 0.37 $\pm$ 0.31 & 0.47 $\pm$ 0.29 \\ 
+    \cline{2-7}  &
+     \multicolumn{1}{c}{Baseline}             & 0.37 $\pm$ 0.23 & 17.47 $\pm$ 11.60 & 8.66 $\pm$ 12.49 & 0.36 $\pm$ 0.27 & 0.49 $\pm$ 0.31 \\
+    \hline\hline
+   \multirow{7}{*}{\rotatebox[origin=c]{90}{\textit{Challenge}}} &
+    \multicolumn{1}{c}{Dilated Convolutions}  &  0.32 $\pm$ 0.21  & 31.44 $\pm$ 15.39 & 5.34 $\pm$ 2.98 & 0.35 $\pm$ 0.27 & 0.53 $\pm$ 0.30 \\ &
+    \multicolumn{1}{c}{Cascade}  & 0.30 $\pm$ 0.21 & 38.58 $\pm$ 20.00 & 6.91 $\pm$ 5.69 & 0.27 $\pm$ 0.23 & \underline{0.64} $\pm$ 0.31 \\ &
+    \multicolumn{1}{c}{Cascade + Population}  & \underline{0.35} $\pm$ 0.22 & 31.85 $\pm$ 16.91 & 5.58 $\pm$ 5.35 & 0.34 $\pm$ 0.24 & 0.58 $\pm$ 0.27 \\ &
+    \multicolumn{1}{c}{Cascade + Range}  & 0.28 $\pm$ 0.26 & 41.03 $\pm$ 18.22 & 7.65 $\pm$ 5.75 & 0.25 $\pm$ 0.24 & 0.60 $\pm$ 0.29 \\
+     \cdashline{2-7}
+    \multicolumn{1}{c}{} & 
+        \multicolumn{1}{c}{Subjects' Removal}  & 0.33 $\pm$ 	0.22 & 33.07 $\pm$ 19.51 &	6.35 $\pm$	6.07 & 	0.34 $\pm$	0.27	 &  0.55 $\pm$	0.31              \\ &
+    \multicolumn{1}{c}{Subj. Removal + Dil. Conv.}  & 0.34 $\pm$ 0.22  & 31.55 $\pm$ 16.43 & \underline{5.19}  $\pm$ 3.32  & 0.38 $\pm$ 0.26 & 0.51 $\pm$ 0.29 \\
+    \cline{2-7} 
+    \multicolumn{1}{c}{} &
+    \multicolumn{1}{c}{Baseline}             & \underline{0.35} $\pm$ 0.21 & \underline{29.13} $\pm$ 16.09 & 5.21 $\pm$ 3.81 & \underline{0.39} $\pm$ 0.26 & 0.52 $\pm$ 0.30 \\
+   \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:57}
+    }
+    \end{table*}
+
+When replacing the U-Net for a fully dilated convolutional architecture, considering 37 training cases, we observed a poorer equilibrium between the Precision and Recall metrics on the validation set, although it was capable of achieving the same Dice score as the \emph{Baseline}. Nonetheless, having an unbalanced Precision-Recall ratio weighs a lot, reason why the model ended up having a lower performance on the Challenge set. 
+
+Let us put aside the latter scores for a moment and look at the \emph{Cascade} validation results. Considering the Dice value, it would be expected a greater overall performance during the Challenge evaluation. Unfortunately, the validation Recall achieved an extremely large value, while the Precision was not able to even reach half of the former evaluation metric's value. Every time we verified this behavior during validation, the Challenge evaluation would always produce results lower than expected, and, sometimes, even lower than those obtained in models with poorer validation performances. This was exactly what happened on the Challenge, as shown in Table \ref{tab:57}. 
+
+Now, if we observe the effect of the addition of the population of rotation angles, we notice that, although the model was not capable of reaching, on Challenge, a performance close to the one attained on the validation set, it was able to achieve the same level of performance of the \emph{Baseline}, with an average Dice score of 0.35. Therefore, the inclusion of other rotation angles contributed to create useful data for the evolution delineation.  Despite being able to compensate the imbalance of the Precision and Recall metrics on \emph{Cascade}, there is still a significant discrepancy between both. Nonetheless, it was not capable of surpassing the \emph{Baseline} performance. 
+
+Taking into account these results, and given the small amount of training data, one may claim that the replacement of the regular U-Net for dilated convolutions, while using the 37 training subjects, enhances non-lesion related details thanks to the enlargement of the field of view and, consequently, overestimates the predictions. By creating a cascade of these U-blocks, the network is capable of seeing even more context which further emphasizes those background details. However, the generation of more data variability mitigated this problem. The capability of achieving great scores on the validation set, but failing on the Challenge dataset, suggests that these sets comprise different types of lesions, with the latter one containing more cases with smaller lesions. Nevertheless, it could also be due to the fact that these sequences were acquired in different centers, as stated previously.
+
+Unlike what we saw on section \ref{rot}, the addition of a range of rotation angles, from which the model chooses values randomly, did provide the best Challenge results in comparison to the variant with a population. Despite achieving the highest Dice score on the validation set and favorable distance metrics as well, it is possible to verify the disparity between Precision and Recall, with the latter metric achieving the largest score among the two. This problem was then transposed to the Challenge set, where the performance fell significantly. This behavior may be explained if the usage of a range like the employed one creates lesion's cases very similar among each other, which results in less lesion variability and, therefore, a worse performance. When using an U-Net, this may have happened as well, but as the network saw less context, it most likely did not affect the performance in the same degree. Therefore, a population of rotation angles is more advantageous than a range in this kind of architecture where dilated convolutions are involved.
+
+Through Figure \ref{fig:dilval} it is possible to compare the predictions on validation case 5 with these four models to the \emph{Baseline}. Comparing the prediction resultant from \emph{Dilated Convolutions}, one may see that the substitution of the regular convolutions by dilated ones resulted in the delineation of healthy tissue voxels as lesion, with fewer lesion voxels included in the prediction. However, the implementation of a dilated convolutional cascade resulted in overestimation of the lesion, although it was capable of covering more \acrshort{tp} voxels. The inclusion of a population of rotation angles seems to have been able to detect the small "hole" marked on the \acrshort{gt}. However, it appears to have misplaced it. Although its predicted volume still comprises a great amount of \acrshort{fp} voxels, it was also able to detect correctly a larger lesion area. When compared to the one obtained with \emph{Cascade + Range}, it seems that the inclusion of a range was able to correct some misclassified voxels, but overestimated the lesion area in the opposite direction. Furthermore, this last model appears to have predicted fewer lesion voxels on the upper part of the \acrshort{gt} delineation.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/dil_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Baseline}, \emph{Dilated Convolutions}, \emph{Cascade}, \emph{Cascade + Population} and \emph{Cascade + Range} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Baseline}, \emph{Dilated Convolutions}, \emph{Cascade}, \emph{Cascade + Population} and \emph{Cascade + Range} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:dilval}
+\end{figure}
+
+Analyzing the effect of removing the four training subjects on the \emph{Baseline} architecture, an increase on the Dice score was verified, along with a significant increment on Recall (0.53), during validation. We suppose that the network was capable of learning more because half of these cases consisted of very small lesions, which are actually complex to segment correctly, while the other two were medium sized ones. However, unlike the validation metrics, on the Challenge set the method achieved lower scores. Not only did the Dice score fall to 0.33, but also the Precision value decreased to 0.34, with a consequent raise in Recall (0.55), which suggests that the model overestimates the evolution of the lesions. Besides, both distance metrics are slightly superior in comparison to the \emph{Baseline} method. Since removing small to medium sized lesions' cases on the training phase influences the generalization capacity, as can be seen on the Challenge set results, this leads us to believe, once again, that the latter dataset comprises a larger amount of smaller stroke lesions in comparison to the Training set. 
+
+Interestingly, employing the dilated convolutional network together with the subjects' removal resulted in a slight increment on the Precision (0.37), allied to a decrease of the Recall score to 0.47, on the validation evaluation. Unlike the \emph{Dilated Convolutions} variant, the Hausdorff distance was superior, as well as the \acrshort{assd}. Yet, the Dice score maintained its value. Seeing the behavior on the validation, it would be expected that its evaluation on the Challenge set would produce lower scores, when compared to its corresponding base model, i.e., the \emph{Subjects' Removal} variant. However, that was not verified as the combination of removing cases and changing the network structure contributed to a better performance, close to the \emph{Baseline} scores. As a result, we believe that the application of dilated convolutions with different dilation ratios provided the network an enhancement on its capability of predicting the lesions' outcomes by expanding the context along the net, compensating the removal of small cases. It is noteworthy that, in comparison, the performance of the network with all training subjects (\emph{Dilated Convolutions}) probably fell precisely because these four cases of stroke possess small-medium sized lesions, occupying, consequently, a small portion of the \acrshort{mri} volume, which emphasizes our theory that this architecture enhances the network's capability of seeing more background pixels.
+
+Figure \ref{fig:dil-4val} presents the predictions on validation subject 5, resultant from the models where we removed four subjects, in comparison to the one obtained with \emph{Baseline}. Looking at the \emph{Subjects' Removal} prediction, we may say that removing those four cases, resulted in a bigger amount of \acrshort{fp} voxels, especially on the hemisphere opposite to where the lesion is located, when compared to the \emph{Baseline} prediction. Although the inclusion of dilated convolutions contributed to a more accurate prediction, which is also revealed by the respective metrics, it emphasized the wrongly predicted area on the opposite hemisphere, which may justify why the overall validation performance did not surpass the \emph{Baseline}'s.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{/chpt_4/last/dil_-4s_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Subjects' Removal} and \emph{Subj. Removal + Dil. Conv.} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Subjects' Removal} and \emph{Subj. Removal + Dil. Conv.} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:dil-4val}
+\end{figure}
+
+\newpage
+\section{Effect of Combining Multiple Data Branches}
+In this section we present two different strategies to combine \acrshort{4d} \acrshort{pwi} data with the information contained in the standard parametric \acrshort{mri} maps (\acrshort{adc}, \acrshort{rcbv}, \acrshort{rcbf}, \acrshort{mtt}, \acrshort{tmax} and \acrshort{ttp}). In the first approach, we added segmentation \acrshort{se} blocks on the fusion branch of the architecture proposed by \citet{pinto}, in order to emphasize the most discriminative features and produce better predictions. In the other one, also based on that same proposal, we merged the data on three different levels of the network and upgraded it to a complex architecture, aiming to ensure the extraction of higher order features and learn to properly process the \acrshort{4d} \acrshort{pwi}, taking advantage of its temporal data.
+
+
+\subsection{Fusion Branch with Segmentation \acrshort{se} Blocks}
+\label{segse}
+In \citet{amorim}, we proposed an enhanced version of \citet{pinto} stroke tissue outcome prediction algorithm. The proposed method employed segmentation attention algorithms on the data fusion branch, as seen in Figure \ref{fig:enbeng}, to select which features are relevant for the stroke outcome prediction problem. Our proposal consisted of an adaptation of the \acrshort{segse} block \cite{pereira}, where we replaced the regular convolutions for depthwise separable ones. With this substitution, we hoped to ensure the selection of the most informative features to further enhance the prediction of the stroke lesions, while reducing the amount of parameters, since the combination of these imaging techniques involves almost a million weights. To evaluate the performance of our proposal, we compared it with the vanilla \acrshort{segse} \cite{hu}, as well as the \acrshort{scse} block \cite{roy}. The input comprised the feature maps obtained at the end of both U-Nets prior to the fusion of the feature sets \cite{pinto}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/attention.png}
+ 	\caption[Overview of the deep learning-based architecture from \citet{pinto} with a segmentation \acrshort{se} block employed on the data fusion branch. Adapted from \cite{amorim}.]
+ 	{Overview of the deep learning-based architecture from \citet{pinto} with a segmentation \acrshort{se} block employed on the data fusion branch. Adapted from \cite{amorim}.}
+ 	\label{fig:enbeng}
+\end{figure}
+
+The study of the \acrshort{segse} block \cite{pereira} employment proceeded in two different strategies: before or after the fusion step. The chosen dilation rate, the expansion factor and the reduction ratio values were the same as the ones used by \citet{pereira}. After studying the block's best location through the first two implemented approaches, the \acrshort{scse} block \cite{roy} was then fully reproduced and implemented on that position. There, we also implemented our proposal, a different version of the \acrshort{segse} designated \acrshort{sepsegse}. The latter block involves separable convolutions, as stated before, and does not make use of those with $ 1\times1 $ kernels, which allowed a reduction on the number of parameters of the network and resulted in the removal of the expansion layer.
+
+The number of training cases, the input size and the number of patches were the same as used in \cite{pinto}, i.e., 33 subjects, $ 88\times88 $ and 550 input patches, respectively. Furthermore, the L\textsubscript{2} and dropout regularization were the same, as well. Table \ref{tab:58} exhibits the hyperparameters used in these tests. 
+
+\begin{table*}[htb!]
+    \label{tab:58}
+    \caption[Hyperparameters of the models where different segmentation \acrshort{se} blocks were employed on the data fusion branch of the network]{Hyperparameters of the models where different segmentation \acrshort{se} blocks were employed on the data fusion branch of the network}
+    \centering
+    \resizebox{0.8\textwidth}{!}{
+    \begin{tabular}{c c c c c}
+       \noalign{\hrule height 1.5pt}
+    \multicolumn{1}{c}{\textbf{}} &  \multicolumn{4}{c}{\textbf{Model}}\\
+    %\multicolumn{1}{c}{\textbf{Hyperparameter}}& \multicolumn{1}{c}{\textbf{\acrshort{segse} Before Fusion}}& \multicolumn{1}{c}{\textbf{\acrshort{segse} After Fusion}}& \multicolumn{1}{c}{\textbf{\acrshort{scse} After Fusion}}& \multicolumn{1}{c}{\textbf{\acrshort{sepsegse} After Fusion}}\\ 
+     \textbf{Training Settings}  &  \begin{tabular}{@{}c@{}}\textbf{\acrshort{segse}} \\ \textbf{Before Fusion} \end{tabular} &  \begin{tabular}{@{}c@{}}\textbf{\acrshort{segse}} \\ \textbf{After Fusion} \end{tabular} &  \begin{tabular}{@{}c@{}}\textbf{\acrshort{scse}} \\ \textbf{After Fusion} \end{tabular} &  \begin{tabular}{@{}c@{}}\textbf{\acrshort{sepsegse}} \\ \textbf{After Fusion} \end{tabular} \\
+    \hline 
+    Dilation Factor & $1$ & $1$ & -- & $1$ \\
+    Reduction Ratio & $10$ & $10$ & $2$ & $6$ \\
+    Expansion Factor &$ 4$ &$ 4$ & -- & -- \\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:58}
+    }
+    \end{table*}
+    
+    
+\subsubsection{Experimental Results and Analysis}
+\label{attention}
+The results obtained on the Challenge dataset, when testing the referred models, are presented on Table \ref{tab:59}. We also included \citet{pinto} results, to compare our results with the base architecture and further understand the influence of the attention mechanisms.
+
+\begin{table*}[htb!]
+    \label{tab:59}
+    \caption[Average scores and standard deviations on ISLES 2017 Challenge dataset using different attention mechanisms, as well as the developed methods proposed by \citet{pinto}]{Average scores and standard deviations on ISLES 2017 Challenge dataset using different attention mechanisms, as well as the developed methods proposed by \citet{pinto}}
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l c c c c c c}
+     \noalign{\hrule height 1.5pt}
+    \multicolumn{2}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{Dice}}& \multicolumn{1}{c}{\textbf{HD}}&  \multicolumn{1}{c}{\textbf{ASSD}}& \multicolumn{1}{c}{\textbf{Precision}}& \multicolumn{1}{c}{\textbf{Recall}}\\
+    \cline{3-7} 
+    \multirow{7}{*}{\rotatebox[origin=c]{90}{\textit{Challenge}}} &
+    \multicolumn{1}{c}{SegSE Before Fusion}  &  \underline{0.29} $\pm$ 0.21& 43.72 $\pm$ 21.69& 7.38 $\pm$ 4.29& 0.25 $\pm$ 0.22& 0.63 $\pm$ 0.28\\ &
+    \multicolumn{1}{c}{SegSE After Fusion}   &  \underline{0.29} $\pm$ 0.20& 41.20 $\pm$ 20.07& 7.26 $\pm$ 4.26& 0.26 $\pm$ 0.23& 0.61 $\pm$ 0.28\\ &
+    \multicolumn{1}{c}{scSE After Fusion}    &  \underline{0.29} $\pm$ 0.20& 39.07 $\pm$ 19.38& 7.04 $\pm$ 4.32 & \underline{0.27} $\pm$ 0.24 & 0.60 $\pm$ 0.28\\ &
+   \multicolumn{1}{c}{SepSegSE After Fusion} &  \underline{0.29} $\pm$ 0.21& \underline{38.90} $\pm$ 20.00 & \underline{7.00} $\pm$ 4.31 & 0.26 $\pm$ 0.23& 0.61 $\pm$ 0.28\\
+    \cline{2-7} 
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Standard Maps Branch \cite{pinto}}            &  0.20 $\pm$ 0.19& 70.04 $\pm$ 20.37& 11.66 $\pm$ 7.40& 0.16 $\pm$ 0.20 & 0.61 $\pm$ 0.28\\ &
+   \multicolumn{1}{c}{Data-driven Branch \cite{pinto}}           &  0.20 $\pm$ 0.18& 54.59 $\pm$  18.69& 9.95 $\pm$ 5.79& 0.21 $\pm$ 0.21& 0.61 $\pm$ 0.27\\ &
+    \multicolumn{1}{c}{Multi-Branch Network \cite{pinto}}            &  \underline{0.29} $\pm$ 0.21& 41.58 $\pm$ 22.04& 7.69 $\pm$ 5.71& 0.23 $\pm$ 0.21& \underline{0.66} $\pm$ 0.29\\
+     \noalign{\hrule height 1.5pt}
+    \end{tabular}
+    \label{tab:59}
+    }
+    \end{table*}
+
+Analyzing the obtained results when altering the location of the \acrshort{segse} block in the fusion branch, and comparing them with the \emph{Multi-Branch Network} model, it is seen that both \acrshort{hd} and \acrshort{assd} decreased when concatenating the data before applying the attention mechanism. Nevertheless, in either case we obtained a better balance between the Precision and Recall scores, through an increment of the Precision. Hence, in the presence of the \acrshort{segse} block, regardless of its location, the attention mechanism improves the quality of the predictions. However, when it is placed after the concatenation, it extracts more the relevant information from the feature sets, therefore attaining a better performance.
+
+Comparing the latter model to the one with the \acrshort{scse} block after the data fusion, we observed that the attention mechanism developed by \citet{roy} surpassed the \acrshort{segse} not only in distance metrics, but also in Precision. The \acrshort{scse} provided an improvent on the Precision-Recall balance as well, with this one being able to raise the Precision score $ 1\% $ more. Therefore, resorting to isolated spatial squeeze and channel excitation operations results in a better enhancement of the most relevant features for stroke tissue outcome prediction. The fact that the \acrshort{segse} involves a superior amount of weights, might be one possible justification.
+
+Regarding the performance of our proposal, the \acrshort{sepsegse} block, as can be seen in Table \ref{tab:59}, it was able to surpass those obtained in \cite{pinto} and even when using the \acrshort{scse}, which could be due to the weight amount reduction. The good balance between the Precision and Recall was maintained, lowering both distance metrics. Although the Dice score did not improve, using this attention mechanism contributed to a substantial better Precision-Recall balance, when compared to its baseline. Therefore, the employment of depthwise separable convolutions results in a better discrimination between feature sets and allows an improved performance of the network.
+
+Figure \ref{fig:attentionval} exhibits the predictions obtained by including segmentation \acrshort{se} blocks on \citet{pinto} model. Comparing the resultant predictions from \emph{\acrshort{segse} Before Fusion} and \emph{\acrshort{segse} After Fusion}, it is possible to observe that the latter model was capable of achieving a more accurate Precision, encompassing fewer \acrshort{fp} voxels. The application of the \acrshort{scse} block led to a prediction with even fewer \acrshort{fp} voxels. When comparing this last prediction to the one obtained with the \acrshort{sepsegse} block, one may see that the latter approach overestimates the lesion slightly more than the \acrshort{scse}. Nevertheless, it was capable of achieving a smaller \acrshort{hd} score. Comparing to the prediction obtained with the \emph{Baseline} method, which was trained with four subjects more than these models, besides having a different architecture and hyperparameters, it is possible to verify that these attention methods were not capable of enhancing the final result in the validation subject. However, the application of attention mechanism resulted in predictions whose shape differs from the \emph{Baseline}'s. Although they comprise a greater amount of \acrshort{fp} voxels, it seems that they were capable of detecting the outline of the lesion area more accurately, reason why these predictions seem to be located in a region closer to the true one. 
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/attention_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{\acrshort{segse} After Fusion}, \emph{\acrshort{segse} Before Fusion}, \emph{\acrshort{scse} After Fusion} and \emph{\acrshort{sepsegse} After Fusion} models on validation subject 5, in comparison to the \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{\acrshort{segse} After Fusion}, \emph{\acrshort{segse} Before Fusion}, \emph{\acrshort{scse} After Fusion} and \emph{\acrshort{sepsegse} After Fusion} models on validation subject 5, in comparison to the \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:attentionval}
+\end{figure}
+
+\subsection{Merging Information at Three Different Levels}
+Although attention mechanisms suppress the less relevant features, with this approach we were only capable of improving slightly the Precision-Recall balance, as well as the distance metrics. Since it was not capable of surpassing the state of the art results on the Dice score, the features that these mechanisms suppress might not influence the final prediction significantly. Therefore, we opted to follow another path to enhance the prediction's accuracy. In this section, we explored the effect of creating more complex features from both the \acrshort{pwi} and the standard parametric maps. Besides, we decided to try merging those features together before being processed on regular U-Net structures. This way, we hoped that the standard parametric maps would provide the \acrshort{pwi} sequences extra information about the lesion, and vice-versa, complementing each other, in order to obtain better outcome predictions. Figure \ref{fig:cross} presents the proposed architecture. The U-Net structure is the same presented in the \emph{Baseline} model (section \ref{baseline}) and the last data fusion branch consists of the same block presented by \citet{pinto}. 
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/cross.png}
+ 	\caption[Overall look of the structure of the complete network where the fusion of the features retrieved from the \acrshort{pwi} and standard parametric maps occurs before and after being processed on the U-Net blocks. \emph{BS} denotes the batch size.]
+ 	{Overall look of the structure of the complete network where the fusion of the features retrieved from the \acrshort{pwi} and standard parametric maps occurs before and after being processed on the U-Net blocks. \emph{BS} denotes the batch size.}
+ 	\label{fig:cross}
+\end{figure}
+
+As seen on the Figure above, we propose to process the temporal data retrieved from the \acrshort{pwi} maps. As to accomplish this, we had to reshape the \acrshort{pwi} sequences to enter the \emph{Temporal Processing} block as a \acrshort{3d} input, with a size of $ 88\times88\times26 $, where the last dimension represents the temporal information. Therefore, in this approach, we have one \acrshort{3d} \acrshort{pwi} channel and six \acrshort{2d} standard parametric \acrshort{mri} maps as inputs. 
+
+In Figure \ref{fig:pwi2d3d} we present the process behind the generation of the \acrshort{pwi} volume, which encompasses the temporal data as the depth dimension. The first step of this procedure consisted of separating the temporal data, $\{T_1,...,T_N\}$, comprised in the original \acrshort{4d} \acrshort{pwi}, where $ T_i $ denotes each temporal acquisition, with $ N $ being its total. After extracting its $ N $ \acrshort{3d} time acquisitions, a smaller temporal window was retrieved, comprising $ N' $ timesteps out of $ N $. In this case, $N'= 26$ acquisitions. Prior to this step, the sequences were aligned across the contrast's peak concentration, as stated in section \ref{preproc}. Note that the 26 time acquisitions of the temporal window do not correspond to the first 26 of the original volume, i.e., $ \{T_{1}',...,T_{26}'\} \neq  \{T_{1},...,T_{26}\}$. Then, from those 26 volumes, a \acrshort{2d} extraction was performed across time, drawing a \acrshort{mri} slice out of a total of 32, from each temporal volume. Simultaneously, a cropping of these sequences was performed, to obtain the intended dimensions, $ H $ and $ W $, which were defined as 88 each. At this stage, the 26 \acrshort{mri} slices were fed to the network, as shown in Figure \ref{fig:cross}. Just before the \emph{Temporal Processing} block, their dimensions were reshaped from $(batch \text{ } size, 88, 88, ch.=26)$ to $(batch \text{ } size, 88, 88, depth=26, ch.=1)$, creating the final volume shown in Figure \ref{fig:pwi2d3d}. Note that the temporal structure of the \acrshort{mri} acquisitions was maintained when forming the temporal \acrshort{pwi} volume. 
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/pwi_2d_3d.png}
+ 	\caption[Generation of the final temporal \acrshort{3d} \acrshort{pwi} volume of a certain Training case $ X $, where the original \acrshort{4d} volume comprised $ N $ total individual \acrshort{3d} acquisitions across time ($ t $). T$ x$ represents the temporal acquisition of the passage of the bolus at timestep $  x$, and T$ x'$ represents the volume after applying the temporal window method, with $  x'$ being a certain timestep of the temporal window. $ H $ and $ W $ denote the height and width of the slices/volumes.]
+ 	{Generation of the final temporal \acrshort{3d} \acrshort{pwi} volume of a certain Training case $ X $, where the original \acrshort{4d} volume comprised $ N $ total individual \acrshort{3d} acquisitions across time ($ t $). $T_i$ represents the temporal acquisition of the passage of the bolus at timestep $  i$, and $T_{x}'$ represents the volume after applying the temporal window method, with $ x$ being a certain timestep within the temporal window. $ H $ and $ W $ denote the height and width of the slices/volumes.}
+ 	\label{fig:pwi2d3d}
+\end{figure}
+
+
+Throughout the entire block of the temporal processing, only the third dimension was processed, i.e., only $ 1\times1\times3 $ convolutions were applied. Dilated convolutions with increasing dilation ratios were used to expand the context and further improve the prediction. Note that these dilation ratios were reduced proportionally to avoid artifacts, as stated previously in section \ref{dilconv}. At the end of this block, we compressed the processed data into three feature maps to summarize the temporal information. The number of channels at the end of the preprocessing block was chosen based on various tests where different values were tested, with three being the one that provided better results. We believe this temporal processing to be very important as it encodes the information related to the bolus passage across the capillary bed. Figure \ref{fig:pwiproc} depicts the \acrshort{3d} \acrshort{pwi} preprocessing block.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/pwi_proc.png}
+ 	\caption[\acrshort{pwi} temporal preprocessing block.]
+ 	{\acrshort{pwi} temporal preprocessing block.}
+ 	\label{fig:pwiproc}
+\end{figure}
+
+
+Regarding the \acrshort{mri} standard parametric maps, we compare two preprocessing blocks (Figure \ref{fig:mapsproc}). The first one, as we call it \emph{Block 1}, was very similar to the one applied on the \acrshort{pwi} data, except that it processed \acrshort{2d} data. The other one (\emph{Block 2}) consisted of a convolutional block with a residual connection. Both were used to generate more complex features, maintaining the patch dimension. Here, we did not reduce the number of channels as each \acrshort{mri} standard parametric map contains important information which could be potentially lost if they were compressed. 
+
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/maps_proc.png}
+ 	\caption[Standard parametric maps' preprocessing blocks. (\emph{Left}) \emph{Block 1} processes the maps data similarly to the temporal processing of the \acrshort{pwi}. (\emph{Right}= \emph{Block 2} generates more complex features through a residual connection.]
+ 	{Standard parametric maps' preprocessing blocks. (\emph{Left}) \emph{Block 1} processes the maps data similarly to the temporal processing of the \acrshort{pwi}. (\emph{Right}) \emph{Block 2} generates more complex features through a residual connection.}
+ 	\label{fig:mapsproc}
+\end{figure}
+
+Note that the \acrshort{4d} \acrshort{pwi} acquisition encompasses both temporal and spatial dimensions, whereas the standard parametric maps comprise only the latter dimension. In \citet{pinto}, the temporal data of the \acrshort{pwi} was encoded as channels. However, to maintain the original spatial relationship with the temporal information, there needs to be a difference of $ D-1 $ in dimension of the standard maps with respect to the \acrshort{pwi}, where $ D $ is the \acrshort{pwi} dimensional space.
+
+As the learning process based only on \acrshort{4d} \acrshort{pwi} maps does not perform well (see the \emph{Data-driven Branch} method on Table \ref{tab:59}, section \ref{attention}, for more details), the processed diffusion and perfusion maps were combined with the former data, hoping that it would provide more compound diffusion and perfusion related information that would complement the information of the \acrshort{pwi}. However, on the lower branch of the network presented in Figure \ref{fig:cross}, we merged the unprocessed standard \acrshort{mri} maps with the processed \acrshort{pwi} data, to guide the extraction of discriminative and useful features from this type of data. Ultimately, we expected the \acrshort{pwi} data to provide complementary perfusion details to the standard maps, improving the lesion outcome prediction.
+ 
+Throughout this study, we analyzed the effect of various aspects namely the number of filters, the type of sampling and the used regularization. Tables \ref{tab:510} to \ref{tab:512} contain the different implementation details used along the many tests performed. 
+\begin{table*}[htb!]
+    \label{tab:510}
+    \caption[Implementation details of the baseline architectures for the compound data merging models, where $ p_{drop} $ denotes the probability of dropout and $ \lambda $ is the L\textsubscript{2} norm parameter]{Implementation details of the baseline architectures for the compound data merging models, where $ p_{drop} $ denotes the probability of dropout and $ \lambda $ is the L\textsubscript{2} norm parameter}
+    \centering
+    \resizebox{0.75\textwidth}{!}{
+    \begin{tabular}{c c c c}
+       \noalign{\hrule height 1.5pt}
+
+    \multicolumn{1}{c}{\textbf{}}&  \multicolumn{1}{c}{} &  \multicolumn{1}{c}{\textbf{Model}} &  \multicolumn{1}{c}{}\\
+    \multicolumn{1}{c}{\textbf{Training Settings}}& \multicolumn{1}{c}{\textbf{Baseline 1.0}}& \multicolumn{1}{c}{\textbf{Baseline 2.0}}& \multicolumn{1}{c}{\textbf{Baseline 2.0 + Block 2}}\\ 
+    \hline 
+    Sampler & Border & Random & Random\\
+	No. of Channels & 32/64/128 & 40/80/160 & 40/80/160\\ 
+	Preprocessing & -- & -- & Block 2 \\
+    $ p_{drop} $ U-Net  & $0.10$ & $0.25$ & $0.25$\\
+    $ \lambda $ U-Net &  $1\times10^{-6}$ & $1\times10^{-7}$ & $1\times10^{-7}$\\
+    \multirow{1}{*}{$ \lambda $ Pre-proc.} & -- & --  & $1\times10^{-7}$ \\
+    Batch-Norm.  & \xmark & \cmark & \cmark\\
+    Parameters  & $409314$ & $640202$ & $640886 $\\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:510}
+    }
+    \end{table*}
+ 
+We begin by presenting the baseline tests, which involve solely the standard perfusion and diffusion \acrshort{mri} maps, to later compare with the developed more complex architectures. Note that the \emph{Baseline 2.0} model, presented on the table above, is the same model we designated as \emph{Subjects' Removal} in section \ref{dilated}. Remember that the removal of the four subjects is due to their lack of viable data-driven \acrshort{pwi}. 
+
+In \emph{Baseline 1.0}, we employed an architecture of 32/64/128 filters, where different regularization values were evaluated, exhibiting only the ones that achieved higher performances. The sampling scheme was also studied, comparing the random sampling with a proposal of ours, designated as border sampling. This new sampler works by selecting random samples within a neighboring area around the lesion region. The aim of the border sampler was to help better characterize the transition zone between the healthy tissue and the lesion area. As a consequence, it helps reducing the amount of background samples in the patches, which have a bigger proportion in the \acrshort{mri} volumes than the lesion, and consequently include a more balanced amount of samples from both classes. Figure \ref{fig:sampler} showcases how the random sampler and the border sampler work, when sampling 200 patches/epoch, during 400 epochs. As one can see, resorting to border sampling when there is no lesion, the patches are sampled in a similar way to those obtained with random sampling. However, in those slices that contain lesion tissue, while the random sampler selects patches randomly all over the brain mask, the border sampler creates a neighboring area around the lesion, and samples only within that region. Due to this, the latter sampler includes a more balanced amount of healthy tissue voxels, in comparison to the random one.
+ \begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/sampler_f.png}
+ 	\caption[Comparison of the random and border samplers, after 400 training epochs, with 200 patches/epoch. The sampled patches were overlapped to highlight the most sampled areas (white) in each sampler. (\emph{First row}) 16-th slice of the brain mask of Training case 6, containing only healthy tissue. (\emph{Second row}) 17-th slice, which includes lesion tissue. The minimum and maximum "intensities" of the overlapped patches are also presented.]
+ 	{Comparison of the random and border samplers, after 400 training epochs, with 200 patches/epoch. The sampled patches were overlapped to highlight the most sampled areas (white) in each sampler. (\emph{First row}) 16-th slice of the brain mask of Training case 6, containing only healthy tissue. (\emph{Second row}) 17-th slice, which includes lesion tissue. The minimum and maximum "intensities" of the overlapped patches are also presented.}
+ 	\label{fig:sampler}
+\end{figure}
+ 
+Regarding the last baseline model variant, we studied the addition of the convolutional block with a skip connection (\emph{Block 2}) on the \emph{Baseline 2.0} architecture to produce more complex features. Since the \emph{Baseline 2.0} comprehends a method that grants a higher overall performance and higher balance between Precision and Recall, as one will see later in this section, we refrained from testing the previous variant of \emph{Baseline 1.0}.
+
+Afterwards, we studied the added value of merging the new compound features, retrieved by the preprocessing of both \acrshort{pwi} and standard parametric maps, and fed them to a \acrshort{2d} U-Net. We designated this smaller architecture, depicted in Figure \ref{fig:top}, as the top branch of the complete network presented in Figure \ref{fig:cross}. Table \ref{tab:511} shows the respective implementation details. \emph{Top Branch 1.0} results from further elaboration of the \emph{Baseline 1.0} architecture. Similarly, \emph{Top Branch 2.0} is an upgraded version of the \emph{Baseline 2.0 + Block 2}. We tested two different variants of the latter branch. The first one, designated as \emph{Top Branch 2.0 + Dil. Conv.}, which emerged from replacing the U-Net for a dilated convolutional U-block, based on the architecture presented in section \ref{dilated}. In the last one, we implemented the \emph{Top Branch 2.0} with a different L\textsubscript{2} parameter on the temporal preprocessing block of the \acrshort{pwi} (\emph{Top Branch 3.0}).
+ 
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{/chpt_4/last/top_branch.png}
+ 	\caption[Top branch network structure.]
+ 	{Top branch network structure.}
+ 	\label{fig:top}
+\end{figure}
+
+
+ \begin{table*}[htb!]   
+    \label{tab:511}
+    \caption[Implementation details of the top branch variant models, where $ p_{drop} $ denotes the probability of dropout and $ \lambda $ is the L\textsubscript{2} norm parameter]{Implementation details of the top branch variant models, where $ p_{drop} $ denotes the probability of dropout and $ \lambda $ is the L\textsubscript{2} norm parameter}
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{c c c c c}
+       \noalign{\hrule height 1.5pt}
+
+    \multicolumn{1}{c}{\textbf{}} &  \multicolumn{4}{c}{\textbf{Model}}\\
+
+   \textbf{Training Settings}  & \textbf{Top Branch 1.0} & \textbf{Top Branch 2.0} &  \begin{tabular}{@{}c@{}}\textbf{Top Branch 2.0} \\ \textbf{+ Dil. Conv.} \end{tabular} &  \textbf{Top Branch 3.0}  \\
+    \hline 
+    %No. of Patches & 200 & 200 & 200 & 200 & 200 \\
+    Sampler & Border & Random & Random & Random\\
+	No. of Channels & 32/64/128 & 40/80/160 & 40/80/160 & 40/80/160 \\ 
+	\multirow{2}{*}{Preprocessing}  & PWI: \cmark & PWI: \cmark & PWI: \cmark & PWI: \cmark \\
+	& Maps: Block 1 & Maps: Block 2 & Maps: Block 2 & Maps: Block 2 \\
+    $ p_{drop} $ U-Net  & $0.10$ & $0.25$ & $0.25$ & $0.25$\\
+    $ \lambda $ U-Net &  $1\times10^{-6}$ & $1\times10^{-7}$ & $1\times10^{-7}$ & $1\times10^{-7}$ \\
+    \multirow{2}{*}{$ \lambda $ Pre-proc.} & \multirow{2}{*}{PWI/Maps: $5\times10^{-7}$} & PWI: $5\times10^{-7}$  &  PWI: $5\times10^{-7}$  & \multirow{2}{*}{PWI/Maps: $1\times10^{-7}$}  \\
+    & & Maps: $1\times10^{-7}$ & Maps: $1\times10^{-7}$ & \\
+    Batch-Norm.  & \xmark & \cmark & \cmark & \cmark  \\
+    Parameters  & $421037$ & $645631$ & $645631 $ & $382791 $\\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:511}
+    }
+    \end{table*}
+
+ We finished this study by employing the complete structure presented in Figure \ref{fig:cross}. Analogously, \emph{Complete 1.0} model is based on the \emph{Top Branch 1.0} method, and the models \emph{Complete 2.0} and \emph{Complete 3.0} follow an upgraded structure of \emph{Top Branch 2.0} and \emph{Top Branch 3.0} models, respectively. The implementation details of these three methods are shown in Table \ref{tab:512}.
+
+\begin{table*}[htb!]
+
+    \label{tab:512}
+    \caption[Implementation details of the complete architecture's variants, where $ p_{drop} $ denotes the probability of dropout and $ \lambda $ is the L\textsubscript{2} norm parameter]{Implementation details of the complete architecture's variants, where $ p_{drop} $ denotes the probability of dropout and $ \lambda $ is the L\textsubscript{2} norm parameter}
+    \centering
+    \resizebox{0.9\textwidth}{!}{
+    \begin{tabular}{c c c c}
+       \noalign{\hrule height 1.5pt}
+
+    \multicolumn{1}{c}{\textbf{}} &  \multicolumn{3}{c}{\textbf{Model}}\\
+    \multicolumn{1}{c}{\textbf{Training Settings}}& \multicolumn{1}{c}{\textbf{Complete 1.0}}& \multicolumn{1}{c}{\textbf{Complete 2.0}}& \multicolumn{1}{c}{\textbf{Complete 3.0}}\\ 
+    \hline 
+    %No. of Patches & 200 & 200 & 200 \\
+    Sampler & Border & Random & Random\\
+	No. of Channels & 32/64/128 & 40/80/160 & 40/80/160\\ 
+	\multirow{2}{*}{Preprocessing}  & PWI: \cmark & PWI: \cmark & PWI: \cmark \\
+	 & Maps: Block 1 & Maps: Block 2 & Maps: Block 2 \\
+    $ p_{drop} $ U-Net/Fusion Branch  & $0.10$ & $0.25$ & $0.25$\\
+    $ \lambda $ U-Net &  $1\times10^{-6}$ & $1\times10^{-7}$ & $1\times10^{-7}$\\
+    \multirow{2}{*}{$ \lambda $ Pre-proc.} & \multirow{2}{*}{PWI/Maps: $5\times10^{-7}$} & PWI: $5\times10^{-7}$ &  \multirow{2}{*}{PWI/Maps: $1\times10^{-7}$}  \\
+    & & Maps: $1\times10^{-7}$ & \\
+    Batch-Norm.  & \xmark & \cmark & \cmark\\
+    Parameters  & $900131$ & $1387729$ & $1393809$\\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:512}
+    }
+    \end{table*}
+    
+\newpage
+\subsubsection{Experimental Results and Analysis}
+The validation and Challenge evaluation metrics of all the conducted tests explained above are exhibited in Table \ref{tab:513}.
+
+\begin{table*}[htb!]
+    \label{tab:513}
+    \caption[Average scores and standard deviations obtained by combining the information from \acrshort{pwi} and standard diffusion and perfusion \acrshort{mri} maps at three levels of the network on the validation and \acrshort{isles} 2017 Challenge datasets]{Average scores and standard deviations obtained by combining the information from \acrshort{pwi} and standard diffusion and perfusion \acrshort{mri} maps at three levels of the network on the validation and \acrshort{isles} 2017 Challenge datasets}
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l c c c c c c c}
+       \noalign{\hrule height 1.5pt}
+    \multicolumn{3}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{Dice}}& \multicolumn{1}{c}{\textbf{HD}}&  \multicolumn{1}{c}{\textbf{ASSD}}& \multicolumn{1}{c}{\textbf{Precision}}& \multicolumn{1}{c}{\textbf{Recall}}\\
+    \cline{4-8} 
+    %\hline
+    \multirow{10}{*}{\rotatebox[origin=c]{90}{\textit{Validation}}} &
+     \multirow{3}{*}{\rotatebox[origin=c]{90}{\textit{Maps}}} & 
+     \multicolumn{1}{c}{Baseline 1.0}   & 0.37 $\pm$ 0.23 & \underline{16.80} $\pm$ 11.84 & \underline{8.55} $\pm$ 12.55 & 0.33 $\pm$ 0.25 & \underline{0.53} $\pm$ 0.33 \\  &
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{Baseline 2.0}  & \underline{0.38} $\pm$ 0.24 & 19.37 $\pm$ 11.66 &	8.81 $\pm$ 12.41 & 	\underline{0.35} $\pm$	0.27	 &  \underline{0.53} $\pm$	0.32 \\ &
+     \multicolumn{1}{c}{} &  \multicolumn{1}{c}{Baseline 2.0 + Block 2}   & 0.34 $\pm$ 0.23 & 24.82 $\pm$ 14.60 & 10.30 $\pm$ 11.86 & 0.34 $\pm$ 0.29 & 0.48 $\pm$ 0.30 \\ 
+    \cline{2-8}
+     \multicolumn{1}{c}{} & \multirow{7}{*}{\rotatebox[origin=c]{90}{\textit{PWI + Maps}}} & 
+    \multicolumn{1}{c}{Top Branch 1.0}   & 0.33 $\pm$ 0.30 & 35.77 $\pm$ 28.67 & 7.74 $\pm$ 7.26 & 0.29 $\pm$ 0.28 & 0.65 $\pm$ 0.13 \\ &    
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0}   & 0.35 $\pm$ 0.26 & 23.97 $\pm$ 16.16 & 10.33 $\pm$ 11.93 & \underline{0.33} $\pm$ 0.29 & 0.47 $\pm$ 0.28 \\ &
+      \multicolumn{1}{c}{} &  \multicolumn{1}{c}{Top Branch 3.0}   & 0.36 $\pm$ 0.26 & 24.05 $\pm$ 15.87 & 10.49 $\pm$ 11.88 & \underline{0.33} $\pm$ 0.28 & 0.47 $\pm$ 0.30 \\  &
+     \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0 + Dil. Conv.}   & 0.33 $\pm$ 0.29 & 20.80 $\pm$ 15.44 & 4.34 $\pm$ 3.85 & 0.31 $\pm$ 0.31 & 0.53 $\pm$ 0.26 \\ 
+   %  \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0 + 2 Subjs.}   & 0.34 $\pm$ 0.30 & 19.89 $\pm$ 16.14 & 4.15 $\pm$ 3.67 & 0.30 $\pm$ 0.29 & 0.55 $\pm$ 0.32 \\
+     \cdashline{3-8}
+      \multicolumn{1}{c}{} &   \multicolumn{1}{c}{} & 
+    %\multicolumn{1}{c}{Partially Complete}   & 0.37 $\pm$ 0.26 & 19.82 $\pm$ 14.65 & 3.86 $\pm$ 3.31 & 0.31 $\pm$ 0.27 & 0.62 $\pm$ 0.23 \\ &
+     \multicolumn{1}{c}{Complete 1.0}   & \underline{0.37} $\pm$ 0.27 & \underline{16.80} $\pm$ 8.24 & \underline{2.92} $\pm$ 1.88 & 0.30 $\pm$ 0.25 & 0.61 $\pm$ 0.28 \\ &
+     \multicolumn{1}{c}{} & \multicolumn{1}{c}{Complete 2.0}   & 0.36 $\pm$ 0.27 & 19.87 $\pm$ 16.83 & 3.90 $\pm$ 3.87 & 0.29 $\pm$ 0.24 & 0.68 $\pm$ 0.21 \\ &
+     \multicolumn{1}{c}{} & \multicolumn{1}{c}{Complete 3.0}   & 0.35 $\pm$ 0.26 & 24.74 $\pm$ 15.86 & 4.21 $\pm$ 3.94 & 0.28 $\pm$ 0.25 & \underline{0.77} $\pm$ 0.10 \\ 
+   %  \cline{3-8} 
+    \hline\hline
+    \multirow{10}{*}{\rotatebox[origin=c]{90}{\textit{Challenge}}} &
+    \multirow{3}{*}{\rotatebox[origin=c]{90}{\textit{Maps}}} & 
+    \multicolumn{1}{c}{Baseline 1.0}   & 0.31 $\pm$ 0.20 & 33.13 $\pm$ 17.22 & 5.87 $\pm$ 3.58 & 0.28 $\pm$ 0.23 & \underline{0.63} $\pm$ 0.30 \\ &
+     \multicolumn{1}{c}{} & \multicolumn{1}{c}{Baseline 2.0}  & 0.33 $\pm$ 	0.22 & 33.07 $\pm$ 19.51 &	6.35 $\pm$	6.07 & 	0.34 $\pm$	0.27	 &  0.55 $\pm$ 0.31 \\ &
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Baseline 2.0 + Block 2}   & \underline{0.34} $\pm$ 0.22 & \underline{30.02} $\pm$ 16.59 & \underline{5.45} $\pm$ 4.48 & \underline{0.37} $\pm$ 0.25 & 0.54 $\pm$ 0.30 \\ 
+     \cline{2-8}
+    \multicolumn{1}{c}{} & \multirow{7}{*}{\rotatebox[origin=c]{90}{\textit{PWI + Maps}}} &
+    \multicolumn{1}{c}{Top Branch 1.0}   & 0.26 $\pm$ 0.21 & 50.51 $\pm$ 18.61 & 7.77 $\pm$ 4.26 & 0.20 $\pm$ 0.18 & 0.67 $\pm$ 0.28 \\ &
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0}   & 0.33 $\pm$ 0.22 & \underline{31.04} $\pm$ 15.79 & 5.68 $\pm$ 4.43 & 0.35 $\pm$ 0.27 & \underline{0.55} $\pm$ 0.31 \\ &
+     \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 3.0}   & \underline{0.34} $\pm$ 0.21 & 33.73 $\pm$ 17.17 & \underline{5.11} $\pm$ 2.64 & 0.30 $\pm$ 0.21 & 0.61 $\pm$ 0.28 \\      &
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0 + Dil. Conv.}   & 0.30 $\pm$ 0.22 & 36.34 $\pm$ 14.73 & 6.26 $\pm$ 4.23 & 0.29 $\pm$ 0.26 & 0.61 $\pm$ 0.31 \\ 
+   % \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0 + 2 Subjs.}   & 0.30 $\pm$ 0.22 & 37.31 $\pm$ 18.03 & 6.17 $\pm$ 3.73 & 0.31 $\pm$ 0.26 & 0.61 $\pm$ 0.29 \\ &
+     \cdashline{3-8}
+     \multicolumn{1}{c}{} &  \multicolumn{1}{c}{} &
+    %\multicolumn{1}{c}{Partially Complete}   & 0.31 $\pm$ 0.20 & 36.78 $\pm$ 16.66 & 6.20 $\pm$ 3.84 & 0.28 $\pm$ 0.24 & 0.63 $\pm$ 0.30 \\ &
+     \multicolumn{1}{c}{Complete 1.0}   & 0.32 $\pm$ 0.22 & 37.06 $\pm$ 14.86 & 6.62 $\pm$ 5.68 & 0.28 $\pm$ 0.21 & 0.61 $\pm$ 0.29 \\ &
+   \multicolumn{1}{c}{} &  \multicolumn{1}{c}{Complete 2.0}   & 0.27 $\pm$ 0.20 & 40.37 $\pm$ 20.28 & 6.84 $\pm$ 4.20 & 0.26 $\pm$ 0.24 & 0.65 $\pm$ 0.30 \\ &
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Complete 3.0}   & 0.27 $\pm$ 0.20 & 47.12 $\pm$ 22.08 & 7.72 $\pm$ 5.44 & 0.24 $\pm$ 0.22 & \underline{0.68} $\pm$ 0.31 \\ 
+   \noalign{\hrule height 1.5pt}
+    \end{tabular}
+    \label{tab:513}
+    }
+    \end{table*}
+
+\begin{flushleft}
+\textit{\underline{Analysis of the Baselines}}
+\end{flushleft}
+
+Analyzing the validation results on the baseline models, we confer a better performance when employing the \emph{Baseline 2.0} architecture and regularization, in comparison to \emph{Baseline 1.0}, attaining a better balance between Precision (0.35) and Recall (0.53). Comparing to the study that includes the preprocessing \emph{Block 2}, it is possible to verify that the generation of more compound features did not seem to contribute to the enhancement of the predictions and, therefore, resulted in lower results. Not only did the Dice score decrease (from 0.38 to 0.34), but also occurred a significant raise in the \acrshort{hd} and \acrshort{assd}. 
+
+However, looking at the Challenge results of the baseline variants, one may notice that the behaviors verified on the validation phase did not transpose to the Challenge set. The best performance was achieved by the \emph{Baseline 2.0 + Block 2} model, with a Dice score of 0.34. Based on this phenomenon, when assessing the performance of the methods in the validation set, a good balance between Recall and Precision might indicate a better generalization capacity, attaining higher overall performance. This was exactly what happened in the \emph{Baseline 2.0 + Block 2}, which was capable of establishing a reference to the Challenge evaluation performance. Seeing as it surpassed its own base model, i.e., the \emph{Baseline 2.0}, we may claim that the addition of the convolutional block with a residual connection provided more informative features to the lesion prediction. As one will notice, we observed that the presence of proportion of channels of 32/64/128 (as in \emph{Baseline 1.0}) always resulted in a large Recall score in comparison to the Precision value, which means that this model overestimates the stroke lesions and potentially fails in detecting the small ones. Therefore, we emphasize our assumption taken in section \ref{width}, i.e., 32, 64 and 128 filters do not provide sufficient discriminative power when the input comprises only the standard parametric maps. However, it is noteworthy that both \emph{Baseline 1.0} and \emph{Baseline 2.0} were regularized differently and, therefore, the methods cannot be directly compared. That being said, the lower performance obtained through \emph{Baseline 1.0} might be due not only to the number of channels along the network, but also to the applied regularization.
+
+Looking at Figure \ref{fig:baselinesval} it is possible to compare the predictions on validation case 5, obtained with these baseline variants. Comparing the \emph{Baseline 1.0}'s to the one resultant from \emph{Baseline 2.0}, one may verify that the former prediction included a superior amount of \acrshort{fp}s, also revealed by the respective performance metrics. Furthermore the \emph{Baseline 2.0} model, was also capable of reducing the amount of incorrectly predicted voxels on the opposite hemisphere. In conformity with the validation results on Table \ref{tab:513}, the prediction of the \emph{Baseline 2.0 + Block 2} model comprised less \acrshort{tp}s than the one from \emph{Baseline 2.0}. However, it was capable of correcting the problem of incorrectly detecting voxels on the opposite side of the brain.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.85\textwidth]{/chpt_4/last/baselines_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Baseline 1.0}, \emph{Baseline 2.0} and \emph{Baseline 2.0 + Block 2} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Baseline 1.0}, \emph{Baseline 2.0} and \emph{Baseline 2.0 + Block 2} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:baselinesval}
+\end{figure}
+
+\begin{flushleft}
+\textit{\underline{Analysis of the Top Branches 1.0--3.0}}
+\end{flushleft}
+
+Let us observe, now, the validation results of the top branch models 1.0 and 2.0. One may verify that the inclusion of the \acrshort{pwi} data lowered the \emph{Top Branch 1.0} model's performance, decreasing the Dice score by 4\% (0.37 to 0.33) in comparison to the respective baseline model, whereas in \emph{Top Branch 2.0} the network benefited from its incorporation (from 0.34 to 0.35). Interestingly, employing an architecture with a filter's proportion of 32/64/128, we achieved, once more, a Recall value (0.65) that is superior to the Precision value (0.29). This behavior was also verified in section \ref{width}, where we studied the effect of varying the number of filters. However, the inclusion of the \acrshort{pwi} accentuated the discrepancy between these two metrics. Unlike the former model, the \emph{Top Branch 2.0} was able to perform better than its base model (\emph{Baseline 2.0 + Block 2}), and also evened the unbalanced Precision-Recall proportion (0.35 and 0.47, respectively). This leads us to believe that a larger amount of filters, along with the applied regularization, contributes to a better performance when including \acrshort{pwi}. Nevertheless, the distance metrics obtained in either method are still large.
+
+In terms of the Challenge evaluation, the combination of the standard perfusion and diffusion maps with the \acrshort{pwi} data in a 32/64/128 architecture, such as the one used in \emph{Top Branch 1.0}, resulted in a poorer performance, in comparison to the respective base model, with a reduction from 0.33 to 0.26 on the Dice score. This behavior was also observed on the validation results, however, it was emphasized in the test set. This leads us to believe that the perfusion-weighted data contains noise that hinders the learning process and, consequently, results in less accurate stroke lesion outcome predictions. Regarding the implementation of the data fusion in a 40/80/160 architecture, as in \emph{Top Branch 2.0}, we verify a slightly reduction of the overall performance, compared to its baseline, with an increment on both distance metrics and a lower Precision score (0.35). However, these results did not follow the same behavior observed in the validation phase, where the inclusion of the perfusion-weighted data resulted in better scores than the \emph{Baseline 2.0 + Block 2}. Based on this verification, we corroborate our assumption that the presumable noise contained in the \acrshort{pwi} data interferes with the learning process. Bearing in mind that the 32/64/128 architecture already fails to provide enough context when using only standard maps, we may claim that the degradation of the performance is higher on \emph{Top Branch 1.0} for the same reason, allied to the \acrshort{pwi} noise. If the Challenge dataset is composed by cases with smaller lesions in a bigger proportion, together with the noise contained in the \acrshort{4d} perfusion data, could justify the reduction of the performance on the Challenge dataset.
+
+Through the validation results of the \emph{Top Branch 3.0} model (Table \ref{tab:513}), it is possible to observe that reducing the regularization in the temporal preprocessing block led to the best performance among all the similar variants, achieving a Dice score of 0.36 while maintaining the Precision-Recall balance (0.33 and 0.47, respectively). Following a similar behavior to the one observed on the validation set, the reduction of the L\textsubscript{2} parameter from $ 5\times10^{-7} $ to $ 1\times10^{-7} $ led to the highest Dice score (0.34), among all the models, on the Challenge set. However, and unlike its behavior during validation, the Precision value was reduced by 5\% to 0.30, with a consequent increment of 6\% on Recall (0.61), which resulted in a poorer balance between them. This leads us to conclude that the increase on the Dice score was due to a reduction of the \acrshort{fn} pixels, which suggests that the network trains over more background samples, failing to detect accurately the small lesions, resulting in large and, sometimes, displaced volumes instead. This finding would corroborate our assumption that the Challenge dataset is mostly composed by cases with smaller stroke lesions as stated in the analysis of section \ref{dilated}. Lowering the L\textsubscript{2} parameter to $ 1\times10^{-7} $ resulted in lower regularization of the updates of the weights and, as a consequence, the network struggled to grasp the smaller lesions details. Therefore, the learning was more directed to the larger volume lesions. In other words, it adapted the model to predict more accurately lesions similar to those contained in the Training dataset.
+
+With Figure \ref{fig:topbranchval} it is possible to compare the predictions of the top branch models. As one can see, the inclusion of the \acrshort{pwi}, alongside the two preprocessing blocks for each input data, in \emph{Top Branch 1.0}, resulted in greater overestimation of the lesion on the lower half of the left hemisphere of the brain, in comparison to the prediction of \emph{Baseline 1.0} (Figure \ref{fig:baselinesval}). However, it was capable of removing those \acrshort{fp} voxels verified on the other side of the brain in \emph{Baseline 1.0}. Comparing the predicted lesion in \emph{Top Branch 2.0} with the one in \emph{Baseline 2.0 + Block 2}, one may verify an increment of the \acrshort{fp} voxels with the inclusion of the temporally processed \acrshort{pwi}. However, as the Precision score increased, it is also possible to claim an increment of the accurately predicted voxels as lesion. In comparison to \emph{Top Branch 2.0}, the reduction of the L\textsubscript{2} parameter in \emph{Top Branch 3.0} seems to have resulted in overestimation of the lesion, although having been capable of covering more true lesion area.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.73\textwidth]{/chpt_4/last/top_branches_1-3.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Top Branch 1.0}, \emph{Top Branch 2.0} and \emph{Top Branch 3.0} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Top Branch 1.0}, \emph{Top Branch 2.0} and \emph{Top Branch 3.0} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:topbranchval}
+\end{figure}
+
+\newpage
+\begin{flushleft}
+\textit{\underline{Analysis of the Top Branch 2.0 + Dil. Conv.}}
+\end{flushleft}
+
+Regarding the variation of the \emph{Top Branch 2.0}, we begin by analyzing the validation evaluation metrics obtained when replacing the U-Net for a dilated convolutional U-block. Although this architecture attained a good performance when we applied it to the standard parametric maps in section \ref{dilated} (Dice -- 0.37, Precision -- 0.37, Recall -- 0.47), we do not verify the same behavior when we compare its results to those obtained in \emph{Top Branch 2.0 + Dil. Conv.}. Even though the distance metrics achieved better results, the balance between Precision (0.31) and Recall (0.53) was damaged. One major reason that might justify this behavior is the noise contained in the \acrshort{pwi} data, which is enhanced when expanding the context along the network. 
+When evaluated on the Challenge set, the results obtained by the \emph{Top Branch 2.0 + Dil. Conv.} model follow the same pattern as those obtained on the validation step, achieving a Dice score of 0.30. By employing this model, a lower performance was attained and the consequent imbalance between Precision and Recall was accentuated. Through this evidence we are able to confirm that the expansion of the context further emphasizes the less discriminative data contained in the data-driven \acrshort{4d} \acrshort{pwi}. 
+
+Figure \ref{fig:topbdil} allows a comparison between the \emph{Top Branch 2.0} and its variant. The substitution of the U-Net for a dilated U-block appears to have resulted in predictions that comprise a larger amount of \acrshort{fp} voxels and also fewer \acrshort{tp} ones, in comparison to the \emph{Top Branch 2.0} prediction.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.55\textwidth]{/chpt_4/last/top_branch_dil.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Top Branch 2.0} and \emph{Top Branch 2.0 + Dil. Conv.} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the\emph{Top Branch 2.0} and \emph{Top Branch 2.0 + Dil. Conv.} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:topbdil}
+\end{figure}
+
+%When it comes to the addition of two extra training subjects, it is possible to observe that, once again, the precision-Recall balance was disrupted, although both the \acrshort{assd} and the Hausdorff distance achieved better scores than in \emph{Top Branch 2.0}. Knowing that both these two extra stroke cases contain large lesions with a \acrshort{tici} score of 0, we presume that the model ended up having a better affinity to detect more accurately larger lesions than the small ones. This conduct would explain why the Recall metric achieved a greater score than the precision.
+%Taking into account the size of these two lesions, and looking at the Challenge evaluation, it is possible to claim that this addition did not contribute to an enhancement of the learning process. On the contrary, these two stroke cases reduced the capability of the network to segment the smaller lesions, which explains the extremely large Recall score and low precision.
+
+\begin{flushleft}
+\textit{\underline{Analysis of the Complete Architectures}}
+\end{flushleft}
+
+Concerning the validation performances of the complete architectures, we verify that the best one was achieved through the \emph{Complete 1.0} model, which, based on the corresponding top branch results, one would be led to believe that it probably would not be capable of attaining great results. However, among the three variants, this method achieved the top Dice (0.37), \acrshort{hd} (16.80) and \acrshort{assd} (2.92) scores, as well as the best equilibrium between Recall (0.30) and Precision (0.61). It seems that the inclusion of the lower branch of the architecture and the additional later data fusion contributed to balance the discrepancy verified on the \emph{Top Branch 1.0}, between the Precision and Recall, and further enhance the predictions' accuracy. Regarding the  \emph{Complete 2.0} method, when compared to the results obtained on \emph{Top Branch 2.0}, it was capable of achieving a better performance, but the Recall value increased greatly (from 0.47 to 0.68), resulting, consequently, in a reduction of Precision (from 0.33 to 0.29). This behavior leads us to believe that the inclusion of the \acrshort{pwi} data in a more complex network structure is favored by reducing the number of filters, which strengthens the idea that this data possesses a high amount of noise. Interestingly, the \emph{Complete 3.0} model had the lowest validation performance, although its corresponding top branch achieved the best results among its variants. Knowing that the only difference between the complete architecture's variants 2.0 and 3.0 is the the temporal processing block's L\textsubscript{2} parameter, we believe that the poorer results were due to low regularization.
+
+At last, looking at the complete architecture variants' Challenge results, we verify an opposite behavior to those observed on the top branch variants. The complete features' crossing and fusion achieves better performances when applied to a 32/64/128 network architecture. However, the Dice score (0.32) did not surpass the one obtained in \emph{Top Branch 3.0} (0.34). Nonetheless, we verify that adding the \acrshort{pwi} information only in one branch of the network was not sufficient, as seen on the \emph{Top Branch 1.0} results. This means that the addition of the processed temporal \acrshort{pwi} data to the unprocessed standard parametric \acrshort{mri} maps provided more informative features that the top branch could not process, and which had a crucial role afterwards when concatenating both feature sets acquired from each \acrshort{2d} U-Net. Although this model was capable of achieving a slightly more balanced Precision-Recall proportion, the Precision metric still comprises a value too low (0.28) in comparison to Recall (0.61). This behavior may also be verified on both \emph{Complete 2.0} and \emph{Complete 3.0}. Despite having different regularization values on the temporal processing block, both attained the same Dice score (0.27), with the remaining metrics differing minimally among each other. Similarly to the \emph{Top Branch 3.0} behavior on the Precision and Recall metrics, the corresponding complete model provided a superior Recall (0.68) and lower Precision value (0.24). Therefore, we may allege that, since the application of a filters' proportion of 40, 80 and 160 leads to a higher amount of parameters, the network needs to extract more data to process the low signal contained in \acrshort{pwi}, while avoiding the inclusion of redundant information, which hinders the performance of the method.
+
+Figure \ref{fig:topdilval} exhibits the predictions obtained with these complete architectures. Although the \emph{Complete 2.0} method did not result in the best overall validation performance (see Table \ref{tab:513}), it was capable of producing the most accurate prediction among the three models. However, the inclusion of the lower and fusion branches of the complete network seems to have resulted in a slight increment of \acrshort{fp} voxels. Nevertheless, the \emph{Complete 1.0} variant appears to be capable of covering more lesion area than the latter. The same could be said for the \emph{Complete 3.0}, reason why their Dice scores are relatively high, with their Precision and Recall balance being extremely disrupted. Nevertheless, these Precision and Recall values justify the overall validation performance. Looking at the prediction of the lesion obtained in \emph{Complete 1.0}, one may verify an even greater overestimation in comparison to \emph{Top Branch 1.0} (Figure \ref{fig:topbranchval}). The prediction of \emph{Complete 3.0} follows the same behavior, when compared to the one resultant from the \emph{Top Branch 3.0}, with an extreme increment on the Hausdorff distance.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.75\textwidth]{/chpt_4/last/complete_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Complete 1.0}, the \emph{Complete 2.0} and the \emph{Complete 3.0} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Complete 1.0}, the \emph{Complete 2.0} and the \emph{Complete 3.0} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:topdilval}
+\end{figure}
+\newpage
+It is noteworthy to refer, that the improvement/deterioration of the models' performances when employing a 32/64/128 architecture might not only be due to the the number of filters and the used regularization, but also to the employed sampler. However, since the early beginning, this choice of filters proved to be inadequate for the problem at hand, we, instead, focused on studying other key factors of the architecture. Nonetheless, further studies should evaluate the impact of changing the sampler, in the presence of filters of 32/64/128.
+
+
+%\begin{table*}[htb!]
+%    \label{tab:514}
+%    \caption[Average score and standard deviation on 32 stroke patients of \acrshort{isles} 2017 Challenge dataset obtained by combining the information from \acrshort{pwi} and standard diffusion and perfusion \acrshort{mri} maps at two levels of the network]{Average score and standard deviation on 32 stroke patients of \acrshort{isles} 2017 Challenge database obtained by combining the information from \acrshort{pwi} and standard diffusion and perfusion \acrshort{mri} maps at two levels of the network}
+%    \centering
+%    \resizebox{\textwidth}{!}{
+%    \begin{tabular}{l c c  c c c c c}
+%       \noalign{\hrule height 1.5pt}
+%    \multicolumn{3}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{Dice}}& \multicolumn{1}{c}{\textbf{Hausdorff Distance}}&  \multicolumn{1}{c}{\textbf{ASSD}}& \multicolumn{1}{c}{\textbf{Precision}}& \multicolumn{1}{c}{\textbf{Recall}}\\
+%    \cline{4-8} 
+%    %\hline
+%    \multirow{11}{*}{\rotatebox[origin=c]{90}{\textit{Challenge}}} &
+%    \multirow{3}{*}{\rotatebox[origin=c]{90}{\textit{Maps}}} & 
+%    \multicolumn{1}{c}{Baseline 1.0}   & 0.31 $\pm$ 0.20 & 33.13 $\pm$ 17.22 & 5.87 $\pm$ 3.58 & 0.28 $\pm$ 0.23 & \underline{0.63} $\pm$ 0.30 \\ &
+%     \multicolumn{1}{c}{} & \multicolumn{1}{c}{Baseline 2.0}  & 0.33 $\pm$ 	0.22 & 33.07 $\pm$ 19.51 &	6.35 $\pm$	6.07 & 	0.34 $\pm$	0.27	 &  0.55 $\pm$ 0.31 \\ &
+%    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Baseline 2.0 + Block 2}   & \underline{0.34} $\pm$ 0.22 & \underline{30.02} $\pm$ 16.59 & \underline{5.45} $\pm$ 4.48 & \underline{0.37} $\pm$ 0.25 & 0.54 $\pm$ 0.30 \\ 
+%     \cline{2-8}
+%    \multicolumn{1}{c}{} & \multirow{8}{*}{\rotatebox[origin=c]{90}{\textit{PWI + Maps}}} &
+%    \multicolumn{1}{c}{Top Branch 1.0}   & 0.26 $\pm$ 0.21 & 50.51 $\pm$ 18.61 & 7.77 $\pm$ 4.26 & 0.20 $\pm$ 0.18 & 0.67 $\pm$ 0.28 \\ &
+%    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0}   & 0.33 $\pm$ 0.22 & \underline{31.04} $\pm$ 15.79 & 5.68 $\pm$ 4.43 & 0.35 $\pm$ 0.27 & \underline{0.55} $\pm$ 0.31 \\ &
+%    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0 + Dil. Conv.}   & 0.30 $\pm$ 0.22 & 36.34 $\pm$ 14.73 & 6.26 $\pm$ 4.23 & 0.29 $\pm$ 0.26 & 0.61 $\pm$ 0.31 \\ &
+%    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 2.0 + 2 Subjs.}   & 0.30 $\pm$ 0.22 & 37.31 $\pm$ 18.03 & 6.17 $\pm$ 3.73 & 0.31 $\pm$ 0.26 & 0.61 $\pm$ 0.29 \\ &
+%     \multicolumn{1}{c}{} & \multicolumn{1}{c}{Top Branch 3.0}   & \underline{0.34} $\pm$ 0.21 & 33.73 $\pm$ 17.17 & \underline{5.11} $\pm$ 2.64 & 0.30 $\pm$ 0.21 & 0.61 $\pm$ 0.28 \\ 
+%     \cdashline{3-8}
+%     \multicolumn{1}{c}{} &  \multicolumn{1}{c}{} &
+%    %\multicolumn{1}{c}{Partially Complete}   & 0.31 $\pm$ 0.20 & 36.78 $\pm$ 16.66 & 6.20 $\pm$ 3.84 & 0.28 $\pm$ 0.24 & 0.63 $\pm$ 0.30 \\ &
+%     \multicolumn{1}{c}{Complete 1.0}   & 0.32 $\pm$ 0.22 & 37.06 $\pm$ 14.86 & 6.62 $\pm$ 5.68 & 0.28 $\pm$ 0.21 & 0.61 $\pm$ 0.29 \\ &
+%   \multicolumn{1}{c}{} &  \multicolumn{1}{c}{Complete 2.0}   & 0.27 $\pm$ 0.20 & 40.37 $\pm$ 20.28 & 6.84 $\pm$ 4.20 & 0.26 $\pm$ 0.24 & 0.65 $\pm$ 0.30 \\ &
+%    \multicolumn{1}{c}{} & \multicolumn{1}{c}{Complete 3.0}   & 0.27 $\pm$ 0.20 & 47.12 $\pm$ 22.08 & 7.72 $\pm$ 5.44 & 0.24 $\pm$ 0.22 & \underline{0.68} $\pm$ 0.31 \\ 
+%     
+%   \noalign{\hrule height 1.5pt}
+%    \end{tabular}
+%    \label{tab:514}
+%    }
+%    \end{table*}
+
+\section{Impact of Joining Supervised and Unsupervised Methods}
+Our last study comprised the combination of supervised and unsupervised learning methods. To that extent, we implemented a \acrshort{vae} model on the dilated convolutional cascade where we added an extra population of rotation angles (see \emph{Cascade + Population} on section \ref{dilated}) to further compensate the low amount of training data and improve the predictions' accuracy.
+
+As shown in Figure \ref{fig:vae}, the \acrshort{vae}'s probabilistic encoder receives the same input as the cascade, the standard parametric \acrshort{mri} maps. Then, it processes the input in a dilated U-block, similar to the ones employed in the cascade, except that this one contains an additional dilated layer with increasing dilation factors and the decoder encompasses two dilated layers with a residual connection. The output of its decoder is then fed to the middle of the cascade, where the concatenation between its features and the output of the first U-block happens. The implemented \acrshort{vae} block was inspired on \citet{vaeblock} work. The bottleneck of the \acrshort{vae} begins by flattening the output retrieved at the end of the encoder, and then passes it through dense layers that reduce it to a lower dimensional space as to obtain the mean ($ \mu $) and standard deviation ($ \sigma $) of a Gaussian distribution that characterizes the input, each with a size of the latent dimension. Then, a sample with the same dimension is drawn from the distribution and passes through a series of layers that reset the \acrshort{2d} dimensions and produce a reconstruction of the initial input.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.97\textwidth]{/chpt_4/last/vae.png}
+ 	\caption[Overview of the structure of the cascade model with the a \acrshort{vae} block included.]
+ 	{Overview of the structure of the cascade model with the a \acrshort{vae} block included.}
+ 	\label{fig:vae}
+\end{figure}
+
+The first step in this study comprised varying the latent dimension's size ($ d $) of the bottleneck of the \acrshort{vae} block. Three tests were conducted. The first one had a latent dimension of 128 (\emph{Cascade + VAE $ d $=128}), as in \cite{vaeblock}, and the other two had dimensions of 160 (\emph{Cascade + VAE $ d $=160}) and 100 (\emph{Cascade + VAE $ d $=100}), respectively. The two latter values were selected to assess whether the network, in the stroke problem context, would benefit from a larger or smaller dimension, respectively.
+
+Then, after studying the optimal value of $ d $, we tested replacing the population of angles for a range of $[-20\textdegree, 20\textdegree]$ with the intent of checking if a random selection of rotation angles from a range would have a different effect than those verified in previous sections, taking into account the inclusion of the \acrshort{vae} block this time.
+
+Following the same pattern of the \emph{Cascade} model presented previously, here, three losses were employed on three different locations (the stars on Figure \ref{fig:vae} represent them). Both losses located along the cascade, consist of soft dice loss functions, while the one located at the end of the \acrshort{vae}'s decoder encompassed a generative loss. The latter one may be defined by 
+\begin{eqnarray}
+loss_{gen} = loss_{Dice} + 0.1 \times loss_{L\textsubscript{2}} + 0.1 \times loss_{KL},
+\end{eqnarray}
+where, as in \cite{vaeblock}, the first term is a soft dice loss on the reconstructed output, the second one is a mean squared error between the input and the reconstruction and $ loss_{KL} $ is a standard \acrshort{vae} penalty term, which represents a \acrshort{kl} divergence between the estimated normal distribution $ \mathcal{N}(\mu,\sigma^{2}) $ and a prior distribution $ \mathcal{N}(0,1) $. As in \emph{Cascade}, the main loss had an unitary weight on the total loss. Regarding the other two, the one located at the end of the first U-block had a weight of 0.3, whereas the weight of the \acrshort{vae} was 0.7. All of these values were constant. These weights were transposed from a previous in house study of this implementation done on the retinal vessels' segmentation problem. Therefore, these might not be tuned for this context. However, there was not enough time to further explore this question.
+
+The implementation details of the referred models are presented on Table \ref{tab:515}. In this study, the chosen optimizer was AdamW with a weight decay of  $ 1\times10^{-6} $, cosine-annealing and warm restarts \cite{adamw}, and an initial learning rate of $ 1\times10^{-3} $. These values are approximately the same as the ones used by \citet{adamw}. The optimizer and corresponding values were found to work well in house studies in clinical contexts such as the retinal vessels' segmentation.
+
+\begin{table*}[htb!]
+
+    \label{tab:515}
+    \caption[Implementation details of the cascade models with a \acrshort{vae} and some of its variants]{Implementation details of the cascade models with a \acrshort{vae} and some of its variants}
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{c c c c :c}
+       \noalign{\hrule height 1.5pt}
+
+    \multicolumn{1}{c}{\textbf{}} &  \multicolumn{4}{c}{\textbf{Model}}\\
+    %\multicolumn{1}{c}{\textbf{Hyperparameter}}& \multicolumn{1}{c}{\textbf{Cascade + VAE $ d $=128}}& \multicolumn{1}{c}{\textbf{Cascade + VAE $ d $=160}}& \multicolumn{1}{c}{\textbf{Cascade + VAE $ d $=100}} & \multicolumn{1}{:c}{\textbf{Cascade + Range + VAE}}\\ 
+    \textbf{Training Settings}  & \begin{tabular}{@{}c@{}}\textbf{Cascade+ VAE} \\ \textbf{$ d $=128} \end{tabular} & \begin{tabular}{@{}c@{}}\textbf{Cascade+ VAE} \\ \textbf{$ d $=160} \end{tabular} &  \begin{tabular}{@{}c@{}}\textbf{Cascade + VAE} \\ \textbf{$ d $=100} \end{tabular} &  \begin{tabular}{@{}c@{}}\textbf{Cascade} \\ \textbf{+ Range + VAE} \end{tabular} \\
+    \hline 
+    Input Patch Size & $148\times148$ & $148\times148$ & $148\times148$ & $148\times148$ \\
+    No. of Patches & $400$ & $400$ & $400$ & $400$ \\
+	$ d $ & $128$ &$160$ & $100$ & $128$\\ 
+	Data Augmentation & \begin{tabular}{@{}c@{}c@{}} $90\textdegree + \{-20\textdegree, -10\textdegree, $\\$ 10\textdegree,  20\textdegree \}$  Rotations, \\ $ p_r=0.5 $ \end{tabular} & \begin{tabular}{@{}c@{}c@{}}$90\textdegree + \{-20\textdegree, -10\textdegree, $\\$ 10\textdegree,  20\textdegree \}$ Rotations, \\ $ p_r=0.5 $ \end{tabular} & \begin{tabular}{@{}c@{}c@{}}$90\textdegree + \{-20\textdegree, -10\textdegree,$ \\ $10\textdegree,  20\textdegree \} $ Rotations, \\ $ p_r=0.5 $ \end{tabular} & \begin{tabular}{@{}c@{}c@{}}$90\textdegree + [-20\textdegree, 20\textdegree]$ \\ Rotations, \\ $ p_r=0.5 $ \end{tabular}\\
+	%\multirow{2}{*}{Data Augmentation} & 90º + \{-20º, -10º, 10º,  20º\} & 90º + \{-20º, -10º, 10º,  20º\} & 90º + \{-20º, -10º, 10º,  20º\} & 90º + [-20º, 20º] \\
+	 %& Rotations, $ p_r=0.5 $ & Rotations, $ p_r=0.5 $ & Rotations, $ p_r=0.5 $ & Rotations, $ p_r=0.5 $ \\
+    $ W_d $ & $1\times10^{-6}$ & $1\times10^{-6}$ & $1\times10^{-6}$ & $1\times10^{-6}$\\
+    Learning Rate & $1\times10^{-3}$ & $1\times10^{-3}$ & $1\times10^{-3}$ & $1\times10^{-3}$\\
+    \noalign{\hrule height 1.5pt}%\hline
+    \end{tabular}
+    \label{tab:515}
+    }
+    \end{table*}
+
+Furthermore, three other variants were tested. In \emph{Cascade + VAE 8 ch.}, the decoder of the \acrshort{vae} block included an extra convolution with a kernel size of $ 1\times1 $ at its end, which compressed the feature maps to 8 channels to summarize the most relevant information, instead of 32 as shown in Figure \ref{fig:vae}. 
+
+\emph{Cascade 2.0 + VAE} consisted of a cascade of a dilated convolutional U-block followed by a block of three increasing dilated layers, similar to the lower level of the U-block's encoder with 40 channels, which were then followed by two more with decreasing dilation ratios. At the end of this new block, two regular $ 3\times3 $ convolutions were employed, followed by a cropping layer, as well as a $ 1\times1 $ convolution and softmax. Through this, we expected the network to focus more on the context details, disposing a little of the localization information. 
+
+Finally, in \emph{Cascade + PWI-based VAE} the \acrshort{vae}'s encoder received the \acrshort{pwi} data as input and processed it along the U-block. The difference here was that we did not resort to the standard parametric maps to reconstruct themselves. Instead, it was the \acrshort{pwi} data that helped in the reconstruction. The cascade part remained untouched.
+
+The latter models' implementation details are the same as the \emph{Cascade + VAE $ d=128 $} ones, except that the \emph{Cascade + PWI-based VAE} model resorts to the four cases' removal on the training phase and, therefore, we compare it to a state of the art performance such as the one presented by \citet{pinto}.
+
+
+
+\subsection{Experimental Results and Analysis}
+Table \ref{tab:516} presents the results achieved by employing the \acrshort{vae} block in the standard parametric maps' cascade, as well as those obtained when including the \acrshort{pwi}, during the validation and Challenge evaluations.
+
+\begin{table*}[htb!]
+    \label{tab:516}
+    \setlength\dashlinedash{30pt}
+    \setlength\dashlinegap{10pt}
+    \caption[Average scores and standard deviations on the validation and \acrshort{isles} 2017 Challenge datasets obtained by introducing a \acrshort{vae} block in the cascade and by using the \acrshort{pwi} to reconstruct the standard maps]{Average scores and standard deviations on the validation and \acrshort{isles} 2017 Challenge datasets obtained by introducing a \acrshort{vae} block in the cascade and by using the \acrshort{pwi} to reconstruct the standard maps}
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l c c c c c c}
+    \noalign{\hrule height 1.5pt}
+    \multicolumn{2}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{Dice}}& \multicolumn{1}{c}{\textbf{HD}}&  \multicolumn{1}{c}{\textbf{ASSD}}& \multicolumn{1}{c}{\textbf{Precision}}& \multicolumn{1}{c}{\textbf{Recall}}\\
+    \cline{3-7} 
+    \multirow{7}{*}{\rotatebox[origin=c]{90}{\textit{Validation}}} & 
+    \multicolumn{1}{c}{Cascade + VAE $ d=128 $}  & 0.39 $\pm$ 0.26 & 19.56 $\pm$ 11.65 & 8.80 $\pm$ 12.42 & 0.34 $\pm$ 0.27 & 0.59 $\pm$ 0.36 \\ &
+    \multicolumn{1}{c}{Cascade + VAE $ d =160$}  & 0.37 $\pm$ 0.27 & 19.62 $\pm$ 16.28 & 3.79 $\pm$ 3.63 & 0.32 $\pm$ 0.28 & 0.68 $\pm$ 0.21 \\&
+    \multicolumn{1}{c}{Cascade + VAE $ d =100$}  & 0.38 $\pm$ 0.27 & 18.46 $\pm$ 15.24 & 3.40 $\pm$ 3.26 & 0.33 $\pm$ 0.27 & 0.66 $\pm$ 0.21 \\ &
+    \multicolumn{1}{c}{Cascade + Range + VAE}  & 0.39 $\pm$ 0.25 & \underline{12.48} $\pm$ 5.99 & \underline{2.02} $\pm$ 0.84 & 0.34 $\pm$ 0.27 & 0.57 $\pm$ 0.35 \\ &
+     \multicolumn{1}{c}{Cascade + VAE 8 ch.}  & 0.38 $\pm$ 0.27 & 20.41 $\pm$ 14.53 & 3.60 $\pm$ 3.31 & 0.32 $\pm$ 0.26 &  \underline{0.75} $\pm$ 0.14 \\&
+    %\multicolumn{1}{c}{Cascade + VAE + LSTM}  & 0.38 $\pm$ 0.23 & 17.87 $\pm$ 15.98 & 3.12 $\pm$ 3.04 & 0.34 $\pm$ 0.27 & 0.60 $\pm$ 0.24 \\ 
+    \multicolumn{1}{c}{Cascade 2.0 + VAE}  & 0.38 $\pm$ 0.27 & 14.11 $\pm$ 7.91 & 2.22 $\pm$ 1.14 &  0.36 $\pm$ 0.28 & 0.58 $\pm$ 0.31 \\
+    \cline{2-7} 
+    \multicolumn{1}{c}{} &
+    \multicolumn{1}{c}{Cascade + Population}  &  \underline{0.40} $\pm$ 0.16 & 14.81 $\pm$ 7.18 & 2.04 $\pm$ 0.75 & \underline{0.39} $\pm$ 0.26 & 0.58 $\pm$ 0.21 \\ 
+    \hline\hline
+     \multirow{7}{*}{\rotatebox[origin=c]{90}{\textit{Challenge}}} &
+    \multicolumn{1}{c}{Cascade + VAE $ d =128$}  & \underline{0.35} $\pm$ 0.22 & 32.26 $\pm$ 16.03 &  \underline{5.58} $\pm$ 3.81 & 0.32 $\pm$ 0.25 & 0.65 $\pm$ 0.28 \\ &
+    \multicolumn{1}{c}{Cascade + VAE $ d =160$}  & 0.30 $\pm$ 0.20 & 39.59 $\pm$ 20.12 & 6.35 $\pm$ 3.93 & 0.28 $\pm$ 0.24 & \underline{0.67} $\pm$ 0.24 \\&
+    \multicolumn{1}{c}{Cascade + VAE $ d =100$}  & 0.29 $\pm$ 0.21 & 39.25 $\pm$ 18.26 & 7.78 $\pm$ 6.63 & 0.26 $\pm$ 0.25 & 0.61 $\pm$ 0.31 \\ &
+    \multicolumn{1}{c}{Cascade + Range + VAE}  & 0.32 $\pm$ 0.22 & 37.59 $\pm$ 19.02 & 7.07 $\pm$ 6.48 & 0.27 $\pm$ 0.23 & 0.63 $\pm$ 0.31 \\&
+    \multicolumn{1}{c}{Cascade + VAE 8 ch.}  & 0.28 $\pm$ 0.22 & 41.88 $\pm$ 19.39 & 8.20 $\pm$ 6.67 & 0.26 $\pm$ 0.24 & 0.61 $\pm$ 0.31 \\ &
+    %\multicolumn{1}{c}{Cascade + VAE + LSTM}  & 0.29 $\pm$ 0.21 & 44.06 $\pm$ 19.51 & 7.75 $\pm$ 5.59 & 0.25 $\pm$ 0.24 & 0.63 $\pm$ 0.29 \\ 
+    \multicolumn{1}{c}{Cascade 2.0 + VAE}  & 0.32 $\pm$ 0.21 & 34.18 $\pm$ 17.56 & 6.02 $\pm$ 4.26 & 0.29 $\pm$ 0.24 & 0.66 $\pm$ 0.28 \\
+    \cline{2-7} 
+    \multicolumn{1}{c}{} &
+     \multicolumn{1}{c}{Cascade + Population}  & \underline{0.35} $\pm$ 0.22 &  \underline{31.85} $\pm$ 16.91 &  \underline{5.58} $\pm$ 5.35 &  \underline{0.34} $\pm$ 0.24 & 0.58 $\pm$ 0.27  \\[0.8ex]
+   %\hdashline \\[-2.8ex] \hdashline
+   % \noalign{\hrule height 2pt} \\[-2.8ex]
+   \noalign{\hrule height 1.5pt}\\[-2.2ex]
+%	\hline \\[-2ex] \hline
+     \multirow{1}{*}{\rotatebox[origin=c]{90}{\textit{Val.}}} &    
+    \multicolumn{1}{c}{Cascade + PWI-based VAE}  & 0.38 $\pm$ 0.28 & 19.28 $\pm$ 15.87 & 3.72 $\pm$ 3.52 & 0.33 $\pm$ 0.28 & 0.63 $\pm$ 0.22 \\[0.8pt]
+    \hline\hline
+    \multirow{2}{*}{\rotatebox[origin=c]{90}{\textit{Chal.}}} &
+    \multicolumn{1}{c}{Cascade + PWI-based VAE}  &  \underline{0.29} $\pm$ 0.21 & 44.04 $\pm$ 20.51 & 7.85 $\pm$ 5.66 &  \underline{0.26} $\pm$ 0.24 & 0.61 $\pm$ 0.30 \\&
+     \multicolumn{1}{c}{\citet{pinto}}            &  \underline{0.29} $\pm$ 0.21&  \underline{41.58} $\pm$ 22.04&  \underline{7.69} $\pm$ 5.71& 0.23 $\pm$ 0.21& \underline{0.66} $\pm$ 0.29\\
+     \noalign{\hrule height 1.5pt}
+    \end{tabular}
+    \label{tab:516}
+    }
+    \end{table*}
+
+\begin{flushleft}
+\textit{\underline{Analysis of the Latent Dimension}}
+\end{flushleft}
+
+Analyzing the validation performances of the models where different latent dimensions were tested, one can verify that the best results were achieved when resorting to a dimension of 128. Besides having the highest Dice score (0.39) among the three models, it also obtained the best Recall-Precision balance (0.59 and 0.34, respectively). Resorting to a bigger/smaller latent dimension and, consequently, producing more, or less, than 128 latent samples to represent the input correctly, seems to result in overestimations of the predictions. It is noteworthy that the inclusion of the \acrshort{vae} block, in comparison to \emph{Cascade + Population}, appears to have contributed to a reduction of 1\% on the Dice score. In addition, it produced a damaged balance between Recall and Precision, as the Recall score increased slightly, while the Precision lost 5\% of its value. The latter behavior implies that adding a \acrshort{vae} block resulted in predictions where the lesions possess larger volumes than supposed, be them small or large lesions. Therefore, as the Precision fell, it suggests that the \acrshort{vae} sampled latent variables that characterized mostly background details, rather than those that actually defined the lesion area.
+
+Looking now at the Challenge results and comparing them, it is possible to verify that the best ones were attained by the model with $ d=128 $. This model achieved a performance similar to the one without the \acrshort{vae} block. The downside of \emph{Cascade + VAE $ d=128 $} comprises the lower Precision-Recall balance. This discrepancy implies overestimation which means that the reconstructed images might have been built based on samples that assembled a large amount of background voxels as important characteristics for the delineation of the lesions, as stated previously. We may corroborate this theory through the fact that the enlargement of the latent dimension to a value of 160 resulted in a higher Recall score (0.67), with a consequent reduction in Precision (0.28). Similarly, the usage of $ d=100 $ produced an overall poor performance, with further reduction on the Precision score (0.26). The Recall, however, was slightly lower than in the two latter models, with a score of 0.61. In this case, we may allege that the low scores were due to the great amount of background details on the latent variables, allied to a small dimension, which provided less space for possible informative data, relevant for the subsequent prediction. The imbalance between Precision and Recall verified in \emph{Cascade + VAE $ d=128 $}, in comparison to the validation results, was accentuated in the Challenge evaluation. This effect reinforces our theory that the Challenge dataset is mostly composed by cases with smaller stroke lesion. 
+
+Figure \ref{fig:aedval} shows the obtained predictions when varying the latent dimension of the \acrshort{vae} in comparison the \emph{Baseline} prediction. Looking at the \emph{Cascade + VAE $ d=128 $} prediction, one may verify that, in comparison to the \emph{Baseline} model, it comprises more \acrshort{fp} voxels. However, it was also capable of delineating a superior amount of lesion's voxels, even compared to the predictions obtained with latent dimensions of 160 and 100, respectively. Nevertheless, regardless of the $ d $ value, these models generated predictions encompassing, incorrectly, more healthy tissue voxels than those of the \emph{Baseline}.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.85\textwidth]{/chpt_4/last/latent_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Baseline}, \emph{Cascade + VAE $ d=128 $}, \emph{Cascade + VAE $ d=100 $} and \emph{Cascade + VAE $ d=160 $} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Baseline}, \emph{Cascade + VAE $ d=128 $}, \emph{Cascade + VAE $ d=100 $} and \emph{Cascade + VAE $ d=160 $} models on validation subject 5. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:aedval}
+\end{figure}
+
+\newpage
+\begin{flushleft}
+\textit{\underline{Analysis of Data Augmentation Mechanisms}}
+\end{flushleft}
+
+Observing now the effect of replacing the population of rotations' angles for a range of angles, a similar performance was verified on validation, with both models achieving a top Dice score of 0.39. Using a range of values, both distance metrics attained better scores during this evaluation. Despite maintaining the same Precision value as \emph{Cascade + VAE $ d=128 $}, the Recall score fell by 2\% to 0.57. Due to this, the predicted lesion volumes are smaller than their true size and most likely displaced from their true location.
+Although the validation led us to believe that a similar performance would be attained during the Challenge phase, regardless of the usage of a population, or a range, the Challenge results came to destroy this assumption. As verified in section \ref{dilated}, the replacement of the extra data augmentation mechanism for a range of angles provided an inferior performance, probably for the same reason -- low lesion orientation's variability. Nonetheless, the addition of the \acrshort{vae} block contributed to a better performance of the model, since the network without this mechanism (\emph{Cascade + Range}) achieved a Dice score of 0.28 (Table \ref{tab:57}, section \ref{dilated}). This improvement allows us to accent the benefits of including a variational autoencoder in the network. 
+
+Figure \ref{fig:aerangeval} presents the comparison of the predictions on validation case 5, obtained with \emph{Cascade + VAE $ d=128 $} and \emph{Cascade + Range + VAE} models. As one can see, the inclusion of a population of rotation angles, in comparison to the application of a range, appears to have resulted in the inclusion of fewer healthy tissue voxels, with a slight increment on the \acrshort{tp} voxels. Nevertheless, the application a range of rotation angles resulted in a better prediction of the true lesion's voxels.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{/chpt_4/last/ae_rot_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Cascade + VAE $ d=128 $} and \emph{Cascade + Range + VAE} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Cascade + VAE $ d=128 $} and \emph{Cascade + Range + VAE} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:aerangeval}
+\end{figure}
+
+\begin{flushleft}
+\textit{\underline{Analysis of the Channels' Compression}}
+\end{flushleft}
+
+Compressing the feature maps to 8 channels in \emph{Cascade + VAE 8 ch.} affected slightly the Dice value (from 0.39 to 0.38), as well as the Precision (from 0.34 to 0.32), on the validation phase. Furthermore, this compression extremely increased the Recall value, achieving a top score of 0.75. Remember that verifying an imbalance between the last two evaluation metrics usually does not produce favorable results on the Challenge set, especially when the Recall is extremely larger than the Precision value. One may assume from this that the features were reduced too drastically and the summarized data could not characterize accurately neither of the classes, i.e., the healthy tissue and the lesion. 
+Observing this model's Challenge performance, we may claim that the channels' reduction seems to have taken a toll on the overall performance, as expected since its exaggerated validation Recall score foreshadowed this outcome. Although this evaluation metric did not reach such a large value on the Challenge dataset, the Precision-Recall imbalance is prominent, with scores of 0.26 and 0.61, respectively. It is possible to corroborate our assumption that the reduction was too drastic and most of the lesion information was lost, which then resulted in predictions where the lesions comprised a large amount of \acrshort{fp} voxels.
+
+Figure \ref{fig:ae8val} shows the prediction on validation case 5 of the model \emph{Cascade + VAE 8 ch.}, in comparison to the one obtained in  \emph{Cascade + VAE $ d=128 $}. The compression to 8 channels seems to have produced a prediction with fewer \acrshort{fp} voxels, as it was able to reduce the amount of the incorrectly predicted voxels on the opposite hemisphere, as well as on the lower part of the prediction verified on the \emph{Cascade + VAE $ d=128 $} result. However, it was not capable of retaining the capability of delineating the upper voxels of the \acrshort{gt}, that was present in the \emph{Cascade + VAE $ d=128 $}. Nevertheless, compared to the one obtained with \emph{Baseline}, we may verify that the inclusion of a \acrshort{vae}, with a compression to 8 channels, in a dilated convolutional cascade, resulted in an increase of the amount the \acrshort{tp}s in this Training case, in particular.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{/chpt_4/last/ae_8ch_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Cascade + VAE $ d=128 $} and \emph{Cascade + VAE 8 ch.} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Cascade + VAE $ d=128 $} and \emph{Cascade + VAE 8 ch.} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:ae8val}
+\end{figure}
+
+\begin{flushleft}
+\textit{\underline{Analysis of the Last Block's Substitution}}
+\end{flushleft}
+
+The substitution of the last U-block for a series of dilated convolutions produced a better validation equilibrium between Precision and Recall, along with lower distance metrics, in comparison to the \emph{Cascade + VAE $ d=128 $}. Seeing more context rather than the location of the lesion seems to have helped the network differentiate the background from the lesion more accurately.
+However, focusing now on the Challenge scores, we verify a tumble on the overall performance, not only in comparison to \emph{Cascade + VAE $ d=128 $}, but also to its own validation scores. We may then claim that a dilated convolutional U-block provided more discriminative features than a simple chain of dilated convolutions with different dilation ratios. Besides, the U-block provided not only context, but also location-related details of the lesions, which this chain could not arrange. If the Challenge dataset really is comprised by cases with smaller lesions than those in the Training set, then this would explain why the validation and Challenge results differ greatly. 
+
+Figure \ref{fig:aedilval} shows the comparison of the predictions obtained with \emph{Baseline}, \emph{Cascade + VAE $ d=128 $} and \emph{Cascade 2.0 + VAE}. Observing the prediction obtained when replacing the last U-block for a chain of dilated convolutions, it is possible to verify a reduction on the correctly detected lesion voxels on the upper part of the \acrshort{gt}, in comparison to the one obtained in \emph{Cascade + VAE $ d=128 $}. However, it was capable of predicting lesion's voxels that the \emph{Baseline} method could not. Although it was capable of reducing the falsely detected voxels present on the opposite brain hemisphere, as well as the small "tail" present on the lower part of the \emph{Cascade + VAE $ d=128 $} prediction, there was also an increment on the amount of \acrshort{fp}s around the \acrshort{gt} area.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.73\textwidth]{/chpt_4/last/ae_dil_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Cascade + VAE $ d=128 $} and \emph{Cascade 2.0 + VAE} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Cascade + VAE $ d=128 $} and \emph{Cascade 2.0 + VAE} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:aedilval}
+\end{figure}
+
+\begin{flushleft}
+\textit{\underline{Analysis of the \acrshort{pwi}-based \acrshort{vae}}}
+\end{flushleft}
+    
+    Concerning the approach where we intended the image reconstruction to be generated by sampling from the \acrshort{pwi} data distribution, we were able to verify a great validation performance, with a high Dice score (0.38), similar to the ones obtained in the validation evaluations of the other cascades with \acrshort{vae} blocks, and favorable distance metrics. However, looking at the remaining two evaluation metrics we observe a great disparity between those values, again with the Recall attaining the highest score, 0.63, among them. Unsurprisingly, the Challenge scores were naturally lower than those attained in validation. Yet, the Dice score reached the same value obtained by \citet{pinto} implementation, 0.29, with similar \acrshort{assd} and Hausdorff distance values. Bear in mind that the network's architecture in \citet{pinto} includes 32, 64 and 128 channels along the network, and different regularization values, similar to the Figure \ref{fig:enbeng} presented in section \ref{segse}. Nevertheless, resorting to a similar amount of weights, \emph{Cascade + PWI-based VAE} was capable of reaching a competitive performance. In fact, it provided a better relationship between Precision (0.26) and Recall (0.61) in comparison to the ones obtained in \citet{pinto}, meaning that this approach contributed to the reduction of the \acrshort{fp} rate. Therefore, although the substitution of the standard parametric maps for the \acrshort{pwi} data as the \acrshort{vae}'s input did not enhance the prediction's accuracy, at least it was capable of slightly enhancing the overall performance of the method. 
+
+Figure \ref{fig:aepwival} shows the predictions obtained with \emph{Cascade + PWI-based VAE} in comparison to the ones obtained with \emph{Baseline} and \emph{Cascade + VAE $ d=128 $}. As one can see, the \acrshort{pwi}-based \acrshort{vae} model was capable of reducing the amount of \acrshort{fp} voxels, while resorting to fewer Training subjects, in comparison to the \emph{Cascade + VAE $ d=128 $} prediction. Additionally, compared to the one resultant from \emph{Baseline}, it was capable of detecting more \acrshort{tp} voxels, reason why its Precision was superior. Nevertheless, it was not capable of correcting the false positive voxels on the opposite hemisphere of the brain, and it lost some of its capability to include the upper lesion voxels of the \acrshort{gt}, which we verified in the prediction of \emph{Cascade + VAE $ d=128 $}. 
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{/chpt_4/last/ae_pwi_segs.png}
+ 	\caption[Ground truth (red) and predictions (yellow) obtained with the \emph{Cascade + VAE $ d=128 $} and \emph{Cascade + PWI-based VAE} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.]
+ 	{Ground truth (red) and predictions (yellow) obtained with the \emph{Cascade + VAE $ d=128 $} and \emph{Cascade + PWI-based VAE} models on validation subject 5, in comparison to the one obtained with \emph{Baseline}. Each prediction is characterized by the respective Dice, \acrshort{hd}, Precision and Recall scores.}
+ 	\label{fig:aepwival}
+\end{figure}
+    
+\section{Comparison to the State of the Art}
+The results obtained in the \acrshort{isles} 2017 Challenge of the most recently published methods are compared to our best proposals in this section, whose results are shown in Table \ref{tab:517}. Note that not many details were revealed about the implementation of these models, as the paper of \citet{winzeck2018isles} comprises only summarized details of the developed methods. 
+
+\begin{table*}[htb!]
+    \label{tab:517}
+    \caption[Average scores and standard deviations of recently submitted methods in \acrshort{isles} 2017 Challenge dataset in comparison to our best proposals]{Average scores and standard deviations of recently submitted methods in \acrshort{isles} 2017 Challenge dataset in comparison to our best proposals}
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l c c c c c c}
+    \noalign{\hrule height 1.5pt}
+    \multicolumn{2}{c}{\textbf{}}& \multicolumn{1}{c}{\textbf{Dice}}& \multicolumn{1}{c}{\textbf{HD}}&  \multicolumn{1}{c}{\textbf{ASSD}}& \multicolumn{1}{c}{\textbf{Precision}}& \multicolumn{1}{c}{\textbf{Recall}}\\
+    \cline{3-7} 
+   \multirow{4}{*}{\rotatebox[origin=c]{90}{\textit{Ensemble}}} & 
+    \multicolumn{1}{c}{Mok et al. *}  & 0.32 $\pm$ 0.23 & 40.74 $\pm$ 27.23 & 8.97 $\pm$ 9.52 & 0.34 $\pm$ 0.27 & 0.39 $\pm$ 0.27 \\ &
+    \multicolumn{1}{c}{Kwon et al. *}  & 0.31 $\pm$ 0.23 & 45.26 $\pm$ 21.04 & 7.91 $\pm$ 7.31 & 0.36 $\pm$ 0.27 & 0.45 $\pm$ 0.30 \\ &
+    \multicolumn{1}{c}{Robben et al. *}  & 0.27 $\pm$ 0.22 & 37.84 $\pm$ 17.75 & 6.72 $\pm$ 4.10 & \underline{0.44} $\pm$ 0.32 & 0.39 $\pm$ 0.31 \\ &
+    \multicolumn{1}{c}{Pisov et al. *}  & 0.27 $\pm$ 0.20 & 49.24 $\pm$ 32.15 & 9.49 $\pm$ 10.56 & 0.31 $\pm$ 0.27 & 0.39 $\pm$ 0.29 \\ 
+   \cline{2-7}
+    \multirow{16}{*}{\rotatebox[origin=c]{90}{\textit{Single Model}}} &
+    \multicolumn{1}{c}{Monteiro et al. *}  & 0.30 $\pm$ 0.22 & 46.60 $\pm$ 17.50 & 6.31 $\pm$ 4.05 & 0.34 $\pm$ 0.27 & 0.51 $\pm$ 0.30 \\ & 
+    \multicolumn{1}{c}{Lucas et al. *}  & 0.29 $\pm$ 0.21 & 33.85 $\pm$ 16.82 & 6.81 $\pm$ 7.18 & 0.34 $\pm$ 0.26 & 0.51 $\pm$ 0.32 \\     &
+    \multicolumn{1}{c}{\citet{pinto2018stroke} *}  & 0.29 $\pm$ 0.22 & 47.17 $\pm$ 22.13 & 7.20 $\pm$ 4.14 & 0.26 $\pm$ 0.23 & 0.61 $\pm$ 0.28 \\ &
+    \multicolumn{1}{c}{\citet{pinto}}  & 0.29 $\pm$ 0.21 & 41.58 $\pm$ 22.04 & 7.69 $\pm$ 5.71 & 0.21 $\pm$ 0.21 & \underline{0.66} $\pm$ 0.29 \\ &
+    \multicolumn{1}{c}{Choi et al. *}  & 0.28 $\pm$ 0.22 & 43.89 $\pm$ 20.70 & 8.88 $\pm$ 8.19 & 0.36 $\pm$ 0.31 & 0.41 $\pm$ 0.31 \\ &
+    
+    \multicolumn{1}{c}{Niu et al. *}  & 0.26 $\pm$ 0.20 & 48.88 $\pm$ 11.20 & 6.26 $\pm$ 3.02 & 0.28 $\pm$ 0.25 & 0.56 $\pm$ 0.26 \\ &
+    \multicolumn{1}{c}{Sedlar et al. *}  & 0.20 $\pm$ 0.19 & 58.30 $\pm$ 20.02 & 11.19 $\pm$ 9.10 & 0.23 $\pm$ 0.24 & 0.40 $\pm$ 0.29 \\ &
+    \multicolumn{1}{c}{Rivera et al. *}  & 0.19 $\pm$ 0.16 & 63.58 $\pm$ 18.58 & 11.13 $\pm$ 7.89 & 0.27 $\pm$ 0.25 & 0.21 $\pm$ 0.17 \\ &
+    \multicolumn{1}{c}{Islam et al. *}  & 0.19 $\pm$ 0.18 & 64.15 $\pm$ 28.51 & 14.17 $\pm$ 15.80 & 0.29 $\pm$ 0.28 & 0.25 $\pm$ 0.25 \\ &
+    %\multicolumn{1}{c}{Chengwei et al. *}  & 0.18 $\pm$ 0.17 & 65.95 $\pm$ 25.94 & 9.22 $\pm$ 6.99 & 0.37 $\pm$ 0.30 & 0.21 $\pm$ 0.23 \\ &
+    \multicolumn{1}{c}{Yoon et al. *}  & 0.17 $\pm$ 0.16 & 45.23 $\pm$ 19.14 & 12.43 $\pm$ 11.01 & 0.23 $\pm$ 0.27 & 0.36 $\pm$ 0.32 \\ 
+    
+    \cmidrule{2-7}\morecmidrules\cmidrule{2-7}
+   \multirow{4}{*}{} &
+    \multicolumn{1}{c}{Range}  & \underline{0.35} $\pm$ 0.22 & \underline{28.62}  $\pm$ 16.03 & 5.54 $\pm$ 4.43 & 0.40 $\pm$ 0.27 & 0.51 $\pm$ 0.30 \\  &   
+    \multicolumn{1}{c}{Baseline}  & \underline{0.35} $\pm$ 0.21 & 29.13 $\pm$ 16.09 & 5.21 $\pm$ 3.81 & 0.39 $\pm$ 0.26 & 0.52 $\pm$ 0.30 \\ &
+    \multicolumn{1}{c}{Cascade + Population}  & \underline{0.35} $\pm$ 0.22 & 31.85 $\pm$ 16.91 & 5.58 $\pm$ 5.35 & 0.34 $\pm$ 0.24 & 0.58 $\pm$ 0.27 \\ &
+    \multicolumn{1}{c}{Cascade + VAE $ d $=128}  & \underline{0.35} $\pm$ 0.22 & 32.26 $\pm$ 16.03 &  5.58 $\pm$ 3.81 & 0.32 $\pm$ 0.25 & 0.65 $\pm$ 0.28 \\
+    
+    \cline{2-7}
+    \multirow{2}{*}{} & 
+    \multicolumn{1}{c}{Top Branch 3.0}  & 0.34 $\pm$ 0.21 & 33.73 $\pm$ 17.17 & \underline{5.11} $\pm$ 2.64 & 0.30 $\pm$ 0.21 & 0.61 $\pm$ 0.28 \\ &
+    \multicolumn{1}{c}{Complete 1.0}  & 0.32 $\pm$ 0.22 & 37.06 $\pm$ 14.86 & 6.62 $\pm$ 5.68 & 0.28 $\pm$ 0.21 & 0.61 $\pm$ 0.29 \\
+    \noalign{\hrule height 1.5pt}
+    \multicolumn{7}{l}{\emph{*Results from Ischemic Stroke Lesion Segmentation 2017 Challenge \cite{plt, winzeck2018isles}}}
+    \end{tabular}
+    \label{tab:517}
+    }
+    \end{table*}
+
+As one can see below, the three best standard parametric maps proposals of this dissertation -- \emph{Range}, \emph{Baseline}, \emph{Cascade + Population} and \emph{Cascade + VAE $ d=128 $} -- currently rank first with the top Dice scores. Moreover, our last two proposals that obtained the best results when mixing \acrshort{4d} \acrshort{pwi} data with perfusion and diffusion maps, rank as second and fourth among all the published results until now. 
+
+Comparing \emph{Range} and \emph{Baseline} to the ensemble models by Mok et al., Choi et al. and Robben et al., one can observe that a simple U-Net was capable of achieving better predictions with an increment of 3--7\% on the Dice score. Besides, the \emph{Range} and \emph{Baseline} methods obtained significantly lower distance metrics, in comparison to those three cases. Nevertheless, these ensembles achieved better balances between the Precision and Recall metrics, that our single model proposals were not capable of surpassing. This could be due to having various prediction probabilities combined together and a lower variance, which probably led to a more balanced amount of \acrshort{fp}s and \acrshort{fn}s. However, individually, both their Precision and Recall scores were not able to surpass those obtained in \emph{Range} and \emph{Baseline}, except for Robben et al. method, that achieved the top Precision score, which could be due to the inclusion of each patient's \acrshort{tici} score in the learning process.
+
+Compared to single model approaches such as the ones developed by Monteiro et al., Lucas et al. and \citet{pinto2018stroke}, both \emph{Range} and \emph{Baseline} models performed better in all metrics. This behavior could be due to various reasons, which could be related to the choice of the number of the feature maps, the applied regularization and/or even the chosen hyperparameters of the optimizers. One other possible motive could be the used data augmentation mechanisms (or lack of them) to further generate more lesion variability. Regarding Monteiro et al. work, where a V-Net was implemented, one may claim that the lower performance could be due to the mentioned aspects, as there are not many details about their implementation. However, we showed the added value of our approach as we did not resort to complex postprocessing techniques. With respect to Lucas et al. proposal, one may say that the inclusion of hemispheric flips may not have contributed to a better performance, since, in preliminary in house studies, we verified that applying flips to the input data resulted in less accurate predictions. These hemispheric flips consist of mirroring the image with respect to the $ Y $ axis, which results in the brain information being moved from one side to opposite hemisphere. This could possibly result in such brain anatomies that may, or may not, be biologically plausible, which could justify why we verified a poorer performance when we included them.
+
+\citet{pinto2018stroke} model implemented a channels' proportion of 32/64/128, which we verified as not the best structure for this problem. Besides, all the convolutional layers were padded to maintain the dimensions and the network has fewer layers than our models. This, together with the applied regularization hyperparameters, could have led to a lower performance.
+
+Similarly, the \emph{Cascade + Population} was capable of surpassing the best submissions of the Challenge. In this case, it might have been due to being able to take more context into account since it resorted not only to dilated convolutions with increasing dilation factors, but also because it processed the data deeply twice with different filters' proportions, which, to the best of our knowledge, was not done in the state of the art. Nonetheless, the reason why the cascade resulted in better predictions might also be due some regularization aspects, besides the network architecture. Analogously, the \emph{Cascade + VAE $ d=128 $} was also capable of achieving a favorable performance, even though it did not present the best balance between Recall and Precision. This model comprised a novel network structure, since, to the best of our knowledge, it was the first developed method to include a variational autoencoder to predict the tissue outcome in patients with stroke.
+
+The results of \citet{pinto} proposal, which combined the standard parametric maps with the \acrshort{4d} \acrshort{pwi}, exhibit the same behavior between the Precision and Recall metrics that was observed in prior sections of this dissertation. Compared to our fusion methods -- \emph{Top Branch 3.0} and \emph{Complete 1.0} -- it is possible to claim that these complex models were capable of retrieving more informative features from both sets of \acrshort{mri} data, achieving better balances between Precision and Recall. As all of these models are not directly comparable, one can only assume that the difference between the performances might be due regularization, network architecture and/or even the absence of the preprocessing blocks in \citet{pinto} work. Nevertheless, this comes to confirm that the path we took to include the data-driven \acrshort{pwi} data was more successful.
+
+Furthermore, it is possible to observe that the fusion of both modalities led to better Dice scores and distance metrics than the majority of state of the art methods, be them ensembles or single model methods. Although these approaches are not directly comparable, one may assume that the addition of the \acrshort{pwi} data in both \emph{Top Branch 3.0} and \emph{Complete 1.0} models, to further complement the standard parametric maps data, is one step closer to discovering the most appropriate mechanism to include this information. 
+
+
+\section{Summary}
+
+We first began by describing the baseline architecture, which consisted of a simple U-Net that was fed with the standard perfusion and diffusion \acrshort{mri} maps. Then, we compared it to a variant with fewer filters, and concluded that a proportion of 40/80/160 was best suited for this problem. Secondly, we showed how the network's performance benefited from including data augmentation mechanisms in the stroke lesion outcome prediction problem, since the training dataset comprises a small amount of data. Afterwards, we concluded that the expansion of the context across the network through the usage of dilated convolutions may, or may not, benefit the network, depending on the training data that is fed to the network. Regarding the combination of the standard maps with the \acrshort{4d} \acrshort{pwi}, we verified that the inclusion of the latter data may contribute to a better performance, but the best way to process and include it in the network has not been found yet. Nevertheless, the temporal processing of the \acrshort{pwi} data was found to be useful, helping surpassing the state of the art performance known for using this raw information. Moreover, the advantages of including attention mechanisms were corroborated. Lastly, we claimed that the addition of a \acrshort{vae} may be capable of improving the performance of the network, if correctly tuned for this problem's context in particular. All the developed work was evaluated on the publicly available \acrshort{isles} 2017 database.
+
+In sum, through different approaches it was possible to achieve competitive performances, capable of enhancing the accuracy of the predictions, given the small dataset, with the best strategy comprising the baseline architecture with an extra data augmentation mechanism included. The vast majority of the implemented methods produced more accurate predictions than some of the most recently published methodologies in the Ischemic Stroke Lesion Segmentation 2017 Challenge, with the top Dice score achieving the 0.35 value. Additionally, our best models were capable of achieving the best scores for the Hausdorff distance, \acrshort{assd}, Precision and Recall metrics.

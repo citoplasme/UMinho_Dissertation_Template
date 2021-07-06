@@ -1,5 +1,4 @@
-# UMinho_Dissertation_Template
-[University of Minho - Dissertation] Latex Template 
+# [University of Minho - Dissertation] Latex Template 
 
 #### How to use the Template:
 

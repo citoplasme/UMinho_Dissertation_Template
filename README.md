@@ -1,5 +1,7 @@
 # [University of Minho - Dissertation] Latex Template 
 
+As of July 2021, this template follows every norm stated by the University of Minho in terms of structure of the dissertation, e.g., font (type and size), content structure, spacing, etc.).  
+
 #### How to use the Template:
 
 In order to use the Template, you need a Latex Editor. Personaly, I used [TexMaker](https://www.xm1math.net/texmaker/). As far as I know, this template is **not** compatible with Overleaf.

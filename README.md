@@ -1,7 +1,6 @@
 # UMinho_Dissertation_Template
 [University of Minho - Dissertation] Latex Template 
 
-
 #### How to use the Template:
 
 In order to use the Template, you need a Latex Editor. Personaly, I used [TexMaker](https://www.xm1math.net/texmaker/). As far as I know, this template is **not** compatible with Overleaf.
@@ -12,7 +11,7 @@ The cover and back cover are generate using the .ai files available at the acade
 
 To compile the acronymns, you have to run the following command (everytime you want to make sure they are up to date) in the directory where you have the main.tex file:
 
-`maleglossaries main`
+`makeglossaries main`
 
 To fully compile the pdf, i.e., to generate the bibliography, references and text, you have to follow these steps:
 
@@ -21,3 +20,4 @@ To fully compile the pdf, i.e., to generate the bibliography, references and tex
 * Compile using XeLatex
 * Compile using XeLatex (To update labels on the pdf)
 
+After that, just hit the **View** button, with **View PDF** selected and your document will be ready.
